@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus - Admin Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">🎓</div>
+                <h2>SmartCampus</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-link active">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">R</div>
+                    <div class="user-info">
+                        <div class="user-name">Rajesh Kumar</div>
+                        <div class="user-role">Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Admin Dashboard</h1>
+                    <p>Campus overview and management</p>
+                </div>
+                
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="notification-icon">
+                        <span>🔔</span>
+                        <span class="notification-badge">1</span>
+                    </div>
+                    <div class="user-profile-header">
+                        <div class="user-avatar">R</div>
+                        <span>Rajesh Kumar</span>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon complaints-icon">💬</div>
+                        <div class="stat-info">
+                            <div class="stat-value">173</div>
+                            <div class="stat-label">Total Complaints</div>
+                            <div class="stat-change positive">+12 this month</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon pending-icon">⏳</div>
+                        <div class="stat-info">
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">Pending Issues</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon resolved-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-value">149</div>
+                            <div class="stat-label">Resolved Issues</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon users-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-value">1248</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Complaint Trends</h3>
+                        <div class="chart-container">
+                            <div class="bar-chart">
+                                <div class="bar" style="height: 70%" data-value="28"></div>
+                                <div class="bar" style="height: 87%" data-value="35"></div>
+                                <div class="bar" style="height: 55%" data-value="22"></div>
+                                <div class="bar" style="height: 100%" data-value="40"></div>
+                                <div class="bar" style="height: 45%" data-value="18"></div>
+                                <div class="bar" style="height: 75%" data-value="30"></div>
+                            </div>
+                            <div class="chart-labels">
+                                <span>Jan</span>
+                                <span>Feb</span>
+                                <span>Mar</span>
+                                <span>Apr</span>
+                                <span>May</span>
+                                <span>Jun</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Feedback Ratings</h3>
+                        <div class="donut-chart-container">
+                            <div class="donut-chart">
+                                <div class="donut-segment green" style="--percentage: 35"></div>
+                                <div class="donut-segment blue" style="--percentage: 45"></div>
+                                <div class="donut-segment orange" style="--percentage: 15"></div>
+                                <div class="donut-segment red" style="--percentage: 5"></div>
+                            </div>
+                            <div class="donut-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color green"></span>
+                                    <span>Excellent</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color blue"></span>
+                                    <span>Good</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color orange"></span>
+                                    <span>Average</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color red"></span>
+                                    <span>Poor</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

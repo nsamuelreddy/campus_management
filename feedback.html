@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Faculty Feedback</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notices.html" class="nav-link">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="feedback.html" class="nav-link active">
+                            <span class="nav-icon">⭐</span>
+                            Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lost-found.html" class="nav-link">
+                            <span class="nav-icon">🔍</span>
+                            Lost & Found
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="emergency.html" class="nav-link">
+                            <span class="nav-icon">🚨</span>
+                            Emergency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Arjun Sharma</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <form class="feedback-form">
+                    <div class="feedback-header">
+                        <h1 class="feedback-title">Faculty Feedback Form</h1>
+                    </div>
+
+                    <div class="feedback-content">
+                        <div class="feedback-selects">
+                            <div class="form-group">
+                                <label class="form-label">Semester:</label>
+                                <select class="form-select">
+                                    <option value="">Select semester</option>
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                    <option value="4">Semester 4</option>
+                                    <option value="5">Semester 5</option>
+                                    <option value="6">Semester 6</option>
+                                    <option value="7">Semester 7</option>
+                                    <option value="8">Semester 8</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Subject Name:</label>
+                                <select class="form-select">
+                                    <option value="">Select subject</option>
+                                    <option value="math">Mathematics</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="cs">Computer Science</option>
+                                    <option value="english">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Faculty:</label>
+                                <select class="form-select">
+                                    <option value="">Select faculty</option>
+                                    <option value="prof1">Dr. John Smith</option>
+                                    <option value="prof2">Prof. Sarah Johnson</option>
+                                    <option value="prof3">Dr. Michael Brown</option>
+                                    <option value="prof4">Prof. Emily Davis</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="rating-section">
+                            <div class="rating-instruction">
+                                Please rate the faculty on the following criteria:
+                            </div>
+
+                            <div class="rating-item">
+                                <div class="rating-label">Teaching Clarity:</div>
+                                <div class="rating-options">
+                                    <span class="rating-text">Poor</span>
+                                    <div class="rating-scale">
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="1" data-criteria="teaching"></div>
+                                            <span class="rating-number">1</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="2" data-criteria="teaching"></div>
+                                            <span class="rating-number">2</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="3" data-criteria="teaching"></div>
+                                            <span class="rating-number">3</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="4" data-criteria="teaching"></div>
+                                            <span class="rating-number">4</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="5" data-criteria="teaching"></div>
+                                            <span class="rating-number">5</span>
+                                        </div>
+                                    </div>
+                                    <span class="rating-text">Excellent</span>
+                                </div>
+                            </div>
+
+                            <div class="rating-item">
+                                <div class="rating-label">Subject Knowledge:</div>
+                                <div class="rating-options">
+                                    <span class="rating-text">Poor</span>
+                                    <div class="rating-scale">
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="1" data-criteria="knowledge"></div>
+                                            <span class="rating-number">1</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="2" data-criteria="knowledge"></div>
+                                            <span class="rating-number">2</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="3" data-criteria="knowledge"></div>
+                                            <span class="rating-number">3</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="4" data-criteria="knowledge"></div>
+                                            <span class="rating-number">4</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="5" data-criteria="knowledge"></div>
+                                            <span class="rating-number">5</span>
+                                        </div>
+                                    </div>
+                                    <span class="rating-text">Excellent</span>
+                                </div>
+                            </div>
+
+                            <div class="rating-item">
+                                <div class="rating-label">Interaction with Students:</div>
+                                <div class="rating-options">
+                                    <span class="rating-text">Poor</span>
+                                    <div class="rating-scale">
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="1" data-criteria="interaction"></div>
+                                            <span class="rating-number">1</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="2" data-criteria="interaction"></div>
+                                            <span class="rating-number">2</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="3" data-criteria="interaction"></div>
+                                            <span class="rating-number">3</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="4" data-criteria="interaction"></div>
+                                            <span class="rating-number">4</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="5" data-criteria="interaction"></div>
+                                            <span class="rating-number">5</span>
+                                        </div>
+                                    </div>
+                                    <span class="rating-text">Excellent</span>
+                                </div>
+                            </div>
+
+                            <div class="rating-item">
+                                <div class="rating-label">Punctuality:</div>
+                                <div class="rating-options">
+                                    <span class="rating-text">Poor</span>
+                                    <div class="rating-scale">
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="1" data-criteria="punctuality"></div>
+                                            <span class="rating-number">1</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="2" data-criteria="punctuality"></div>
+                                            <span class="rating-number">2</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="3" data-criteria="punctuality"></div>
+                                            <span class="rating-number">3</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="4" data-criteria="punctuality"></div>
+                                            <span class="rating-number">4</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="5" data-criteria="punctuality"></div>
+                                            <span class="rating-number">5</span>
+                                        </div>
+                                    </div>
+                                    <span class="rating-text">Excellent</span>
+                                </div>
+                            </div>
+
+                            <div class="rating-item">
+                                <div class="rating-label">Course Material Quality:</div>
+                                <div class="rating-options">
+                                    <span class="rating-text">Poor</span>
+                                    <div class="rating-scale">
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="1" data-criteria="material"></div>
+                                            <span class="rating-number">1</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="2" data-criteria="material"></div>
+                                            <span class="rating-number">2</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="3" data-criteria="material"></div>
+                                            <span class="rating-number">3</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="4" data-criteria="material"></div>
+                                            <span class="rating-number">4</span>
+                                        </div>
+                                        <div class="rating-option">
+                                            <div class="rating-radio" data-value="5" data-criteria="material"></div>
+                                            <span class="rating-number">5</span>
+                                        </div>
+                                    </div>
+                                    <span class="rating-text">Excellent</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="feedback-actions">
+                            <button type="submit" class="feedback-btn feedback-submit">Submit</button>
+                            <button type="button" class="feedback-btn feedback-reset">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/feedback.js"></script>
+</body>
+</html>

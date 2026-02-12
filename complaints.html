@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Complaints</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notices.html" class="nav-link">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link active">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="feedback.html" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lost-found.html" class="nav-link">
+                            <span class="nav-icon">🔍</span>
+                            Lost & Found
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="emergency.html" class="nav-link">
+                            <span class="nav-icon">🚨</span>
+                            Emergency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Arjun Sharma</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <!-- Complaints List View -->
+                <div id="complaintsListView">
+                    <div class="page-header">
+                        <h1 class="page-title">Complaints</h1>
+                        <p class="page-subtitle">Submit and track your service requests</p>
+                    </div>
+
+                    <div class="page-actions">
+                        <div></div>
+                        <button class="primary-btn" onclick="showComplaintForm()">
+                            ➕ New Complaint
+                        </button>
+                    </div>
+
+                    <!-- Complaints List -->
+                    <div class="complaints-list">
+                        <div class="complaint-card">
+                            <div class="complaint-header">
+                                <span class="complaint-type">Wi-Fi</span>
+                                <div class="complaint-status pending">Pending</div>
+                            </div>
+                            <h3 class="complaint-title">Internet not working in Block A</h3>
+                            <p class="complaint-description">No connectivity since morning</p>
+                            <div class="complaint-meta">Mar 8, 2025</div>
+                        </div>
+
+                        <div class="complaint-card">
+                            <div class="complaint-header">
+                                <span class="complaint-type">Hostel</span>
+                                <div class="complaint-status in-progress">In Progress</div>
+                            </div>
+                            <h3 class="complaint-title">AC not working in Room 204</h3>
+                            <p class="complaint-description">AC making noise and not cooling</p>
+                            <div class="complaint-meta">Mar 6, 2025</div>
+                        </div>
+
+                        <div class="complaint-card">
+                            <div class="complaint-header">
+                                <span class="complaint-type">Mess</span>
+                                <div class="complaint-status resolved">Resolved</div>
+                            </div>
+                            <h3 class="complaint-title">Food quality complaint</h3>
+                            <p class="complaint-description">Found hair in food</p>
+                            <div class="complaint-meta">Mar 3, 2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Complaint Form View -->
+                <div id="complaintFormView" class="hidden">
+                    <div class="page-header">
+                        <h1 class="page-title">Submit a Complaint</h1>
+                    </div>
+
+                    <form class="complaint-form" id="complaintForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="complaintType">Complaint Type</label>
+                                <select id="complaintType" class="form-select" required>
+                                    <option value="">Select type</option>
+                                    <option value="wifi">Wi-Fi</option>
+                                    <option value="hostel">Hostel</option>
+                                    <option value="mess">Mess</option>
+                                    <option value="academic">Academic</option>
+                                    <option value="transport">Transport</option>
+                                    <option value="infrastructure">Infrastructure</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="subject">Subject</label>
+                                <input type="text" id="subject" class="form-input" placeholder="Brief subject" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="description">Description</label>
+                            <textarea id="description" class="form-textarea" placeholder="Describe the issue in detail..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Attachment (optional)</label>
+                            <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                                <div class="file-upload-icon">📁</div>
+                                <div class="file-upload-text">Click to upload or drag & drop</div>
+                                <div class="file-upload-hint">PNG, JPG up to 5MB</div>
+                                <input type="file" id="fileInput" style="display: none" accept="image/*,.pdf">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="primary-btn">Submit Complaint</button>
+                            <button type="button" class="secondary-btn" onclick="showComplaintsList()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/complaints.js"></script>
+</body>
+</html>

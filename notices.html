@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Notices</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notices.html" class="nav-link active">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="feedback.html" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lost-found.html" class="nav-link">
+                            <span class="nav-icon">🔍</span>
+                            Lost & Found
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="emergency.html" class="nav-link">
+                            <span class="nav-icon">🚨</span>
+                            Emergency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Arjun Sharma</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <div class="page-header">
+                    <h1 class="page-title">Notices</h1>
+                    <p class="page-subtitle">Stay updated with campus announcements</p>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-tab" data-filter="all">All</button>
+                    <button class="filter-tab active" data-filter="academic">Academic</button>
+                    <button class="filter-tab" data-filter="hostel">Hostel</button>
+                    <button class="filter-tab" data-filter="emergency">Emergency</button>
+                    <button class="filter-tab" data-filter="events">Events</button>
+                    <button class="filter-tab" data-filter="admin">Admin</button>
+                </div>
+
+                <!-- Notices Grid -->
+                <div class="notices-grid">
+                    <div class="notice-card" data-category="academic">
+                        <div class="notice-tags">
+                            <span class="notice-tag">academic</span>
+                            <span class="notice-tag urgent">Urgent</span>
+                        </div>
+                        <h3 class="notice-title">Mid-semester exams scheduled for March 15-22</h3>
+                        <p class="notice-description">All students must check their seat allocations on the portal.</p>
+                        <div class="notice-date">Mar 8, 2025</div>
+                        <button class="acknowledge-btn">Acknowledge</button>
+                    </div>
+
+                    <div class="notice-card" data-category="academic">
+                        <div class="notice-tags">
+                            <span class="notice-tag">academic</span>
+                        </div>
+                        <h3 class="notice-title">Library extended hours during exams</h3>
+                        <p class="notice-description">Library will remain open until midnight during exam week.</p>
+                        <div class="notice-date">Mar 3, 2025</div>
+                        <button class="acknowledge-btn">Acknowledge</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/notices.js"></script>
+</body>
+</html>

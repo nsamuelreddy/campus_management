@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Student Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link active">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notices.html" class="nav-link">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="feedback.html" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lost-found.html" class="nav-link">
+                            <span class="nav-icon">🔍</span>
+                            Lost & Found
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="emergency.html" class="nav-link">
+                            <span class="nav-icon">🚨</span>
+                            Emergency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Arjun Sharma</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <div class="page-header">
+                    <h1 class="page-title">Student Dashboard</h1>
+                    <p class="page-subtitle">Welcome back! Here's what's happening on campus.</p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card notices">
+                        <div class="stat-icon">📢</div>
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Total Notices</div>
+                        <div class="stat-change">+3 this week</div>
+                    </div>
+                    <div class="stat-card complaints">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">Active Complaints</div>
+                    </div>
+                    <div class="stat-card resolved">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Resolved</div>
+                    </div>
+                    <div class="stat-card pending">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Sections -->
+                <div class="dashboard-sections">
+                    <!-- Recent Notices -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h3 class="section-title">Recent Notices</h3>
+                        </div>
+                        <div class="section-content">
+                            <div class="notice-item">
+                                <div class="notice-indicator urgent"></div>
+                                <div class="notice-content">
+                                    <div class="notice-title">Mid-semester exams scheduled for March 15-22</div>
+                                    <div class="notice-meta">
+                                        <span class="notice-tag urgent">Academic</span>
+                                        <span>2 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notice-item">
+                                <div class="notice-indicator normal"></div>
+                                <div class="notice-content">
+                                    <div class="notice-title">Wi-Fi maintenance on Block C - March 10</div>
+                                    <div class="notice-meta">
+                                        <span class="notice-tag">Admin</span>
+                                        <span>5 hours ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notice-item">
+                                <div class="notice-indicator normal"></div>
+                                <div class="notice-content">
+                                    <div class="notice-title">Annual Sports Day registration open</div>
+                                    <div class="notice-meta">
+                                        <span class="notice-tag">Events</span>
+                                        <span>1 day ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notice-item">
+                                <div class="notice-indicator urgent"></div>
+                                <div class="notice-content">
+                                    <div class="notice-title">Hostel water supply disruption notice</div>
+                                    <div class="notice-meta">
+                                        <span class="notice-tag">Hostel</span>
+                                        <span>1 day ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Complaint Status -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h3 class="section-title">Complaint Status</h3>
+                        </div>
+                        <div class="section-content">
+                            <div class="complaint-status-item">
+                                <div class="notice-content">
+                                    <div class="notice-title">Internet not working in Block A</div>
+                                    <div class="notice-meta">
+                                        <span>Wi-Fi</span>
+                                        <span>Mar 8</span>
+                                    </div>
+                                </div>
+                                <div class="complaint-status pending">Pending</div>
+                            </div>
+                            <div class="complaint-status-item">
+                                <div class="notice-content">
+                                    <div class="notice-title">AC not working in Room 204</div>
+                                    <div class="notice-meta">
+                                        <span>Hostel</span>
+                                        <span>Mar 6</span>
+                                    </div>
+                                </div>
+                                <div class="complaint-status in-progress">In Progress</div>
+                            </div>
+                            <div class="complaint-status-item">
+                                <div class="notice-content">
+                                    <div class="notice-title">Food quality complaint</div>
+                                    <div class="notice-meta">
+                                        <span>Mess</span>
+                                        <span>Mar 3</span>
+                                    </div>
+                                </div>
+                                <div class="complaint-status resolved">Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

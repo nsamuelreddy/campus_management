@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Faculty Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="faculty-dashboard.html" class="nav-link active">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="manage-notices.html" class="nav-link">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">D</div>
+                        <div class="user-info">
+                            <h4>Dr. Priya Mehta</h4>
+                            <p>Faculty</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <!-- Feedback Analysis Header -->
+                <div class="feedback-analysis-header">
+                    <h1 class="page-title">Faculty Feedback Analysis</h1>
+                </div>
+
+                <!-- Filters -->
+                <div class="feedback-filters">
+                    <div class="form-group">
+                        <select class="form-select">
+                            <option>👤 Prof. John Smith</option>
+                            <option>Dr. Priya Mehta</option>
+                            <option>Prof. Sarah Johnson</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-select">
+                            <option>Semester 1</option>
+                            <option>Semester 2</option>
+                            <option>Semester 3</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Overall Stats -->
+                <div class="feedback-stats">
+                    <div class="feedback-stat-card">
+                        <div class="stat-icon-large">⭐</div>
+                        <div class="stat-content">
+                            <div class="stat-value">4.3 <span class="stat-max">/ 5</span></div>
+                            <div class="stat-label">Overall Rating</div>
+                            <div class="stat-sublabel">Very Good</div>
+                        </div>
+                    </div>
+                    <div class="feedback-stat-card">
+                        <div class="stat-icon-large">👥</div>
+                        <div class="stat-content">
+                            <div class="stat-value">128</div>
+                            <div class="stat-label">Total Responses</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rating Breakdown -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3 class="section-title">Rating Breakdown</h3>
+                    </div>
+                    <div class="section-content" style="padding: 24px;">
+                        <div class="rating-breakdown-item">
+                            <span class="rating-number">5</span>
+                            <div class="rating-bar-container">
+                                <div class="rating-bar" style="width: 50%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="rating-percentage">50%</span>
+                        </div>
+                        <div class="rating-breakdown-item">
+                            <span class="rating-number">4</span>
+                            <div class="rating-bar-container">
+                                <div class="rating-bar" style="width: 25%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="rating-percentage">25%</span>
+                        </div>
+                        <div class="rating-breakdown-item">
+                            <span class="rating-number">3</span>
+                            <div class="rating-bar-container">
+                                <div class="rating-bar" style="width: 25%; background: #60a5fa;"></div>
+                            </div>
+                            <span class="rating-percentage">25%</span>
+                        </div>
+                        <div class="rating-breakdown-item">
+                            <span class="rating-number">2</span>
+                            <div class="rating-bar-container">
+                                <div class="rating-bar" style="width: 8%; background: #f59e0b;"></div>
+                            </div>
+                            <span class="rating-percentage">8%</span>
+                        </div>
+                        <div class="rating-breakdown-item">
+                            <span class="rating-number">1</span>
+                            <div class="rating-bar-container">
+                                <div class="rating-bar" style="width: 4%; background: #ef4444;"></div>
+                            </div>
+                            <span class="rating-percentage">4%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average per Category -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3 class="section-title">Average per Category</h3>
+                    </div>
+                    <div class="section-content" style="padding: 24px;">
+                        <div class="category-rating-item">
+                            <span class="category-icon">👨‍🏫</span>
+                            <span class="category-label">Teaching Clarity</span>
+                            <div class="category-bar-container">
+                                <div class="category-bar" style="width: 88%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="category-score">4.4 / 5</span>
+                        </div>
+                        <div class="category-rating-item">
+                            <span class="category-icon">📚</span>
+                            <span class="category-label">Subject Knowledge</span>
+                            <div class="category-bar-container">
+                                <div class="category-bar" style="width: 90%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="category-score">4.5 / 5</span>
+                        </div>
+                        <div class="category-rating-item">
+                            <span class="category-icon">💬</span>
+                            <span class="category-label">Interaction</span>
+                            <div class="category-bar-container">
+                                <div class="category-bar" style="width: 86%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="category-score">4.3 / 5</span>
+                        </div>
+                        <div class="category-rating-item">
+                            <span class="category-icon">⏰</span>
+                            <span class="category-label">Punctuality</span>
+                            <div class="category-bar-container">
+                                <div class="category-bar" style="width: 84%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="category-score">4.2 / 5</span>
+                        </div>
+                        <div class="category-rating-item">
+                            <span class="category-icon">📄</span>
+                            <span class="category-label">Course Material Quality</span>
+                            <div class="category-bar-container">
+                                <div class="category-bar" style="width: 82%; background: #3b82f6;"></div>
+                            </div>
+                            <span class="category-score">4.1 / 5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentiment Legend -->
+                <div class="sentiment-legend">
+                    <span class="sentiment-item"><span class="sentiment-dot positive"></span> Positive</span>
+                    <span class="sentiment-item"><span class="sentiment-dot neutral"></span> Neutral</span>
+                    <span class="sentiment-item"><span class="sentiment-dot average"></span> No</span>
+                    <span class="sentiment-item"><span class="sentiment-dot negative"></span> Needs Improvement</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/faculty-dashboard.js"></script>
+</body>
+</html>

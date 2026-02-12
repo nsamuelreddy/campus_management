@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">🎓</div>
+            <h1 class="login-title">Smart Campus</h1>
+            <p class="login-subtitle">Campus Management System</p>
+            
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email / Student ID</label>
+                    <input type="text" id="email" class="form-input" placeholder="Enter your email or ID" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <div class="role-selection">
+                        <button type="button" class="role-btn active" data-role="student">Student</button>
+                        <button type="button" class="role-btn" data-role="faculty">Faculty</button>
+                        <button type="button" class="role-btn" data-role="admin">Admin</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+            
+            <p class="demo-text">Demo: Use any email & password to login</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Emergency</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notices.html" class="nav-link">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="feedback.html" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lost-found.html" class="nav-link">
+                            <span class="nav-icon">🔍</span>
+                            Lost & Found
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="emergency.html" class="nav-link active">
+                            <span class="nav-icon">🚨</span>
+                            Emergency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Arjun Sharma</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <div class="page-header">
+                    <h1 class="page-title">Emergency Contacts</h1>
+                    <p class="page-subtitle">Important emergency contact numbers</p>
+                </div>
+
+                <!-- Emergency Contacts Grid -->
+                <div class="emergency-grid">
+                    <div class="emergency-card urgent">
+                        <div class="emergency-icon">🚨</div>
+                        <h3 class="emergency-title">Campus Security</h3>
+                        <a href="tel:911" class="emergency-number">911</a>
+                        <p class="emergency-description">24/7 Campus Security</p>
+                    </div>
+
+                    <div class="emergency-card urgent">
+                        <div class="emergency-icon">🚑</div>
+                        <h3 class="emergency-title">Medical Emergency</h3>
+                        <a href="tel:108" class="emergency-number">108</a>
+                        <p class="emergency-description">Campus Health Center</p>
+                    </div>
+
+                    <div class="emergency-card">
+                        <div class="emergency-icon">🔥</div>
+                        <h3 class="emergency-title">Fire Emergency</h3>
+                        <a href="tel:101" class="emergency-number">101</a>
+                        <p class="emergency-description">Fire Department</p>
+                    </div>
+
+                    <div class="emergency-card">
+                        <div class="emergency-icon">👮</div>
+                        <h3 class="emergency-title">Police</h3>
+                        <a href="tel:100" class="emergency-number">100</a>
+                        <p class="emergency-description">Local Police Station</p>
+                    </div>
+
+                    <div class="emergency-card">
+                        <div class="emergency-icon">🏥</div>
+                        <h3 class="emergency-title">Hospital</h3>
+                        <a href="tel:+911234567890" class="emergency-number">+91 123 456 7890</a>
+                        <p class="emergency-description">Nearest Hospital</p>
+                    </div>
+
+                    <div class="emergency-card">
+                        <div class="emergency-icon">📞</div>
+                        <h3 class="emergency-title">Helpline</h3>
+                        <a href="tel:1800000000" class="emergency-number">1800-000-000</a>
+                        <p class="emergency-description">Student Helpline</p>
+                    </div>
+                </div>
+
+                <!-- Emergency Procedures -->
+                <div class="emergency-procedures">
+                    <h2>Emergency Procedures</h2>
+                    <div class="procedure-card">
+                        <h3>🔥 In Case of Fire</h3>
+                        <ol>
+                            <li>Activate the nearest fire alarm</li>
+                            <li>Evacuate the building immediately</li>
+                            <li>Call 101 or campus security</li>
+                            <li>Do not use elevators</li>
+                            <li>Assemble at designated meeting points</li>
+                        </ol>
+                    </div>
+                    <div class="procedure-card">
+                        <h3>🚑 Medical Emergency</h3>
+                        <ol>
+                            <li>Call 108 or campus health center</li>
+                            <li>Do not move the injured person unless necessary</li>
+                            <li>Provide first aid if trained</li>
+                            <li>Stay with the person until help arrives</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
