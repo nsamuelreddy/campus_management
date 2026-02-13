@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus · Analytics</title>
+    <style>
+        /* ---------- same global styles & sidebar (shared) ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #f6f9fc; display: flex; justify-content: center; color: #1a2639; }
+        .app-container { display: flex; width: 100%; max-width: 1440px; background: white; min-height: 100vh; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+        .sidebar { width: 280px; background: white; border-right: 1px solid #ecf0f5; display: flex; flex-direction: column; padding: 32px 24px; flex-shrink: 0; }
+        .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+        .logo { font-size: 28px; background: linear-gradient(145deg, #2a5c7e, #1e3e5a); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; }
+        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #0b2a41; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; font-weight: 500; color: #52677a; text-decoration: none; transition: 0.15s; font-size: 16px; }
+        .nav-link.active { background: #eaf1f9; color: #1f5e8e; font-weight: 600; }
+        .nav-link:hover { background: #f5f9fd; color: #1f4e6f; }
+        .nav-icon { font-size: 20px; }
+        .sidebar-footer { margin-top: auto; border-top: 1px solid #ecf0f5; padding-top: 24px; }
+        .user-profile { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 44px; height: 44px; background: #265d7c; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-weight: 600; color: #1a2e3f; font-size: 15px; }
+        .user-role { font-size: 13px; color: #6b7f8e; }
+
+        .main-content { flex: 1; background: #f9fcff; display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; border-bottom: 1px solid #e6edf2; background: white; }
+        .header-left h1 { font-size: 26px; font-weight: 700; color: #0f2a40; margin-bottom: 6px; }
+        .header-left p { color: #5f7d95; font-size: 15px; }
+        .header-right { display: flex; align-items: center; gap: 24px; }
+        .search-box { position: relative; }
+        .search-box input { padding: 12px 18px 12px 48px; border-radius: 30px; border: 1.5px solid #e2eaf0; background: white; font-size: 15px; width: 260px; outline: none; }
+        .search-box input:focus { border-color: #3d7ea1; box-shadow: 0 0 0 4px rgba(61,126,161,0.06); }
+        .search-icon { position: absolute; left: 18px; top: 12px; font-size: 18px; color: #7995a8; }
+        .notification-icon { position: relative; font-size: 24px; }
+        .notification-badge { position: absolute; top: -6px; right: -8px; background: #df4c4c; color: white; font-size: 12px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+        .user-profile-header { display: flex; align-items: center; gap: 10px; background: #f3f7fb; padding: 8px 16px 8px 12px; border-radius: 40px; color: #1c3d57; font-weight: 500; font-size: 14px; }
+        .user-profile-header .user-avatar { width: 36px; height: 36px; font-size: 16px; background: #1f5975; }
+
+        /* ---------- ANALYTICS SPECIFIC (exact data from image) ---------- */
+        .analytics-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.02), 0 0 0 1px #eff4f9;
+        }
+
+        .insight-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1b405a;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .insight-title span {
+            font-size: 24px;
+        }
+
+        .stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e9f0f5;
+        }
+
+        .month-badge {
+            width: 70px;
+            font-weight: 600;
+            color: #285e7c;
+            font-size: 16px;
+        }
+
+        .stat-detail {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            color: #2d4e63;
+            font-size: 15px;
+        }
+
+        .bar-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mini-bar {
+            height: 10px;
+            width: 100%;
+            background: #e1eaf0;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .complaint-bar {
+            height: 10px;
+            background: #3b7ea1;
+            width: 0%;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .resolved-bar {
+            height: 10px;
+            background: #50a77e;
+            width: 0%;
+            border-radius: 0 20px 20px 0;
+        }
+
+        .stat-numbers {
+            font-weight: 600;
+            color: #0e3e54;
+            min-width: 160px;
+            text-align: right;
+        }
+
+        /* rating cards */
+        .rating-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .rating-card {
+            background: #f5fafe;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .rating-month {
+            font-size: 18px;
+            font-weight: 700;
+            color: #265469;
+            margin-bottom: 12px;
+        }
+
+        .rating-value {
+            font-size: 42px;
+            font-weight: 800;
+            color: #1e4f68;
+            line-height: 1;
+        }
+
+        .rating-star {
+            font-size: 20px;
+            color: #e6b422;
+            letter-spacing: 4px;
+            margin-top: 10px;
+        }
+
+        .rating-label {
+            font-size: 14px;
+            color: #6a8596;
+            margin-top: 12px;
+        }
+
+        .feedback-average {
+            margin-top: 16px;
+            color: #1c5975;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR (Analytics active) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">🎓</div>
+                <h2>SmartCampus</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="users.html" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="analytics.html" class="nav-link active">
+                    <span class="nav-icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">R</div>
+                    <div class="user-info">
+                        <div class="user-name">Rajesh Kumar</div>
+                        <div class="user-role">Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN – ANALYTICS -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1>Analytics</h1>
+                    <p>Campus performance insights</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    <div class="notification-icon">
+                        <span>🔔</span>
+                        <span class="notification-badge">1</span>
+                    </div>
+                    <div class="user-profile-header">
+                        <div class="user-avatar">R</div>
+                        <span>Rajesh Kumar</span>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="analytics-content">
+                <!-- Complaints vs Resolved (exact data) -->
+                <div class="insight-card">
+                    <div class="insight-title">
+                        <span>📊</span> Complaints vs Resolved
+                    </div>
+                    <div class="stats-list">
+                        <div class="stat-row">
+                            <span class="month-badge">Jan</span>
+                            <div class="stat-detail">
+                                <div class="bar-container">
+                                    <div class="mini-bar"><div class="complaint-bar" style="width: 100%"></div></div>
+                                    <span style="min-width: 60px;">40 complaints</span>
+                                </div>
+                                <div class="bar-container">
+                                    <div class="mini-bar"><div class="resolved-bar" style="width: 55%"></div></div>
+                                    <span style="min-width: 60px;">22 resolved</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="month-badge">Feb</span>
+                            <div class="stat-detail">
+                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 75%"></div></div><span>30 complaints</span></div>
+                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 40%"></div></div><span>12 resolved</span></div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="month-badge">Mar</span>
+                            <div class="stat-detail">
+                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 50%"></div></div><span>20 complaints</span></div>
+                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 50%"></div></div><span>10 resolved</span></div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="month-badge">Apr</span>
+                            <div class="stat-detail">
+                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 25%"></div></div><span>10 complaints</span></div>
+                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 80%"></div></div><span>8 resolved</span></div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="month-badge">May</span>
+                            <div class="stat-detail">
+                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 38%"></div></div><span>15 complaints</span></div>
+                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 80%"></div></div><span>12 resolved</span></div>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <span class="month-badge">Jun</span>
+                            <div class="stat-detail">
+                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 63%"></div></div><span>25 complaints</span></div>
+                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 72%"></div></div><span>18 resolved</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Average Feedback Rating (exact: 2.5,3.0,4.0,5.0,4.5,5.0) -->
+                <div class="insight-card">
+                    <div class="insight-title">
+                        <span>⭐</span> Average Feedback Rating
+                    </div>
+                    <div class="rating-grid">
+                        <div class="rating-card">
+                            <div class="rating-month">Jan</div>
+                            <div class="rating-value">2.5</div>
+                            <div class="rating-star">★★☆☆☆</div>
+                            <div class="rating-label">below average</div>
+                        </div>
+                        <div class="rating-card">
+                            <div class="rating-month">Feb</div>
+                            <div class="rating-value">3.0</div>
+                            <div class="rating-star">★★★☆☆</div>
+                            <div class="rating-label">fair</div>
+                        </div>
+                        <div class="rating-card">
+                            <div class="rating-month">Mar</div>
+                            <div class="rating-value">4.0</div>
+                            <div class="rating-star">★★★★☆</div>
+                            <div class="rating-label">good</div>
+                        </div>
+                        <div class="rating-card">
+                            <div class="rating-month">Apr</div>
+                            <div class="rating-value">5.0</div>
+                            <div class="rating-star">★★★★★</div>
+                            <div class="rating-label">excellent</div>
+                        </div>
+                        <div class="rating-card">
+                            <div class="rating-month">May</div>
+                            <div class="rating-value">4.5</div>
+                            <div class="rating-star">★★★★☆</div>
+                            <div class="rating-label">very good</div>
+                        </div>
+                        <div class="rating-card">
+                            <div class="rating-month">Jun</div>
+                            <div class="rating-value">5.0</div>
+                            <div class="rating-star">★★★★★</div>
+                            <div class="rating-label">excellent</div>
+                        </div>
+                    </div>
+                    <div class="feedback-average">
+                        ⌀ Overall rating: 4.0 / 5.0 (from 6 months)
+                    </div>
+                </div>
+                <!-- subtle admin signature -->
+                <div style="color: #6f8b9c; font-size: 13px; border-top: 1px solid #e1eaf0; padding-top: 20px; text-align: right;">
+                    Rajesh Kumar · Admin
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

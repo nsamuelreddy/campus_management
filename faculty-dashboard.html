@@ -3,213 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCampus - Faculty Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>SmartCampus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #1a2332;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #1e2a3a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #2d3a4a;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            background: #3b82f6;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 24px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #8b9bb3;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-link:hover:not(.active) {
+            background: #2d3a4a;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            padding: 24px;
+            border-top: 1px solid #2d3a4a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+
+        .user-role {
+            color: #8b9bb3;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #8b9bb3;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #2d3a4a;
+            color: #ff6b6b;
+        }
+
+        .main-content {
+            flex: 1;
+            background: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: #3b82f6;
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 16px 8px 40px;
+            color: white;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar-header {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 32px;
+            background: #f4f6f9;
+        }
+
+        .content-header {
+            margin-bottom: 32px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+
+        .content-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.rating {
+            background: #3b82f6;
+        }
+
+        .stat-icon.responses {
+            background: #3b82f6;
+        }
+
+        .stat-content h3 {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .stat-rating {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        .stat-label {
+            color: #10b981;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .rating-breakdown {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .breakdown-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 20px;
+        }
+
+        .rating-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .rating-number {
+            width: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .rating-bar {
+            flex: 1;
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .rating-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .rating-1 { background: #ef4444; }
+        .rating-2 { background: #f97316; }
+        .rating-3 { background: #06b6d4; }
+        .rating-4 { background: #3b82f6; }
+        .rating-5 { background: #3b82f6; }
+
+        .rating-percentage {
+            width: 40px;
+            text-align: right;
+            font-weight: 500;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .categories-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .category-bar {
+            flex: 1;
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            margin-left: 20px;
+            margin-right: 20px;
+            overflow: hidden;
+        }
+
+        .category-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+
+        .category-score {
+            font-weight: 600;
+            color: #1a2332;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .feedback-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.positive { background: #10b981; }
+        .legend-dot.neutral { background: #6b7280; }
+        .legend-dot.negative { background: #f97316; }
+        .legend-dot.improvement { background: #ef4444; }
+    </style>
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="app-container">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">🎓</div>
-                <span class="sidebar-title">SmartCampus</span>
+                <div class="logo-container">
+                    <div class="logo">📊</div>
+                    <div class="logo-text">SmartCampus</div>
+                </div>
             </div>
-            <nav>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="faculty-dashboard.html" class="nav-link active">
-                            <span class="nav-icon">📊</span>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="manage-notices.html" class="nav-link">
-                            <span class="nav-icon">📢</span>
-                            Notices
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="complaints.html" class="nav-link">
-                            <span class="nav-icon">📝</span>
-                            Complaints
-                        </a>
-                    </li>
-                </ul>
+            
+            <nav class="sidebar-nav">
+                <a href="faculty-dashboard.html" class="nav-link active">
+                    <div class="nav-icon">📊</div>
+                    <span>Dashboard</span>
+                </a>
+                <a href="faculty-complaints.html" class="nav-link">
+                    <div class="nav-icon">📝</div>
+                    <span>Complaints</span>
+                </a>
+                <a href="faculty-notices.html" class="nav-link">
+                    <div class="nav-icon">📢</div>
+                    <span>Notices</span>
+                </a>
             </nav>
+            
+            <div class="user-profile">
+                <div class="user-avatar">D</div>
+                <div class="user-info">
+                    <div class="user-name">Dr. Priya Mehta</div>
+                    <div class="user-role">Faculty</div>
+                </div>
+                <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
+            </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Top Navigation -->
-            <div class="top-nav">
-                <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Search...">
-                    <span class="search-icon">🔍</span>
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="header-left">
+                    <div class="header-title">Smart Campus</div>
                 </div>
-                <div class="top-nav-right">
-                    <button class="notification-btn">
-                        🔔
-                        <span class="notification-badge"></span>
-                    </button>
-                    <div class="user-profile">
-                        <div class="user-avatar">D</div>
-                        <div class="user-info">
-                            <h4>Dr. Priya Mehta</h4>
-                            <p>Faculty</p>
-                        </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <div class="search-icon">🔍</div>
+                        <input type="text" class="search-input" placeholder="Search...">
                     </div>
+                    <div class="notification-icon">
+                        🔔
+                        <div class="notification-badge">•</div>
+                    </div>
+                    <div class="user-avatar-header">D</div>
                 </div>
             </div>
 
-            <!-- Page Content -->
+            <!-- Content Area -->
             <div class="content-area">
-                <!-- Feedback Analysis Header -->
-                <div class="feedback-analysis-header">
-                    <h1 class="page-title">Faculty Feedback Analysis</h1>
+                <div class="content-header">
+                    <h1 class="content-title">Faculty Feedback Analysis</h1>
                 </div>
 
-                <!-- Filters -->
-                <div class="feedback-filters">
-                    <div class="form-group">
-                        <select class="form-select">
-                            <option>👤 Prof. John Smith</option>
-                            <option>Dr. Priya Mehta</option>
-                            <option>Prof. Sarah Johnson</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-select">
-                            <option>Semester 1</option>
-                            <option>Semester 2</option>
-                            <option>Semester 3</option>
-                        </select>
-                    </div>
+                <div class="filters-row">
+                    <select class="filter-select">
+                        <option>👤 Prof. John Smith</option>
+                        <option>Prof. Jane Doe</option>
+                        <option>Dr. Alex Johnson</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Semester 1</option>
+                        <option>Semester 2</option>
+                    </select>
                 </div>
 
-                <!-- Overall Stats -->
-                <div class="feedback-stats">
-                    <div class="feedback-stat-card">
-                        <div class="stat-icon-large">⭐</div>
-                        <div class="stat-content">
-                            <div class="stat-value">4.3 <span class="stat-max">/ 5</span></div>
-                            <div class="stat-label">Overall Rating</div>
-                            <div class="stat-sublabel">Very Good</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon rating">⭐</div>
+                            <div class="stat-content">
+                                <h3>Overall Rating</h3>
+                                <div class="stat-value">4.3<span class="stat-rating"> / 5</span></div>
+                                <div class="stat-label">Very Good</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="feedback-stat-card">
-                        <div class="stat-icon-large">👥</div>
-                        <div class="stat-content">
-                            <div class="stat-value">128</div>
-                            <div class="stat-label">Total Responses</div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon responses">💬</div>
+                            <div class="stat-content">
+                                <h3>Total Responses</h3>
+                                <div class="stat-value">128</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Rating Breakdown -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3 class="section-title">Rating Breakdown</h3>
+                <div class="rating-breakdown">
+                    <div class="breakdown-title">Rating Breakdown</div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">1</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-1" style="width: 4%"></div>
+                        </div>
+                        <div class="rating-percentage">4%</div>
                     </div>
-                    <div class="section-content" style="padding: 24px;">
-                        <div class="rating-breakdown-item">
-                            <span class="rating-number">5</span>
-                            <div class="rating-bar-container">
-                                <div class="rating-bar" style="width: 50%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="rating-percentage">50%</span>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">2</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-2" style="width: 8%"></div>
                         </div>
-                        <div class="rating-breakdown-item">
-                            <span class="rating-number">4</span>
-                            <div class="rating-bar-container">
-                                <div class="rating-bar" style="width: 25%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="rating-percentage">25%</span>
-                        </div>
-                        <div class="rating-breakdown-item">
-                            <span class="rating-number">3</span>
-                            <div class="rating-bar-container">
-                                <div class="rating-bar" style="width: 25%; background: #60a5fa;"></div>
-                            </div>
-                            <span class="rating-percentage">25%</span>
-                        </div>
-                        <div class="rating-breakdown-item">
-                            <span class="rating-number">2</span>
-                            <div class="rating-bar-container">
-                                <div class="rating-bar" style="width: 8%; background: #f59e0b;"></div>
-                            </div>
-                            <span class="rating-percentage">8%</span>
-                        </div>
-                        <div class="rating-breakdown-item">
-                            <span class="rating-number">1</span>
-                            <div class="rating-bar-container">
-                                <div class="rating-bar" style="width: 4%; background: #ef4444;"></div>
-                            </div>
-                            <span class="rating-percentage">4%</span>
-                        </div>
+                        <div class="rating-percentage">8%</div>
                     </div>
-                </div>
-
-                <!-- Average per Category -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3 class="section-title">Average per Category</h3>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">3</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-3" style="width: 25%"></div>
+                        </div>
+                        <div class="rating-percentage">25%</div>
                     </div>
-                    <div class="section-content" style="padding: 24px;">
-                        <div class="category-rating-item">
-                            <span class="category-icon">👨‍🏫</span>
-                            <span class="category-label">Teaching Clarity</span>
-                            <div class="category-bar-container">
-                                <div class="category-bar" style="width: 88%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="category-score">4.4 / 5</span>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">4</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-4" style="width: 25%"></div>
                         </div>
-                        <div class="category-rating-item">
-                            <span class="category-icon">📚</span>
-                            <span class="category-label">Subject Knowledge</span>
-                            <div class="category-bar-container">
-                                <div class="category-bar" style="width: 90%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="category-score">4.5 / 5</span>
+                        <div class="rating-percentage">25%</div>
+                    </div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">5</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-5" style="width: 50%"></div>
                         </div>
-                        <div class="category-rating-item">
-                            <span class="category-icon">💬</span>
-                            <span class="category-label">Interaction</span>
-                            <div class="category-bar-container">
-                                <div class="category-bar" style="width: 86%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="category-score">4.3 / 5</span>
-                        </div>
-                        <div class="category-rating-item">
-                            <span class="category-icon">⏰</span>
-                            <span class="category-label">Punctuality</span>
-                            <div class="category-bar-container">
-                                <div class="category-bar" style="width: 84%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="category-score">4.2 / 5</span>
-                        </div>
-                        <div class="category-rating-item">
-                            <span class="category-icon">📄</span>
-                            <span class="category-label">Course Material Quality</span>
-                            <div class="category-bar-container">
-                                <div class="category-bar" style="width: 82%; background: #3b82f6;"></div>
-                            </div>
-                            <span class="category-score">4.1 / 5</span>
-                        </div>
+                        <div class="rating-percentage">50%</div>
                     </div>
                 </div>
 
-                <!-- Sentiment Legend -->
-                <div class="sentiment-legend">
-                    <span class="sentiment-item"><span class="sentiment-dot positive"></span> Positive</span>
-                    <span class="sentiment-item"><span class="sentiment-dot neutral"></span> Neutral</span>
-                    <span class="sentiment-item"><span class="sentiment-dot average"></span> No</span>
-                    <span class="sentiment-item"><span class="sentiment-dot negative"></span> Needs Improvement</span>
+                <div class="categories-section">
+                    <div class="breakdown-title">Average per Category</div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">🎯 Teaching Clarity</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 88%"></div>
+                        </div>
+                        <div class="category-score">4.4 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">📚 Subject Knowledge</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 90%"></div>
+                        </div>
+                        <div class="category-score">4.5 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">💬 Interaction</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 86%"></div>
+                        </div>
+                        <div class="category-score">4.3 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">⏰ Punctuality</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 84%"></div>
+                        </div>
+                        <div class="category-score">4.2 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">📖 Course Material Quality</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 82%"></div>
+                        </div>
+                        <div class="category-score">4.1 /5</div>
+                    </div>
+
+                    <div class="feedback-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot positive"></div>
+                            <span>Positive</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot neutral"></div>
+                            <span>Neutral</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot negative"></div>
+                            <span>No</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot improvement"></div>
+                            <span>Needs Improvement</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="js/main.js"></script>
-    <script src="js/faculty-dashboard.js"></script>
 </body>
 </html>

@@ -3,37 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Campus - Admin Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>SmartCampus · Admin Dashboard</title>
+    <style>
+        /* GLOBAL STYLES – consistent across all pages */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f6f9fc;
+            display: flex;
+            justify-content: center;
+            color: #1a2639;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 1440px;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        /* ---------- SIDEBAR (identical on all pages) ---------- */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #ecf0f5;
+            display: flex;
+            flex-direction: column;
+            padding: 32px 24px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 28px;
+            background: linear-gradient(145deg, #2a5c7e, #1e3e5a);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b2a41;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-weight: 500;
+            color: #52677a;
+            text-decoration: none;
+            transition: 0.15s;
+            font-size: 16px;
+        }
+
+        .nav-link.active {
+            background: #eaf1f9;
+            color: #1f5e8e;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            background: #f5f9fd;
+            color: #1f4e6f;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid #ecf0f5;
+            padding-top: 24px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            background: #265d7c;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1a2e3f;
+            font-size: 15px;
+        }
+
+        .user-role {
+            font-size: 13px;
+            color: #6b7f8e;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #8b9bb3;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #f1f5f9;
+            color: #ef4444;
+        }
+
+        /* ---------- MAIN CONTENT ---------- */
+        .main-content {
+            flex: 1;
+            background: #f9fcff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            border-bottom: 1px solid #e6edf2;
+            background: white;
+        }
+
+        .header-left h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f2a40;
+            margin-bottom: 6px;
+        }
+
+        .header-left p {
+            color: #5f7d95;
+            font-size: 15px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 12px 18px 12px 48px;
+            border-radius: 30px;
+            border: 1.5px solid #e2eaf0;
+            background: white;
+            font-size: 15px;
+            width: 260px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: #3d7ea1;
+            box-shadow: 0 0 0 4px rgba(61,126,161,0.06);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 12px;
+            font-size: 18px;
+            color: #7995a8;
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 24px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: #df4c4c;
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f3f7fb;
+            padding: 8px 16px 8px 12px;
+            border-radius: 40px;
+            color: #1c3d57;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-profile-header .user-avatar {
+            width: 36px;
+            height: 36px;
+            font-size: 16px;
+            background: #1f5975;
+        }
+
+        /* ---------- DASHBOARD SPECIFIC ---------- */
+        .dashboard-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.02), 0 0 0 1px #eff4f9;
+        }
+
+        .stat-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: #f0f6fa;
+            color: #235c7c;
+        }
+
+        .complaints-icon { background: #ebf3fa; color: #1f6392; }
+        .pending-icon   { background: #fff3e0; color: #b45f2a; }
+        .resolved-icon  { background: #e3f2ed; color: #1d7a5e; }
+        .users-icon     { background: #eaeefc; color: #374f7e; }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 38px;
+            font-weight: 700;
+            color: #0a2a3b;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: #607482;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            font-weight: 600;
+            background: #ebf6ec;
+            padding: 4px 10px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .positive { color: #197350; background: #e1f1e4; }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.02), 0 0 0 1px #eff4f9;
+        }
+
+        .chart-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c3c50;
+            margin-bottom: 24px;
+        }
+
+        /* bar chart */
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            margin-bottom: 12px;
+        }
+
+        .bar {
+            width: 38px;
+            background: linear-gradient(to top, #346b99, #5191b9);
+            border-radius: 10px 10px 4px 4px;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(41,98,140,0.12);
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -22px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #225577;
+            background: #eaf1f8;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #496d82;
+        }
+
+        /* donut */
+        .donut-chart-container {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+
+        .donut-chart {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(#3c9b6b 0% 35%, #3a7eb6 35% 80%, #e68a2e 80% 95%, #cb5a5a 95% 100%);
+            box-shadow: inset 0 0 0 6px white, 0 6px 14px rgba(0,0,0,0.04);
+        }
+
+        .donut-chart::after {
+            content: "★";
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 22px;
+            color: #597a96;
+        }
+
+        .donut-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #2c4b5e;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+        }
+
+        .green { background: #3c9b6b; }
+        .blue { background: #3a7eb6; }
+        .orange { background: #e68a2e; }
+        .red { background: #cb5a5a; }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
+        <!-- SIDEBAR (same on all pages) -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">🎓</div>
                 <h2>SmartCampus</h2>
             </div>
-            
             <nav class="sidebar-nav">
-                <a href="#" class="nav-link active">
+                <a href="dashboard.html" class="nav-link active">
                     <span class="nav-icon">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="users.html" class="nav-link">
                     <span class="nav-icon">👥</span>
                     <span>Users</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="analytics.html" class="nav-link">
                     <span class="nav-icon">📈</span>
                     <span>Analytics</span>
                 </a>
-                <a href="#" class="nav-link">
+                <a href="settings.html" class="nav-link">
                     <span class="nav-icon">⚙️</span>
                     <span>Settings</span>
                 </a>
             </nav>
-            
             <div class="sidebar-footer">
                 <div class="user-profile">
                     <div class="user-avatar">R</div>
@@ -41,19 +488,18 @@
                         <div class="user-name">Rajesh Kumar</div>
                         <div class="user-role">Admin</div>
                     </div>
+                    <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
                 </div>
             </div>
         </aside>
 
-        <!-- Main Content -->
+        <!-- MAIN CONTENT – DASHBOARD -->
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
                 <div class="header-left">
                     <h1>Admin Dashboard</h1>
                     <p>Campus overview and management</p>
                 </div>
-                
                 <div class="header-right">
                     <div class="search-box">
                         <input type="text" placeholder="Search...">
@@ -71,9 +517,7 @@
                 </div>
             </header>
 
-            <!-- Dashboard Content -->
             <div class="dashboard-content">
-                <!-- Stats Cards -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon complaints-icon">💬</div>
@@ -83,7 +527,6 @@
                             <div class="stat-change positive">+12 this month</div>
                         </div>
                     </div>
-                    
                     <div class="stat-card">
                         <div class="stat-icon pending-icon">⏳</div>
                         <div class="stat-info">
@@ -91,7 +534,6 @@
                             <div class="stat-label">Pending Issues</div>
                         </div>
                     </div>
-                    
                     <div class="stat-card">
                         <div class="stat-icon resolved-icon">✅</div>
                         <div class="stat-info">
@@ -99,7 +541,6 @@
                             <div class="stat-label">Resolved Issues</div>
                         </div>
                     </div>
-                    
                     <div class="stat-card">
                         <div class="stat-icon users-icon">👥</div>
                         <div class="stat-info">
@@ -109,56 +550,32 @@
                     </div>
                 </div>
 
-                <!-- Charts Section -->
                 <div class="charts-grid">
                     <div class="chart-card">
                         <h3>Complaint Trends</h3>
                         <div class="chart-container">
                             <div class="bar-chart">
-                                <div class="bar" style="height: 70%" data-value="28"></div>
-                                <div class="bar" style="height: 87%" data-value="35"></div>
-                                <div class="bar" style="height: 55%" data-value="22"></div>
-                                <div class="bar" style="height: 100%" data-value="40"></div>
-                                <div class="bar" style="height: 45%" data-value="18"></div>
-                                <div class="bar" style="height: 75%" data-value="30"></div>
+                                <div class="bar" style="height: 70px;" data-value="28"></div>
+                                <div class="bar" style="height: 87px;" data-value="35"></div>
+                                <div class="bar" style="height: 55px;" data-value="22"></div>
+                                <div class="bar" style="height: 100px;" data-value="40"></div>
+                                <div class="bar" style="height: 45px;" data-value="18"></div>
+                                <div class="bar" style="height: 75px;" data-value="30"></div>
                             </div>
                             <div class="chart-labels">
-                                <span>Jan</span>
-                                <span>Feb</span>
-                                <span>Mar</span>
-                                <span>Apr</span>
-                                <span>May</span>
-                                <span>Jun</span>
+                                <span>Jan</span> <span>Feb</span> <span>Mar</span> <span>Apr</span> <span>May</span> <span>Jun</span>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="chart-card">
                         <h3>Feedback Ratings</h3>
                         <div class="donut-chart-container">
-                            <div class="donut-chart">
-                                <div class="donut-segment green" style="--percentage: 35"></div>
-                                <div class="donut-segment blue" style="--percentage: 45"></div>
-                                <div class="donut-segment orange" style="--percentage: 15"></div>
-                                <div class="donut-segment red" style="--percentage: 5"></div>
-                            </div>
+                            <div class="donut-chart"></div>
                             <div class="donut-legend">
-                                <div class="legend-item">
-                                    <span class="legend-color green"></span>
-                                    <span>Excellent</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color blue"></span>
-                                    <span>Good</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color orange"></span>
-                                    <span>Average</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color red"></span>
-                                    <span>Poor</span>
-                                </div>
+                                <div class="legend-item"><span class="legend-color green"></span>Excellent</div>
+                                <div class="legend-item"><span class="legend-color blue"></span>Good</div>
+                                <div class="legend-item"><span class="legend-color orange"></span>Average</div>
+                                <div class="legend-item"><span class="legend-color red"></span>Poor</div>
                             </div>
                         </div>
                     </div>
@@ -166,8 +583,6 @@
             </div>
         </main>
     </div>
-    
     <script src="js/main.js"></script>
-    <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus · View Complaints</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #1a2332;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #1e2a3a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #2d3a4a;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            background: #3b82f6;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 24px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #8b9bb3;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-link:hover:not(.active) {
+            background: #2d3a4a;
+            color: white;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            padding: 24px;
+            border-top: 1px solid #2d3a4a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+
+        .user-role {
+            color: #8b9bb3;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #8b9bb3;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #2d3a4a;
+            color: #ff6b6b;
+        }
+
+        .main-content {
+            flex: 1;
+            background: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: #3b82f6;
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 16px 8px 40px;
+            color: white;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar-header {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 32px;
+            background: #f4f6f9;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .content-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 2px;
+        }
+
+        .filter-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .filter-tab:hover:not(.active) {
+            color: #374151;
+        }
+
+        .complaints-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .complaint-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .complaint-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .complaint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .complaint-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+
+        .complaint-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .complaint-description {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .complaint-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-resolved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .complaint-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .action-btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .action-btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .action-btn-secondary:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">📊</div>
+                    <div class="logo-text">SmartCampus</div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="faculty-dashboard.html" class="nav-link">
+                    <div class="nav-icon">📊</div>
+                    <span>Dashboard</span>
+                </a>
+                <a href="faculty-complaints.html" class="nav-link active">
+                    <div class="nav-icon">📝</div>
+                    <span>Complaints</span>
+                </a>
+                <a href="faculty-notices.html" class="nav-link">
+                    <div class="nav-icon">📢</div>
+                    <span>Notices</span>
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="user-avatar">D</div>
+                <div class="user-info">
+                    <div class="user-name">Dr. Priya Mehta</div>
+                    <div class="user-role">Faculty</div>
+                </div>
+                <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="header-left">
+                    <div class="header-title">Smart Campus</div>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <div class="search-icon">🔍</div>
+                        <input type="text" class="search-input" placeholder="Search...">
+                    </div>
+                    <div class="notification-icon">
+                        🔔
+                        <div class="notification-badge">•</div>
+                    </div>
+                    <div class="user-avatar-header">D</div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="content-header">
+                    <div>
+                        <h1 class="content-title">View Complaints</h1>
+                        <p class="content-subtitle">Monitor and respond to student complaints</p>
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active" onclick="filterComplaints('all')">All</button>
+                    <button class="filter-tab" onclick="filterComplaints('pending')">Pending</button>
+                    <button class="filter-tab" onclick="filterComplaints('progress')">In Progress</button>
+                    <button class="filter-tab" onclick="filterComplaints('resolved')">Resolved</button>
+                </div>
+
+                <!-- Complaints List -->
+                <div class="complaints-list">
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                            <div>
+                                <h3 class="complaint-title">Cafeteria Food Quality</h3>
+                                <div class="complaint-meta">
+                                    <span>👤 Arjun Sharma</span>
+                                    <span>•</span>
+                                    <span>📅 Mar 10, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="complaint-description">
+                            The food quality in the cafeteria has degraded over the past week. Many students have complained about stale food items.
+                        </p>
+                        <div class="complaint-footer">
+                            <span class="status-badge status-pending">Pending</span>
+                            <div class="complaint-actions">
+                                <button class="action-btn action-btn-primary" onclick="handleStatus('progress')">In Progress</button>
+                                <button class="action-btn action-btn-secondary" onclick="handleStatus('resolved')">Resolve</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                            <div>
+                                <h3 class="complaint-title">Library AC Not Working</h3>
+                                <div class="complaint-meta">
+                                    <span>👤 Sneha R.</span>
+                                    <span>•</span>
+                                    <span>📅 Mar 8, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="complaint-description">
+                            The air conditioning system in the library has not been working for the past 3 days, making it uncomfortable to study.
+                        </p>
+                        <div class="complaint-footer">
+                            <span class="status-badge status-progress">In Progress</span>
+                            <div class="complaint-actions">
+                                <button class="action-btn action-btn-secondary" onclick="handleStatus('resolved')">Resolve</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                            <div>
+                                <h3 class="complaint-title">Hostel WiFi Issue</h3>
+                                <div class="complaint-meta">
+                                    <span>👤 Rohit K.</span>
+                                    <span>•</span>
+                                    <span>📅 Mar 5, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="complaint-description">
+                            Internet connectivity in the hostel has been very poor. Unable to attend online classes properly.
+                        </p>
+                        <div class="complaint-footer">
+                            <span class="status-badge status-resolved">Resolved</span>
+                            <div class="complaint-actions">
+                                <button class="action-btn action-btn-secondary" disabled>Completed</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterComplaints(status) {
+            // Update active tab
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter logic (frontend only)
+            console.log('Filtering by:', status);
+        }
+
+        function handleStatus(newStatus) {
+            alert(`Status updated to: ${newStatus} (Frontend only)`);
+        }
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>

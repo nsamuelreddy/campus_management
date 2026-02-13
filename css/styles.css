@@ -303,6 +303,23 @@ body {
     color: #6b7280;
 }
 
+.logout-btn {
+    background: none;
+    border: none;
+    color: #8b9bb3;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+}
+
+.logout-btn:hover {
+    background: #f1f5f9;
+    color: #ef4444;
+}
+
 .content-area {
     padding: 24px;
     flex: 1;
