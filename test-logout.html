@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout Test</title>
+</head>
+<body>
+    <h1>Testing Logout Function</h1>
+    <p>This tests if main.js loads and logout() function is accessible</p>
+    <button onclick="testLogout()">Test Logout Function</button>
+    <div id="result"></div>
+    
+    <script src="js/main.js"></script>
+    <script>
+        function testLogout() {
+            try {
+                if (typeof logout === 'function') {
+                    document.getElementById('result').innerHTML = '<p style="color:green"> logout() function exists and is callable</p>';
+                    setTimeout(() => {
+                        logout();
+                    }, 1000);
+                } else {
+                    document.getElementById('result').innerHTML = '<p style="color:red"> logout() function not found</p>';
+                }
+            } catch(e) {
+                document.getElementById('result').innerHTML = '<p style="color:red"> Error: ' + e.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

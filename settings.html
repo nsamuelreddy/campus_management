@@ -4,266 +4,319 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus · Settings</title>
+    <link rel="stylesheet" href="css/admin-style.css">
     <style>
-        /* ---------- global & sidebar (consistent) ---------- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f6f9fc; display: flex; justify-content: center; color: #1a2639; }
-        .app-container { display: flex; width: 100%; max-width: 1440px; background: white; min-height: 100vh; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-        .sidebar { width: 280px; background: white; border-right: 1px solid #ecf0f5; display: flex; flex-direction: column; padding: 32px 24px; flex-shrink: 0; }
-        .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
-        .logo { font-size: 28px; background: linear-gradient(145deg, #2a5c7e, #1e3e5a); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; }
-        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #0b2a41; }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 12px; flex: 1; }
-        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; font-weight: 500; color: #52677a; text-decoration: none; transition: 0.15s; font-size: 16px; }
-        .nav-link.active { background: #eaf1f9; color: #1f5e8e; font-weight: 600; }
-        .nav-link:hover { background: #f5f9fd; color: #1f4e6f; }
-        .nav-icon { font-size: 20px; }
-        .sidebar-footer { margin-top: auto; border-top: 1px solid #ecf0f5; padding-top: 24px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 44px; height: 44px; background: #265d7c; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; }
-        .user-info { display: flex; flex-direction: column; }
-        .user-name { font-weight: 600; color: #1a2e3f; font-size: 15px; }
-        .user-role { font-size: 13px; color: #6b7f8e; }
-
-        .main-content { flex: 1; background: #f9fcff; display: flex; flex-direction: column; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; border-bottom: 1px solid #e6edf2; background: white; }
-        .header-left h1 { font-size: 26px; font-weight: 700; color: #0f2a40; margin-bottom: 6px; }
-        .header-left p { color: #5f7d95; font-size: 15px; }
-        .header-right { display: flex; align-items: center; gap: 24px; }
-        .search-box { position: relative; }
-        .search-box input { padding: 12px 18px 12px 48px; border-radius: 30px; border: 1.5px solid #e2eaf0; background: white; font-size: 15px; width: 260px; outline: none; }
-        .search-icon { position: absolute; left: 18px; top: 12px; font-size: 18px; color: #7995a8; }
-        .notification-icon { position: relative; font-size: 24px; }
-        .notification-badge { position: absolute; top: -6px; right: -8px; background: #df4c4c; color: white; font-size: 12px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
-        .user-profile-header { display: flex; align-items: center; gap: 10px; background: #f3f7fb; padding: 8px 16px 8px 12px; border-radius: 40px; color: #1c3d57; font-weight: 500; font-size: 14px; }
-        .user-profile-header .user-avatar { width: 36px; height: 36px; font-size: 16px; background: #1f5975; }
-
-        /* ---------- SETTINGS SPECIFIC (exact image) ---------- */
-        .settings-content {
-            padding: 32px;
+        .settings-grid {
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 24px;
+            max-width: 900px;
         }
 
         .settings-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 12px;
             padding: 28px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.02), 0 0 0 1px #eff4f9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
         }
 
         .settings-section-title {
             font-size: 18px;
-            font-weight: 700;
-            color: #1e4f6b;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .settings-field {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .settings-label {
-            width: 160px;
             font-weight: 600;
-            color: #2c5a70;
-            font-size: 15px;
-            padding-top: 8px;
+            color: #1e293b;
+            margin-bottom: 24px;
         }
 
-        .settings-value {
-            flex: 1;
-            background: #f6fbfe;
-            padding: 12px 18px;
-            border-radius: 16px;
-            color: #1a3a4b;
-            font-weight: 500;
-            border: 1px solid #e3edf2;
+        .form-group {
+            margin-bottom: 20px;
         }
 
-        .notification-option {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 18px;
-            padding: 8px 0;
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
-        .checkbox {
-            width: 22px;
-            height: 22px;
-            background: #e6f0f5;
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
+            font-size: 14px;
+            color: #334155;
+            background: white;
         }
 
-        .checkbox.active {
-            background: #1e7a5c;
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .notification-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .notification-row:last-child {
+            border-bottom: none;
         }
 
         .notification-text {
-            font-size: 16px;
-            color: #1d4b61;
-            font-weight: 500;
+            font-size: 14px;
+            color: #334155;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: #3b82f6;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
         }
 
         .save-button {
-            background: #26648b;
-            border: none;
+            background: #3b82f6;
             color: white;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 14px 28px;
-            border-radius: 40px;
-            width: fit-content;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.15s;
-            border: 1px solid #1e5375;
-            box-shadow: 0 8px 16px rgba(0,80,110,0.08);
-            margin-top: 16px;
+            transition: all 0.2s;
+            margin-top: 8px;
         }
 
         .save-button:hover {
-            background: #1d4f6e;
+            background: #2563eb;
         }
 
-        .institution-value {
-            background: #f6fbfe;
-            padding: 12px 18px;
-            border-radius: 16px;
-            font-weight: 500;
-            color: #0a3140;
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
         }
 
-        hr {
-            border: none;
-            border-top: 1px solid #e2ecf2;
-            margin: 28px 0 20px;
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- SIDEBAR (Settings active) -->
-        <aside class="sidebar">
+        <!-- Sidebar -->
+        <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">🎓</div>
-                <h2>SmartCampus</h2>
+                <div class="logo-text">SmartCampus</div>
             </div>
+            
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-link">
-                    <span class="nav-icon">📊</span>
+                <a href="admin-dashboard.html" class="nav-link">
+                    <div class="nav-icon">📊</div>
                     <span>Dashboard</span>
                 </a>
                 <a href="users.html" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <div class="nav-icon">👥</div>
                     <span>Users</span>
                 </a>
                 <a href="analytics.html" class="nav-link">
-                    <span class="nav-icon">📈</span>
+                    <div class="nav-icon">📈</div>
                     <span>Analytics</span>
                 </a>
                 <a href="settings.html" class="nav-link active">
-                    <span class="nav-icon">⚙️</span>
+                    <div class="nav-icon">⚙️</div>
                     <span>Settings</span>
                 </a>
             </nav>
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">R</div>
-                    <div class="user-info">
-                        <div class="user-name">Rajesh Kumar</div>
-                        <div class="user-role">Admin</div>
-                    </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">R</div>
+                <div class="user-info">
+                    <div class="user-name">Rajesh Kumar</div>
+                    <div class="user-role">Admin</div>
                 </div>
             </div>
-        </aside>
+        </div>
 
-        <!-- MAIN – SETTINGS -->
-        <main class="main-content">
-            <header class="header">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
                 <div class="header-left">
                     <h1>Settings</h1>
                     <p>System configuration</p>
                 </div>
                 <div class="header-right">
                     <div class="search-box">
-                        <input type="text" placeholder="Search...">
-                        <span class="search-icon">🔍</span>
+                        <div class="search-icon">🔍</div>
+                        <input type="text" class="search-input" placeholder="Search...">
                     </div>
                     <div class="notification-icon">
-                        <span>🔔</span>
-                        <span class="notification-badge">1</span>
+                        🔔
+                        <div class="notification-badge"></div>
                     </div>
-                    <div class="user-profile-header">
-                        <div class="user-avatar">R</div>
-                        <span>Rajesh Kumar</span>
-                        <span>Admin</span>
-                    </div>
-                </div>
-            </header>
-
-            <div class="settings-content">
-                <!-- General Settings Card -->
-                <div class="settings-card">
-                    <div class="settings-section-title">
-                        <span>⚙️</span> General Settings
-                    </div>
-                    <div class="settings-field">
-                        <div class="settings-label">Institution Name</div>
-                        <div class="settings-value">rgukt rk valley</div>
-                    </div>
-                    <div class="settings-field">
-                        <div class="settings-label">Admin Email</div>
-                        <div class="settings-value">admin@campus.edu</div>
-                    </div>
-                </div>
-
-                <!-- Notifications Card -->
-                <div class="settings-card">
-                    <div class="settings-section-title">
-                        <span>🔔</span> Notifications
-                    </div>
-                    <div class="notification-option">
-                        <div class="checkbox active">✓</div>
-                        <span class="notification-text">Email notifications for new complaints</span>
-                    </div>
-                    <div class="notification-option">
-                        <div class="checkbox active">✓</div>
-                        <span class="notification-text">SMS alerts for emergency notices</span>
-                    </div>
-                    <div class="notification-option">
-                        <div class="checkbox active">✓</div>
-                        <span class="notification-text">Weekly summary reports</span>
-                    </div>
-                    
-                    <hr>
-                    <!-- Save Changes button exactly as image -->
-                    <button class="save-button">
-                        <span>💾</span> Save Changes
+                    <div class="user-avatar-header">R</div>
+                    <button class="logout-header-btn" onclick="logout()" title="Logout" style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                        Logout
                     </button>
                 </div>
-                
-                <!-- subtle footer: Rajesh Kumar Admin (matches image) -->
-                <div style="color: #6f8b9c; font-size: 13px; border-top: 1px solid #e1eaf0; padding-top: 20px; text-align: right; margin-top: 12px;">
-                    Rajesh Kumar · Admin
-                </div>
             </div>
-        </main>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <form id="settingsForm" onsubmit="event.preventDefault(); saveSettings();">
+                    <div class="settings-grid">
+                        <!-- General Settings -->
+                        <div class="settings-card">
+                            <div class="settings-section-title">General Settings</div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Institution Name</label>
+                                <input type="text" class="form-input" id="institutionName" value="rgukt rk valley">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Admin Email</label>
+                                <input type="email" class="form-input" id="adminEmail" value="admin@campus.edu">
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="settings-card">
+                            <div class="settings-section-title">Notifications</div>
+                            
+                            <div class="notification-row">
+                                <span class="notification-text">Email notifications for new complaints</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="notification-row">
+                                <span class="notification-text">SMS alerts for emergency notices</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="smsAlerts" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="notification-row">
+                                <span class="notification-text">Weekly summary reports</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="weeklyReports" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="save-button">💾 Save Changes</button>
+                </form>
+            </div>
+        </div>
     </div>
+
+    <script>
+        function saveSettings() {
+            const settings = {
+                institutionName: document.getElementById('institutionName').value,
+                adminEmail: document.getElementById('adminEmail').value,
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                smsAlerts: document.getElementById('smsAlerts').checked,
+                weeklyReports: document.getElementById('weeklyReports').checked
+            };
+            
+            localStorage.setItem('adminSettings', JSON.stringify(settings));
+            
+            // Show notification
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = 'Settings saved successfully!';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 10);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Load settings on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+            if (settings.institutionName) {
+                document.getElementById('institutionName').value = settings.institutionName;
+            }
+            if (settings.adminEmail) {
+                document.getElementById('adminEmail').value = settings.adminEmail;
+            }
+            if (settings.emailNotifications !== undefined) {
+                document.getElementById('emailNotifications').checked = settings.emailNotifications;
+            }
+            if (settings.smsAlerts !== undefined) {
+                document.getElementById('smsAlerts').checked = settings.smsAlerts;
+            }
+            if (settings.weeklyReports !== undefined) {
+                document.getElementById('weeklyReports').checked = settings.weeklyReports;
+            }
+        });
+    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>

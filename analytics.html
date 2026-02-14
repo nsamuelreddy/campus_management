@@ -4,357 +4,246 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus · Analytics</title>
+    <link rel="stylesheet" href="css/admin-style.css">
     <style>
-        /* ---------- same global styles & sidebar (shared) ---------- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f6f9fc; display: flex; justify-content: center; color: #1a2639; }
-        .app-container { display: flex; width: 100%; max-width: 1440px; background: white; min-height: 100vh; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-        .sidebar { width: 280px; background: white; border-right: 1px solid #ecf0f5; display: flex; flex-direction: column; padding: 32px 24px; flex-shrink: 0; }
-        .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
-        .logo { font-size: 28px; background: linear-gradient(145deg, #2a5c7e, #1e3e5a); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; }
-        .sidebar-header h2 { font-size: 20px; font-weight: 700; color: #0b2a41; }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 12px; flex: 1; }
-        .nav-link { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; font-weight: 500; color: #52677a; text-decoration: none; transition: 0.15s; font-size: 16px; }
-        .nav-link.active { background: #eaf1f9; color: #1f5e8e; font-weight: 600; }
-        .nav-link:hover { background: #f5f9fd; color: #1f4e6f; }
-        .nav-icon { font-size: 20px; }
-        .sidebar-footer { margin-top: auto; border-top: 1px solid #ecf0f5; padding-top: 24px; }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 44px; height: 44px; background: #265d7c; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; }
-        .user-info { display: flex; flex-direction: column; }
-        .user-name { font-weight: 600; color: #1a2e3f; font-size: 15px; }
-        .user-role { font-size: 13px; color: #6b7f8e; }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
 
-        .main-content { flex: 1; background: #f9fcff; display: flex; flex-direction: column; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; border-bottom: 1px solid #e6edf2; background: white; }
-        .header-left h1 { font-size: 26px; font-weight: 700; color: #0f2a40; margin-bottom: 6px; }
-        .header-left p { color: #5f7d95; font-size: 15px; }
-        .header-right { display: flex; align-items: center; gap: 24px; }
-        .search-box { position: relative; }
-        .search-box input { padding: 12px 18px 12px 48px; border-radius: 30px; border: 1.5px solid #e2eaf0; background: white; font-size: 15px; width: 260px; outline: none; }
-        .search-box input:focus { border-color: #3d7ea1; box-shadow: 0 0 0 4px rgba(61,126,161,0.06); }
-        .search-icon { position: absolute; left: 18px; top: 12px; font-size: 18px; color: #7995a8; }
-        .notification-icon { position: relative; font-size: 24px; }
-        .notification-badge { position: absolute; top: -6px; right: -8px; background: #df4c4c; color: white; font-size: 12px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
-        .user-profile-header { display: flex; align-items: center; gap: 10px; background: #f3f7fb; padding: 8px 16px 8px 12px; border-radius: 40px; color: #1c3d57; font-weight: 500; font-size: 14px; }
-        .user-profile-header .user-avatar { width: 36px; height: 36px; font-size: 16px; background: #1f5975; }
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
 
-        /* ---------- ANALYTICS SPECIFIC (exact data from image) ---------- */
-        .analytics-content {
-            padding: 32px;
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .chart-placeholder {
+            height: 320px;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .bar-chart {
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 20px;
+            background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .bar-group {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 32px;
-        }
-
-        .insight-card {
-            background: white;
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.02), 0 0 0 1px #eff4f9;
-        }
-
-        .insight-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1b405a;
-            margin-bottom: 24px;
-            display: flex;
             align-items: center;
             gap: 8px;
+            height: 100%;
+            justify-content: flex-end;
         }
 
-        .insight-title span {
-            font-size: 24px;
-        }
-
-        .stats-list {
+        .bars {
             display: flex;
-            flex-direction: column;
-            gap: 16px;
+            gap: 4px;
+            align-items: flex-end;
         }
 
-        .stat-row {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px dashed #e9f0f5;
+        .bar {
+            width: 20px;
+            background: linear-gradient(to top, #3b82f6, #60a5fa);
+            border-radius: 4px 4px 0 0;
         }
 
-        .month-badge {
-            width: 70px;
+        .bar.resolved {
+            background: linear-gradient(to top, #10b981, #34d399);
+        }
+
+        .bar-label {
+            font-size: 11px;
+            color: #64748b;
             font-weight: 600;
-            color: #285e7c;
-            font-size: 16px;
         }
 
-        .stat-detail {
-            flex: 1;
+        .line-chart {
+            height: 100%;
             display: flex;
             align-items: center;
-            gap: 24px;
-            color: #2d4e63;
-            font-size: 15px;
-        }
-
-        .bar-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .mini-bar {
-            height: 10px;
-            width: 100%;
-            background: #e1eaf0;
-            border-radius: 20px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .complaint-bar {
-            height: 10px;
-            background: #3b7ea1;
-            width: 0%;
-            border-radius: 20px 0 0 20px;
-        }
-
-        .resolved-bar {
-            height: 10px;
-            background: #50a77e;
-            width: 0%;
-            border-radius: 0 20px 20px 0;
-        }
-
-        .stat-numbers {
-            font-weight: 600;
-            color: #0e3e54;
-            min-width: 160px;
-            text-align: right;
-        }
-
-        /* rating cards */
-        .rating-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 16px;
-        }
-
-        .rating-card {
-            background: #f5fafe;
-            border-radius: 20px;
+            justify-content: center;
+            background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
             padding: 20px;
-            text-align: center;
+            border-radius: 8px;
+            position: relative;
         }
 
-        .rating-month {
-            font-size: 18px;
-            font-weight: 700;
-            color: #265469;
-            margin-bottom: 12px;
+        .line {
+            width: 100%;
+            height: 120px;
+            position: relative;
         }
 
-        .rating-value {
-            font-size: 42px;
-            font-weight: 800;
-            color: #1e4f68;
-            line-height: 1;
-        }
-
-        .rating-star {
-            font-size: 20px;
-            color: #e6b422;
-            letter-spacing: 4px;
-            margin-top: 10px;
-        }
-
-        .rating-label {
-            font-size: 14px;
-            color: #6a8596;
-            margin-top: 12px;
-        }
-
-        .feedback-average {
-            margin-top: 16px;
-            color: #1c5975;
-            font-weight: 600;
+        .line svg {
+            width: 100%;
+            height: 100%;
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- SIDEBAR (Analytics active) -->
-        <aside class="sidebar">
+        <!-- Sidebar -->
+        <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">🎓</div>
-                <h2>SmartCampus</h2>
+                <div class="logo-text">SmartCampus</div>
             </div>
+            
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-link">
-                    <span class="nav-icon">📊</span>
+                <a href="admin-dashboard.html" class="nav-link">
+                    <div class="nav-icon">📊</div>
                     <span>Dashboard</span>
                 </a>
                 <a href="users.html" class="nav-link">
-                    <span class="nav-icon">👥</span>
+                    <div class="nav-icon">👥</div>
                     <span>Users</span>
                 </a>
                 <a href="analytics.html" class="nav-link active">
-                    <span class="nav-icon">📈</span>
+                    <div class="nav-icon">📈</div>
                     <span>Analytics</span>
                 </a>
                 <a href="settings.html" class="nav-link">
-                    <span class="nav-icon">⚙️</span>
+                    <div class="nav-icon">⚙️</div>
                     <span>Settings</span>
                 </a>
             </nav>
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">R</div>
-                    <div class="user-info">
-                        <div class="user-name">Rajesh Kumar</div>
-                        <div class="user-role">Admin</div>
-                    </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">R</div>
+                <div class="user-info">
+                    <div class="user-name">Rajesh Kumar</div>
+                    <div class="user-role">Admin</div>
                 </div>
             </div>
-        </aside>
+        </div>
 
-        <!-- MAIN – ANALYTICS -->
-        <main class="main-content">
-            <header class="header">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
                 <div class="header-left">
                     <h1>Analytics</h1>
                     <p>Campus performance insights</p>
                 </div>
                 <div class="header-right">
                     <div class="search-box">
-                        <input type="text" placeholder="Search...">
-                        <span class="search-icon">🔍</span>
+                        <div class="search-icon">🔍</div>
+                        <input type="text" class="search-input" placeholder="Search...">
                     </div>
                     <div class="notification-icon">
-                        <span>🔔</span>
-                        <span class="notification-badge">1</span>
+                        🔔
+                        <div class="notification-badge"></div>
                     </div>
-                    <div class="user-profile-header">
-                        <div class="user-avatar">R</div>
-                        <span>Rajesh Kumar</span>
-                        <span>Admin</span>
-                    </div>
-                </div>
-            </header>
-
-            <div class="analytics-content">
-                <!-- Complaints vs Resolved (exact data) -->
-                <div class="insight-card">
-                    <div class="insight-title">
-                        <span>📊</span> Complaints vs Resolved
-                    </div>
-                    <div class="stats-list">
-                        <div class="stat-row">
-                            <span class="month-badge">Jan</span>
-                            <div class="stat-detail">
-                                <div class="bar-container">
-                                    <div class="mini-bar"><div class="complaint-bar" style="width: 100%"></div></div>
-                                    <span style="min-width: 60px;">40 complaints</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="mini-bar"><div class="resolved-bar" style="width: 55%"></div></div>
-                                    <span style="min-width: 60px;">22 resolved</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="stat-row">
-                            <span class="month-badge">Feb</span>
-                            <div class="stat-detail">
-                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 75%"></div></div><span>30 complaints</span></div>
-                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 40%"></div></div><span>12 resolved</span></div>
-                            </div>
-                        </div>
-                        <div class="stat-row">
-                            <span class="month-badge">Mar</span>
-                            <div class="stat-detail">
-                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 50%"></div></div><span>20 complaints</span></div>
-                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 50%"></div></div><span>10 resolved</span></div>
-                            </div>
-                        </div>
-                        <div class="stat-row">
-                            <span class="month-badge">Apr</span>
-                            <div class="stat-detail">
-                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 25%"></div></div><span>10 complaints</span></div>
-                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 80%"></div></div><span>8 resolved</span></div>
-                            </div>
-                        </div>
-                        <div class="stat-row">
-                            <span class="month-badge">May</span>
-                            <div class="stat-detail">
-                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 38%"></div></div><span>15 complaints</span></div>
-                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 80%"></div></div><span>12 resolved</span></div>
-                            </div>
-                        </div>
-                        <div class="stat-row">
-                            <span class="month-badge">Jun</span>
-                            <div class="stat-detail">
-                                <div class="bar-container"><div class="mini-bar"><div class="complaint-bar" style="width: 63%"></div></div><span>25 complaints</span></div>
-                                <div class="bar-container"><div class="mini-bar"><div class="resolved-bar" style="width: 72%"></div></div><span>18 resolved</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Average Feedback Rating (exact: 2.5,3.0,4.0,5.0,4.5,5.0) -->
-                <div class="insight-card">
-                    <div class="insight-title">
-                        <span>⭐</span> Average Feedback Rating
-                    </div>
-                    <div class="rating-grid">
-                        <div class="rating-card">
-                            <div class="rating-month">Jan</div>
-                            <div class="rating-value">2.5</div>
-                            <div class="rating-star">★★☆☆☆</div>
-                            <div class="rating-label">below average</div>
-                        </div>
-                        <div class="rating-card">
-                            <div class="rating-month">Feb</div>
-                            <div class="rating-value">3.0</div>
-                            <div class="rating-star">★★★☆☆</div>
-                            <div class="rating-label">fair</div>
-                        </div>
-                        <div class="rating-card">
-                            <div class="rating-month">Mar</div>
-                            <div class="rating-value">4.0</div>
-                            <div class="rating-star">★★★★☆</div>
-                            <div class="rating-label">good</div>
-                        </div>
-                        <div class="rating-card">
-                            <div class="rating-month">Apr</div>
-                            <div class="rating-value">5.0</div>
-                            <div class="rating-star">★★★★★</div>
-                            <div class="rating-label">excellent</div>
-                        </div>
-                        <div class="rating-card">
-                            <div class="rating-month">May</div>
-                            <div class="rating-value">4.5</div>
-                            <div class="rating-star">★★★★☆</div>
-                            <div class="rating-label">very good</div>
-                        </div>
-                        <div class="rating-card">
-                            <div class="rating-month">Jun</div>
-                            <div class="rating-value">5.0</div>
-                            <div class="rating-star">★★★★★</div>
-                            <div class="rating-label">excellent</div>
-                        </div>
-                    </div>
-                    <div class="feedback-average">
-                        ⌀ Overall rating: 4.0 / 5.0 (from 6 months)
-                    </div>
-                </div>
-                <!-- subtle admin signature -->
-                <div style="color: #6f8b9c; font-size: 13px; border-top: 1px solid #e1eaf0; padding-top: 20px; text-align: right;">
-                    Rajesh Kumar · Admin
+                    <div class="user-avatar-header">R</div>
+                    <button class="logout-header-btn" onclick="logout()" title="Logout" style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                        Logout
+                    </button>
                 </div>
             </div>
-        </main>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">Complaints vs Resolved</div>
+                        <div class="chart-placeholder">
+                            <div class="bar-chart">
+                                <div class="bar-group">
+                                    <div class="bars">
+                                        <div class="bar" style="height: 80px;"></div>
+                                        <div class="bar resolved" style="height: 65px;"></div>
+                                    </div>
+                                    <div class="bar-label">Jan</div>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bars">
+                                        <div class="bar" style="height: 95px;"></div>
+                                        <div class="bar resolved" style="height: 85px;"></div>
+                                    </div>
+                                    <div class="bar-label">Feb</div>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bars">
+                                        <div class="bar" style="height: 70px;"></div>
+                                        <div class="bar resolved" style="height: 60px;"></div>
+                                    </div>
+                                    <div class="bar-label">Mar</div>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bars">
+                                        <div class="bar" style="height: 110px;"></div>
+                                        <div class="bar resolved" style="height: 95px;"></div>
+                                    </div>
+                                    <div class="bar-label">Apr</div>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bars">
+                                        <div class="bar" style="height: 88px;"></div>
+                                        <div class="bar resolved" style="height: 78px;"></div>
+                                    </div>
+                                    <div class="bar-label">May</div>
+                                </div>
+                                <div class="bar-group">
+                                    <div class="bars">
+                                        <div class="bar" style="height: 92px;"></div>
+                                        <div class="bar resolved" style="height: 82px;"></div>
+                                    </div>
+                                    <div class="bar-label">Jun</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-title">Average Feedback Rating</div>
+                        <div class="chart-placeholder">
+                            <div class="line-chart">
+                                <div class="line">
+                                    <svg viewBox="0 0 200 100">
+                                        <polyline
+                                            points="0,70 33,55 66,45 100,35 133,40 166,30 200,25"
+                                            fill="none"
+                                            stroke="#3b82f6"
+                                            stroke-width="3"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                        <circle cx="0" cy="70" r="4" fill="#3b82f6"/>
+                                        <circle cx="33" cy="55" r="4" fill="#3b82f6"/>
+                                        <circle cx="66" cy="45" r="4" fill="#3b82f6"/>
+                                        <circle cx="100" cy="35" r="4" fill="#3b82f6"/>
+                                        <circle cx="133" cy="40" r="4" fill="#3b82f6"/>
+                                        <circle cx="166" cy="30" r="4" fill="#3b82f6"/>
+                                        <circle cx="200" cy="25" r="4" fill="#3b82f6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
