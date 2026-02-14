@@ -152,48 +152,42 @@
             flex-direction: column;
         }
 
-        .top-header {
-            background: #3b82f6;
-            color: white;
+        .top-nav {
+            background: #f8fafc;
             padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .header-left {
+        .top-nav-left {
+            flex: 1;
+        }
+
+        .top-nav-right {
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-
-        .header-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            gap: 24px;
         }
 
         .search-box {
             position: relative;
+            max-width: 400px;
         }
 
         .search-input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             padding: 8px 16px 8px 40px;
-            color: white;
-            width: 300px;
+            color: #1a2332;
+            width: 100%;
             font-size: 14px;
         }
 
         .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: #94a3b8;
         }
 
         .search-icon {
@@ -201,13 +195,14 @@
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.7);
+            color: #94a3b8;
         }
 
         .notification-icon {
             position: relative;
             font-size: 20px;
             cursor: pointer;
+            color: #64748b;
         }
 
         .notification-badge {
@@ -227,9 +222,9 @@
         }
 
         .user-avatar-header {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -237,6 +232,41 @@
             font-weight: 600;
             color: white;
             cursor: pointer;
+        }
+
+        .header-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name-header {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a2332;
+        }
+
+        .user-role-header {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .logout-icon {
+            color: #64748b;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .logout-icon:hover {
+            background: #f1f5f9;
+            color: #ef4444;
         }
 
         .content-area {
@@ -481,7 +511,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <div class="logo">📊</div>
+                    <div class="logo">🎓</div>
                     <div class="logo-text">SmartCampus</div>
                 </div>
             </div>
@@ -507,29 +537,33 @@
                     <div class="user-name">Dr. Priya Mehta</div>
                     <div class="user-role">Faculty</div>
                 </div>
+                <button class="logout-btn" onclick="logout()" title="Logout">🚺</button>
             </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <div class="header-left">
-                    <div class="header-title">Smart Campus</div>
-                </div>
-                <div class="header-right">
+            <!-- Top Navigation Bar -->
+            <div class="top-nav">
+                <div class="top-nav-left">
                     <div class="search-box">
                         <div class="search-icon">🔍</div>
                         <input type="text" class="search-input" placeholder="Search...">
                     </div>
+                </div>
+                <div class="top-nav-right">
                     <div class="notification-icon">
                         🔔
                         <div class="notification-badge">•</div>
                     </div>
-                    <div class="user-avatar-header">D</div>
-                    <button class="logout-header-btn" onclick="logout()" title="Logout" style="margin-left: 16px; background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
-                        Logout
-                    </button>
+                    <div class="header-user-info">
+                        <div class="user-avatar-header">D</div>
+                        <div class="user-details">
+                            <div class="user-name-header">Dr. Priya Mehta</div>
+                            <div class="user-role-header">Faculty</div>
+                        </div>
+                    </div>
+                    <div class="logout-icon" onclick="logout()" title="Logout">Logout</div>
                 </div>
             </div>
 
