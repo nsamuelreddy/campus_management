@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCampus - Lost & Found</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .modal-overlay.active, .modal.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🎓</div>
+                <span class="sidebar-title">SmartCampus</span>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="dashboard.html" class="nav-link">
+                            <span class="nav-icon">📊</span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notices.html" class="nav-link">
+                            <span class="nav-icon">📢</span>
+                            Notices
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="complaints.html" class="nav-link">
+                            <span class="nav-icon">📝</span>
+                            Complaints
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="feedback.html" class="nav-link">
+                            <span class="nav-icon">⭐</span>
+                            Feedback
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="lost-found.html" class="nav-link active">
+                            <span class="nav-icon">🔍</span>
+                            Lost & Found
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="emergency.html" class="nav-link">
+                            <span class="nav-icon">🚨</span>
+                            Emergency
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <div class="top-nav">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="top-nav-right">
+                    <button class="notification-btn">
+                        🔔
+                        <span class="notification-badge"></span>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">A</div>
+                        <div class="user-info">
+                            <h4>Arjun Sharma</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()" title="Logout" style="margin-left: 16px; background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                        Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="content-area">
+                <div class="page-header">
+                    <h1 class="page-title">Lost & Found</h1>
+                    <p class="page-subtitle">Report or find lost items on campus</p>
+                </div>
+
+                <div class="page-actions">
+                    <div></div>
+                    <button class="primary-btn">
+                        📝 Report Item
+                    </button>
+                </div>
+
+                <!-- Search Section -->
+                <div class="search-section">
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Search items...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Items Grid -->
+                <div class="items-grid">
+                    <div class="item-card">
+                        <div class="item-status lost">Lost</div>
+                        <h3 class="item-title">Blue Water Bottle</h3>
+                        <p class="item-description">Steel blue water bottle with stickers</p>
+                        <div class="item-location">📍 Library, 2nd Floor · Mar 8</div>
+                        <button class="contact-btn">Contact</button>
+                    </div>
+
+                    <div class="item-card">
+                        <div class="item-status found">Found</div>
+                        <h3 class="item-title">Student ID Card - Rahul S.</h3>
+                        <p class="item-description">Found near canteen 3</p>
+                        <div class="item-location">📍 Canteen · Mar 7</div>
+                        <button class="contact-btn">Contact</button>
+                    </div>
+
+                    <div class="item-card">
+                        <div class="item-status found">Found</div>
+                        <h3 class="item-title">Black Umbrella</h3>
+                        <p class="item-description">Left at the entrance gate</p>
+                        <div class="item-location">📍 Block A Entrance · Mar 6</div>
+                        <button class="contact-btn">Contact</button>
+                    </div>
+
+                    <div class="item-card">
+                        <div class="item-status lost">Lost</div>
+                        <h3 class="item-title">Calculator (Casio FX-991)</h3>
+                        <p class="item-description">Scientific calculator, has name written on back</p>
+                        <div class="item-location">📍 Exam Hall 2 · Mar 5</div>
+                        <button class="contact-btn">Contact</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="reportModalOverlay"></div>
+    <div class="modal" id="reportModal">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Report Lost/Found Item</h2>
+            <button onclick="closeReportModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+        <form id="reportItemForm" onsubmit="submitReportItem(event)">
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select id="reportStatus" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;" required>
+                    <option value="Lost">I Lost Something</option>
+                    <option value="Found">I Found Something</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Item Name</label>
+                <input type="text" id="reportTitle" class="form-input" placeholder="e.g., Blue Umbrella" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea id="reportDescription" class="form-input" placeholder="Provide a short description..." style="height: 80px;" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" id="reportLocation" class="form-input" placeholder="e.g., Library Entrance" required>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button type="button" class="secondary-btn" onclick="closeReportModal()" style="padding: 10px 20px; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button type="submit" class="primary-btn" style="padding: 10px 20px; border: none; background: #3b82f6; color: white; border-radius: 6px; cursor: pointer;">Submit Report</button>
+            </div>
+        </form>
+    </div>
+    <script src="js/main.js"></script>
+    <script src="js/lost-found.js"></script>
+</body>
+</html>
