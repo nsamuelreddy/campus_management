@@ -652,9 +652,29 @@
 
         function handleNoticeSubmit(event) {
             event.preventDefault();
-            alert('Notice published successfully! (Frontend only)');
-            toggleNoticeForm();
-            event.target.reset();
+            
+            // Get the data from the form
+            const title = event.target.querySelector('input[type="text"]').value;
+            const category = event.target.querySelector('select').value;
+            const content = event.target.querySelector('textarea').value;
+
+            // Send new notice to PHP backend
+            fetch('api/notices.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: title, category: category, content: content })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert('Notice published successfully!');
+                    toggleNoticeForm();
+                    event.target.reset();
+                    // Reload the page to show the new notice in the faculty list
+                    location.reload(); 
+                }
+            })
+            .catch(err => console.error("Error saving notice:", err));
         }
     </script>
     <script src="js/main.js"></script>

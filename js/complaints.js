@@ -11,21 +11,31 @@ function showComplaintsList() {
     document.getElementById('complaintsListView').classList.remove('hidden');
 }
 
-// Handle form submission
+// Handle form submission and send to PHP
 document.getElementById('complaintForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Get form values
-    const complaintType = document.getElementById('complaintType').value;
-    const subject = document.getElementById('subject').value;
-    const description = document.getElementById('description').value;
+    const complaintData = {
+        type: document.getElementById('complaintType').value,
+        subject: document.getElementById('subject').value,
+        description: document.getElementById('description').value
+    };
     
-    // Show success message
-    alert('Complaint submitted successfully! (Frontend only - no backend connection)');
-    
-    // Reset form and go back to list
-    this.reset();
-    showComplaintsList();
+    fetch('api/complaints.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(complaintData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert(data.message);
+            this.reset();
+            showComplaintsList();
+            loadComplaints(); // Refresh the list
+        }
+    })
+    .catch(err => console.error("Error saving complaint:", err));
 });
 
 // File upload preview
@@ -65,3 +75,43 @@ if (fileUpload) {
         }
     });
 }
+// Fetch and Display Complaints on Page Load
+function loadComplaints() {
+    fetch('api/complaints.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const listContainer = document.querySelector('.complaints-list');
+                if (!listContainer) return;
+                
+                listContainer.innerHTML = ''; // Clear hardcoded HTML
+
+                data.complaints.forEach(complaint => {
+                    let statusClass = 'pending';
+                    if (complaint.status === 'In Progress') statusClass = 'in-progress';
+                    if (complaint.status === 'Resolved') statusClass = 'resolved';
+
+                    const html = `
+                        <div class="complaint-card">
+                            <div class="complaint-header">
+                                <span class="complaint-type">${complaint.type}</span>
+                                <div class="complaint-status ${statusClass}">${complaint.status}</div>
+                            </div>
+                            <h3 class="complaint-title">${complaint.subject}</h3>
+                            <p class="complaint-description">${complaint.description}</p>
+                            <div class="complaint-meta">${complaint.date}</div>
+                        </div>
+                    `;
+                    listContainer.insertAdjacentHTML('beforeend', html);
+                });
+            }
+        })
+        .catch(err => console.error("Error loading complaints:", err));
+}
+
+// Run when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('.complaints-list')) {
+        loadComplaints();
+    }
+});

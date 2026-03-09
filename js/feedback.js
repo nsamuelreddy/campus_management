@@ -19,7 +19,7 @@ ratingItems.forEach(item => {
     });
 });
 
-// Form submission
+// Form submission to PHP Backend
 document.querySelector('.feedback-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -32,23 +32,35 @@ document.querySelector('.feedback-form')?.addEventListener('submit', (e) => {
     });
     
     // Get select values
-    const semester = document.querySelector('select[name="semester"]')?.value;
-    const department = document.querySelector('select[name="department"]')?.value;
-    const faculty = document.querySelector('select[name="faculty"]')?.value;
-    const subject = document.querySelector('select[name="subject"]')?.value;
+    const feedbackData = {
+        semester: document.querySelector('select[name="semester"]')?.value,
+        department: document.querySelector('select[name="department"]')?.value,
+        faculty: document.querySelector('select[name="faculty"]')?.value,
+        subject: document.querySelector('select[name="subject"]')?.value,
+        ratings: ratings
+    };
     
-    console.log('Feedback submitted:', { semester, department, faculty, subject, ratings });
-    
-    alert('Feedback submitted successfully! (Frontend only - no backend connection)');
-    
-    // Reset form
-    document.querySelector('.feedback-form').reset();
-    ratingItems.forEach(item => {
-        item.querySelectorAll('.rating-radio').forEach(r => r.classList.remove('checked'));
-        delete item.dataset.rating;
-    });
+    // Send data to PHP
+    fetch('api/feedback.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedbackData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert(data.message);
+            
+            // Reset form visually
+            document.querySelector('.feedback-form').reset();
+            ratingItems.forEach(item => {
+                item.querySelectorAll('.rating-radio').forEach(r => r.classList.remove('checked'));
+                delete item.dataset.rating;
+            });
+        }
+    })
+    .catch(err => console.error("Error submitting feedback:", err));
 });
-
 // Reset button
 document.querySelector('.feedback-reset')?.addEventListener('click', () => {
     ratingItems.forEach(item => {

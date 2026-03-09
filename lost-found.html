@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus - Lost & Found</title>
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .modal-overlay.active, .modal.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -141,7 +167,38 @@
             </div>
         </div>
     </div>
-
+    <div class="modal-overlay" id="reportModalOverlay"></div>
+    <div class="modal" id="reportModal">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Report Lost/Found Item</h2>
+            <button onclick="closeReportModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+        </div>
+        <form id="reportItemForm" onsubmit="submitReportItem(event)">
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select id="reportStatus" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;" required>
+                    <option value="Lost">I Lost Something</option>
+                    <option value="Found">I Found Something</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Item Name</label>
+                <input type="text" id="reportTitle" class="form-input" placeholder="e.g., Blue Umbrella" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea id="reportDescription" class="form-input" placeholder="Provide a short description..." style="height: 80px;" required></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Location</label>
+                <input type="text" id="reportLocation" class="form-input" placeholder="e.g., Library Entrance" required>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button type="button" class="secondary-btn" onclick="closeReportModal()" style="padding: 10px 20px; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button type="submit" class="primary-btn" style="padding: 10px 20px; border: none; background: #3b82f6; color: white; border-radius: 6px; cursor: pointer;">Submit Report</button>
+            </div>
+        </form>
+    </div>
     <script src="js/main.js"></script>
     <script src="js/lost-found.js"></script>
 </body>

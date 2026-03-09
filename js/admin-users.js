@@ -1,26 +1,17 @@
-// Admin User Management JavaScript (Frontend Only)
 
-// Sample user data (stored in frontend only)
-let users = [
-    { id: 1, name: 'Arjun Sharma', email: 'arjun@campus.edu', role: 'Student', status: 'Active' },
-    { id: 2, name: 'Dr. Priya Mehta', email: 'priya@campus.edu', role: 'Faculty', status: 'Active' },
-    { id: 3, name: 'Sneha R.', email: 'sneha@campus.edu', role: 'Student', status: 'Active' },
-    { id: 4, name: 'Rohit K.', email: 'rohit@campus.edu', role: 'Student', status: 'Inactive' },
-    { id: 5, name: 'Dr. Anand', email: 'anand@campus.edu', role: 'Faculty', status: 'Active' }
-];
+let users = []; 
 
-// Load users data from localStorage if available
+// Load users data from PHP
 function loadUsers() {
-    const stored = localStorage.getItem('users');
-    if (stored) {
-        users = JSON.parse(stored);
-    }
-    renderUsers();
-}
-
-// Save users to localStorage
-function saveUsers() {
-    localStorage.setItem('users', JSON.stringify(users));
+    fetch('api/users.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                users = data.users; // Update global array
+                renderUsers(); // Draw the table
+            }
+        })
+        .catch(err => console.error("Error loading users:", err));
 }
 
 // Render users table
@@ -40,51 +31,56 @@ function renderUsers() {
         </tr>
     `).join('');
 }
-
-// Edit user function
-function editUser(userId) {
-    const user = users.find(u => u.id === userId);
-    if (!user) return;
-    
-    const modal = document.getElementById('editModal');
-    const overlay = document.getElementById('modalOverlay');
-    
-    document.getElementById('editName').value = user.name;
-    document.getElementById('editEmail').value = user.email;
-    document.getElementById('editRole').value = user.role;
-    document.getElementById('editStatus').value = user.status;
-    document.getElementById('editUserId').value = user.id;
-    
-    modal.classList.add('active');
-    overlay.classList.add('active');
+// Edit user (Opens the modal and fills in data)
+function editUser(id) {
+    const user = users.find(u => parseInt(u.id) === parseInt(id));
+    if (user) {
+        document.getElementById('editUserId').value = user.id;
+        document.getElementById('editName').value = user.name;
+        document.getElementById('editEmail').value = user.email;
+        document.getElementById('editRole').value = user.role;
+        document.getElementById('editStatus').value = user.status;
+        
+        const modal = document.getElementById('editModal');
+        const overlay = document.getElementById('modalOverlay');
+        modal.classList.add('active');
+        overlay.classList.add('active');
+    }
 }
-
+// Save edited user to PHP
+function saveEditedUser(event) {
+    event.preventDefault();
+    
+    const updatedData = {
+        action: 'update',
+        id: document.getElementById('editUserId').value,
+        name: document.getElementById('editName').value,
+        email: document.getElementById('editEmail').value,
+        role: document.getElementById('editRole').value,
+        status: document.getElementById('editStatus').value
+    };
+    
+    fetch('api/users.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            showNotification(data.message);
+            closeModal();
+            loadUsers(); // Fetch fresh data from PHP
+        }
+    })
+    .catch(err => console.error("Error updating user:", err));
+}
 // Close modal
 function closeModal() {
     const modal = document.getElementById('editModal');
     const overlay = document.getElementById('modalOverlay');
     modal.classList.remove('active');
     overlay.classList.remove('active');
-}
-
-// Save edited user
-function saveEditedUser(event) {
-    event.preventDefault();
-    
-    const id = parseInt(document.getElementById('editUserId').value);
-    const user = users.find(u => u.id === id);
-    
-    if (user) {
-        user.name = document.getElementById('editName').value;
-        user.email = document.getElementById('editEmail').value;
-        user.role = document.getElementById('editRole').value;
-        user.status = document.getElementById('editStatus').value;
-        
-        saveUsers();
-        renderUsers();
-        closeModal();
-        showNotification('User updated successfully!');
-    }
 }
 
 // Show notification

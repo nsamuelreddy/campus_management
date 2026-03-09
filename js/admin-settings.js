@@ -1,28 +1,34 @@
-// Admin Settings JavaScript (Frontend Only)
-
-// Load settings from localStorage
+// Load settings from PHP
 function loadSettings() {
-    const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
-    
-    // Load general settings
-    if (settings.institutionName) {
-        document.getElementById('institutionName').value = settings.institutionName;
-    }
-    if (settings.adminEmail) {
-        document.getElementById('adminEmail').value = settings.adminEmail;
-    }
-    
-    // Load notification toggles
-    document.getElementById('emailNotifications').checked = settings.emailNotifications !== false;
-    document.getElementById('smsAlerts').checked = settings.smsAlerts !== false;
-    document.getElementById('weeklyReports').checked = settings.weeklyReports !== false;
+    fetch('api/settings.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const settings = data.settings;
+                
+                // Populate text inputs
+                document.getElementById('institutionName').value = settings.institutionName;
+                document.getElementById('adminEmail').value = settings.adminEmail;
+                
+                // Populate toggle switches
+                document.getElementById('emailNotifications').checked = settings.emailNotifications;
+                document.getElementById('smsAlerts').checked = settings.smsAlerts;
+                document.getElementById('weeklyReports').checked = settings.weeklyReports;
+
+                // Update the visual blue background on the toggles based on their checked state
+                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                    toggle.parentElement.classList.toggle('active', toggle.checked);
+                });
+            }
+        })
+        .catch(err => console.error("Error loading settings:", err));
 }
 
-// Save settings
+// Save settings to PHP
 function saveSettings(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     
-    const settings = {
+    const settingsData = {
         institutionName: document.getElementById('institutionName').value,
         adminEmail: document.getElementById('adminEmail').value,
         emailNotifications: document.getElementById('emailNotifications').checked,
@@ -30,8 +36,18 @@ function saveSettings(event) {
         weeklyReports: document.getElementById('weeklyReports').checked
     };
     
-    localStorage.setItem('adminSettings', JSON.stringify(settings));
-    showNotification('Settings saved successfully!');
+    fetch('api/settings.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settingsData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            showNotification(data.message);
+        }
+    })
+    .catch(err => console.error("Error saving settings:", err));
 }
 
 // Toggle switch functionality
@@ -39,7 +55,6 @@ function setupToggles() {
     const toggles = document.querySelectorAll('.toggle-switch input');
     toggles.forEach(toggle => {
         toggle.addEventListener('change', function() {
-            // Visual feedback
             this.parentElement.classList.toggle('active', this.checked);
         });
     });
@@ -48,8 +63,9 @@ function setupToggles() {
 // Show notification
 function showNotification(message) {
     const notification = document.createElement('div');
-    notification.className = 'notification success';
     notification.textContent = message;
+    
+    // Add inline styling to guarantee the popup looks good and is visible
     notification.style.cssText = `
         position: fixed;
         top: 20px;
@@ -58,15 +74,17 @@ function showNotification(message) {
         color: white;
         padding: 16px 24px;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
         font-weight: 600;
-        animation: slideIn 0.3s ease;
+        transition: opacity 0.3s ease;
     `;
+    
     document.body.appendChild(notification);
     
+    // Fade out and remove after 3 seconds
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
+        notification.style.opacity = '0';
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
@@ -76,9 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
     setupToggles();
     
-    // Add form submit handler
-    const form = document.getElementById('settingsForm');
-    if (form) {
-        form.addEventListener('submit', saveSettings);
+    // Make sure the save button is listening for the click
+    const saveBtn = document.querySelector('button[onclick="saveSettings(event)"]') || document.querySelector('button[type="submit"]');
+    if (saveBtn) {
+        saveBtn.onclick = saveSettings;
     }
 });

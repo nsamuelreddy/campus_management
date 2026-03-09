@@ -271,52 +271,7 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function saveSettings() {
-            const settings = {
-                institutionName: document.getElementById('institutionName').value,
-                adminEmail: document.getElementById('adminEmail').value,
-                emailNotifications: document.getElementById('emailNotifications').checked,
-                smsAlerts: document.getElementById('smsAlerts').checked,
-                weeklyReports: document.getElementById('weeklyReports').checked
-            };
-            
-            localStorage.setItem('adminSettings', JSON.stringify(settings));
-            
-            // Show notification
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.textContent = 'Settings saved successfully!';
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 10);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Load settings on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
-            if (settings.institutionName) {
-                document.getElementById('institutionName').value = settings.institutionName;
-            }
-            if (settings.adminEmail) {
-                document.getElementById('adminEmail').value = settings.adminEmail;
-            }
-            if (settings.emailNotifications !== undefined) {
-                document.getElementById('emailNotifications').checked = settings.emailNotifications;
-            }
-            if (settings.smsAlerts !== undefined) {
-                document.getElementById('smsAlerts').checked = settings.smsAlerts;
-            }
-            if (settings.weeklyReports !== undefined) {
-                document.getElementById('weeklyReports').checked = settings.weeklyReports;
-            }
-        });
-    </script>
+    <script src="js/admin-settings.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -5,30 +5,27 @@ document.getElementById('loginForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
     
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const password = document.getElementById('password').value; // We are ignoring password on backend for now
     const selectedRole = document.querySelector('.role-btn.active')?.getAttribute('data-role');
     
-    console.log('Login attempt (Frontend only):', { email, role: selectedRole });
-    
-    // Frontend only - simulate login
     if (email && password && selectedRole) {
-        // Store user info in localStorage (frontend only)
-        localStorage.setItem('user', JSON.stringify({ email, role: selectedRole }));
-        
-        // Redirect to appropriate dashboard based on role
-        switch(selectedRole) {
-            case 'student':
-                window.location.href = 'dashboard.html';
-                break;
-            case 'faculty':
-                window.location.href = 'faculty-dashboard.html';
-                break;
-            case 'admin':
-                window.location.href = 'admin-dashboard.html';
-                break;
-            default:
-                window.location.href = 'dashboard.html';
-        }
+        // Send login request to PHP
+        fetch('api/auth.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'login', email: email, role: selectedRole })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                if(selectedRole === 'student') window.location.href = 'dashboard.html';
+                else if(selectedRole === 'faculty') window.location.href = 'faculty-dashboard.html';
+                else if(selectedRole === 'admin') window.location.href = 'admin-dashboard.html';
+            }
+        })
+        .catch(err => console.error("Login failed", err));
     } else {
         alert('Please fill in all fields and select a role');
     }
@@ -55,8 +52,14 @@ function checkAuth() {
 
 // Logout functionality
 function logout() {
-    localStorage.removeItem('user');
-    window.location.href = 'index.html';
+    fetch('api/auth.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' })
+    }).then(() => {
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+    });
 }
 
 // Run auth check on page load (except for login page)
