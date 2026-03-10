@@ -585,14 +585,14 @@
                     </select>
                 </div>
 
-                <div class="stats-grid">
+                <div class="stats-grid"></div>
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <div class="stat-icon rating">⭐</div>
                             <div class="stat-content">
                                 <h3>Overall Rating</h3>
-                                <div class="stat-value">4.3<span class="stat-rating"> / 5</span></div>
-                                <div class="stat-label">Very Good</div>
+                                <div class="stat-value"><span id="overall-rating">0.0</span><span class="stat-rating"> / 5</span></div>
+                                <div class="stat-label" id="rating-label">Waiting for data...</div>
                             </div>
                         </div>
                     </div>
@@ -601,12 +601,11 @@
                             <div class="stat-icon responses">💬</div>
                             <div class="stat-content">
                                 <h3>Total Responses</h3>
-                                <div class="stat-value">128</div>
+                                <div class="stat-value" id="total-responses">0</div>
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="rating-breakdown">
                     <div class="breakdown-title">Rating Breakdown</div>
                     
@@ -716,7 +715,78 @@
             </div>
         </div>
     </div>
+    <script>
+        function loadFacultyStats() {
+            // Ask PHP for the feedback data
+            fetch('api/feedback.php')
+            .then(function(response) {
+                return response.json(); // Turn response into JSON
+            })
+            .then(function(data) {
+                if (data.success == true) {
+                    let feedbackList = data.feedback;
+                    
+                    // 1. UPDATE TOTAL RESPONSES
+                    // The length of the array is how many students submitted feedback!
+                    let totalResponses = feedbackList.length;
+                    document.getElementById('total-responses').innerText = totalResponses;
 
+                    // If no one has left feedback yet, we can stop the code right here.
+                    if (totalResponses === 0) {
+                        return; 
+                    }
+
+                    // 2. CALCULATE OVERALL RATING
+                    let sumOfAllStars = 0;
+                    let totalQuestionsAnswered = 0;
+
+                    // A simple loop to go through every feedback form submitted
+                    for (let i = 0; i < feedbackList.length; i++) {
+                        let singleFeedback = feedbackList[i];
+                        let ratingsObject = singleFeedback.ratings;
+
+                        // Loop through the 5 specific ratings in that form (Teaching, Punctuality, etc.)
+                        for (let question in ratingsObject) {
+                            let starValue = parseInt(ratingsObject[question]); // Convert text to number
+                            
+                            // Only count it if they actually clicked a star
+                            if (starValue > 0) {
+                                sumOfAllStars = sumOfAllStars + starValue;
+                                totalQuestionsAnswered = totalQuestionsAnswered + 1;
+                            }
+                        }
+                    }
+
+                    // Do the math (Average = Total sum / Count)
+                    let averageRating = sumOfAllStars / totalQuestionsAnswered;
+                    
+                    // Show it on the screen (rounded to 1 decimal place)
+                    document.getElementById('overall-rating').innerText = averageRating.toFixed(1);
+
+                    // 3. CHANGE THE LABEL COLOR
+                    let label = document.getElementById('rating-label');
+                    if (averageRating >= 4.0) {
+                        label.innerText = "Excellent";
+                        label.style.color = "#10b981"; // Green
+                    } else if (averageRating >= 3.0) {
+                        label.innerText = "Good";
+                        label.style.color = "#3b82f6"; // Blue
+                    } else {
+                        label.innerText = "Needs Improvement";
+                        label.style.color = "#ef4444"; // Red
+                    }
+                }
+            })
+            .catch(function(error) {
+                console.log("Error loading stats: " + error);
+            });
+        }
+
+        // Run our function exactly when the page loads
+        window.addEventListener('load', function() {
+            loadFacultyStats();
+        });
+    </script>
     <script src="js/main.js"></script>
 </body>
 </html>
