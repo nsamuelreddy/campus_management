@@ -24,8 +24,8 @@ require_once 'vendor/autoload.php';
 
 session_start();
 
-$clientID = '189352772372-vpqgvof6b6r3oo14fb5vhnlchedjogb3.apps.googleusercontent.com';
-$clientSecret = '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';
+$clientID = 'YOUR_GOOGLT_CLIENT_ID';
+$clientSecret = 'YOUR_GOOGLE_CLIENT_SECRET';
 $redirectUri = 'http://localhost/campus_management/callback.php';
 
 // Create Client Request to access Google API
