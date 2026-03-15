@@ -77,6 +77,17 @@ function loadDashboardStats() {
         })
         .catch(err => console.error("Error loading dashboard stats:", err));
 }
-
+// Inside dashboard.js
+function loadNotifications() {
+    fetch('notifications.php')
+        .then(res => res.json())
+        .then(data => {
+            const count = data.filter(n => !n.is_read).length;
+            if (count > 0) {
+                // Update your notification badge dynamically
+                document.querySelector('.notification-badge').textContent = count;
+            }
+        });
+}
 // Run when the dashboard loads
 document.addEventListener('DOMContentLoaded', loadDashboardStats);
