@@ -2,19 +2,14 @@
 session_start();
 require_once 'config.php';
 
-// Redirect if already logged in
+// If already logged in, go to dashboard
 if (isset($_SESSION['user_token'])) {
     header("Location: ../dashboard.php");
     exit();
 }
 
-// Generate Auth URL
+// Redirect the user to Google
 $authUrl = $client->createAuthUrl();
+header("Location: " . $authUrl);
+exit();
 ?>
-
-<div style="text-align: center; margin-top: 50px;">
-    <h2>Campus Management System</h2>
-    <a href="<?php echo $authUrl; ?>" style="padding: 15px 25px; background: #4285F4; color: white; text-decoration: none; border-radius: 5px;">
-        Sign in with Google
-    </a>
-</div>
