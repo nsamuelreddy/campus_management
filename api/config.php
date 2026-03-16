@@ -1,35 +1,18 @@
 <?php
-// 1. Only call session_start() once.
-if (session_status() === PHP_SESSION_NONE) {
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => '/',
-        'secure' => false, // Change to false for localhost development
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
-    session_start();
-}
-
-// 2. Regenerate ID safely
-if (!isset($_SESSION['initialized'])) {
-    session_regenerate_id(true);
-    $_SESSION['initialized'] = true;
-}
+// Force errors to appear on the screen
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 require_once 'vendor/autoload.php';
 
-// 3. Insert your actual credentials
-$clientID = '189352772372-vpqgvof6b6r3oo14fb5vhnlchedjogb3.apps.googleusercontent.com';
-$clientSecret = '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';
-
-// IMPORTANT: This URL must match what you put in Google Cloud Console exactly
-$redirectUri = 'http://localhost:8000/api/callback.php';
-
+// Try creating the client
 $client = new Google_Client();
-$client->setClientId($clientID);
-$client->setClientSecret($clientSecret);
-$client->setRedirectUri($redirectUri);
-$client->addScope("email");
-$client->addScope("profile");
+echo "Client created successfully.<br>";
+
+$client->setClientId('189352772372-vpqgvof6b6r3oo14fb5vhnlchedjogb3.apps.googleusercontent.com'); 
+$client->setClientSecret('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');
+$client->setRedirectUri('http://localhost:8000/api/callback.php');
+
+echo "Configuration applied successfully.<br>";
+exit(); // Stops here so we don't load other files
 ?>
