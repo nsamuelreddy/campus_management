@@ -20,8 +20,8 @@ if (!isset($_SESSION['initialized'])) {
 require_once 'vendor/autoload.php';
 
 // 3. Insert your actual credentials
-$clientID = 'YOUR_ACTUAL_CLIENT_ID_FROM_GOOGLE_CONSOLE';
-$clientSecret = 'YOUR_ACTUAL_CLIENT_SECRET_FROM_GOOGLE_CONSOLE';
+$clientID = '189352772372-vpqgvof6b6r3oo14fb5vhnlchedjogb3.apps.googleusercontent.com';
+$clientSecret = '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';
 
 // IMPORTANT: This URL must match what you put in Google Cloud Console exactly
 $redirectUri = 'http://localhost:8000/api/callback.php';
