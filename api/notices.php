@@ -24,23 +24,45 @@ if ($method === 'GET') {
     exit;
 }
 
-// POST request: Create a new notice
+// POST request: Handle both Creating and Deleting notices
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    $newNotice = [
-        'id' => time(),
-        'title' => $data['title'] ?? '',
-        'category' => $data['category'] ?? 'general',
-        'content' => $data['content'] ?? '',
-        'date' => date('M j'),
-        'urgent' => ($data['category'] === 'urgent')
-    ];
+    // --- DELETE ACTION ---
+    if (isset($data['action']) && $data['action'] === 'delete') {
+        $idToDelete = $data['id']; // Get the ID from JavaScript
+        
+        // Loop through the notices to find the one to delete
+        foreach ($_SESSION['notices'] as $key => $notice) {
+            if ($notice['id'] == $idToDelete) {
+                unset($_SESSION['notices'][$key]); // Remove it
+                
+                // Re-organize the array list so it stays neat
+                $_SESSION['notices'] = array_values($_SESSION['notices']);
+                break;
+            }
+        }
+        
+        echo json_encode(['success' => true, 'message' => 'Notice deleted successfully!']);
+        exit;
+    } 
+    
+    // --- CREATE ACTION ---
+    else {
+        $newNotice = [
+            'id' => time(),
+            'title' => $data['title'] ?? '',
+            'category' => $data['category'] ?? 'general',
+            'content' => $data['content'] ?? '',
+            'date' => date('M j'),
+            'urgent' => ($data['category'] === 'urgent')
+        ];
 
-    // Add the new notice to the beginning of the array
-    array_unshift($_SESSION['notices'], $newNotice);
+        // Add the new notice to the beginning of the array
+        array_unshift($_SESSION['notices'], $newNotice);
 
-    echo json_encode(['success' => true, 'message' => 'Notice created!']);
-    exit;
+        echo json_encode(['success' => true, 'message' => 'Notice created!']);
+        exit;
+    }
 }
 ?>

@@ -2,7 +2,6 @@
 session_start();
 header('Content-Type: application/json');
 
-// Get the data sent from JavaScript
 $data = json_decode(file_get_contents('php://input'), true);
 $action = $data['action'] ?? '';
 
@@ -10,7 +9,6 @@ if ($action === 'login') {
     $email = $data['email'] ?? '';
     $role = $data['role'] ?? 'student';
 
-    // Store user info in temporary session
     $_SESSION['user'] = [
         'email' => $email,
         'role' => $role

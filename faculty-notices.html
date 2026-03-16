@@ -608,37 +608,8 @@
                 </div>
 
                 <!-- Notices List -->
-                <div class="notices-list">
-                    <div class="notice-card">
-                        <div class="notice-header">
-                            <div>
-                                <div class="notice-meta">
-                                    <span class="notice-badge badge-academic">Academic</span>
-                                    <span class="notice-badge badge-urgent">Urgent</span>
-                                </div>
-                                <h3 class="notice-title">Mid-semester exams scheduled</h3>
-                                <p class="notice-date">Mar 8</p>
-                            </div>
-                            <div class="notice-actions">
-                                <button class="icon-btn" title="Delete">🗑️</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="notice-card">
-                        <div class="notice-header">
-                            <div>
-                                <div class="notice-meta">
-                                    <span class="notice-badge badge-events">Events</span>
-                                </div>
-                                <h3 class="notice-title">Sports Day registration open</h3>
-                                <p class="notice-date">Mar 6</p>
-                            </div>
-                            <div class="notice-actions">
-                                <button class="icon-btn" title="Delete">🗑️</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="notices-list" id="myNoticesList">
+                    
                 </div>
             </div>
         </div>
@@ -676,6 +647,82 @@
             })
             .catch(err => console.error("Error saving notice:", err));
         }
+        // 1. Function to load notices from PHP
+        function loadMyNotices() {
+            fetch('api/notices.php')
+            .then(function(response) {
+                return response.json(); // Convert response to JSON
+            })
+            .then(function(data) {
+                if(data.success == true) {
+                    let listBox = document.getElementById('myNoticesList');
+                    listBox.innerHTML = ""; // Clear out the box first
+                    
+                    let noticesArray = data.notices;
+
+                    // Simple FOR loop to go through each notice
+                    for(let i = 0; i < noticesArray.length; i++) {
+                        let notice = noticesArray[i];
+                        
+                        // Create the HTML string for one card
+                        let cardHtml = `
+                        <div class="notice-card">
+                            <div class="notice-header">
+                                <div>
+                                    <div class="notice-meta">
+                                        <span class="notice-badge badge-academic">${notice.category}</span>
+                                    </div>
+                                    <h3 class="notice-title">${notice.title}</h3>
+                                    <p class="notice-date">${notice.date}</p>
+                                    <p style="margin-top: 10px; color: #6b7280;">${notice.content}</p>
+                                </div>
+                                <div class="notice-actions">
+                                    <button class="icon-btn" onclick="deleteNotice(${notice.id})" title="Delete">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                        
+                        // Add this card to our box
+                        listBox.innerHTML += cardHtml; 
+                    }
+                }
+            })
+            .catch(function(error) {
+                console.log("Error loading notices: " + error);
+            });
+        }
+        // 2.delete button click
+        function deleteNotice(noticeId) {
+            // Ask the user if they are sure first! (Good practice)
+            let confirmDelete = confirm("Are you sure you want to delete this notice?");
+            
+            if (confirmDelete == true) {
+                // Tell PHP to delete it
+                fetch('api/notices.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'delete', id: noticeId })
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    if(data.success == true) {
+                        alert(data.message); // Show success message
+                        loadMyNotices(); // Reload the list instantly to make it disappear!
+                    }
+                })
+                .catch(function(error) {
+                    console.log("Error deleting notice: " + error);
+                });
+            }
+        }
+
+        // 3. Tell the browser to run our function when the page loads
+        window.addEventListener('load', function() {
+            loadMyNotices();
+        });
     </script>
     <script src="js/main.js"></script>
 </body>

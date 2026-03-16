@@ -1,5 +1,5 @@
 <?php
-// This checks if they are logged in AND enforces role access
+
 include 'auth_check.php'; 
 ?>
 

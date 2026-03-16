@@ -514,92 +514,131 @@
 
                 <!-- Complaints List -->
                 <div class="complaints-list">
-                    <div class="complaint-card">
-                        <div class="complaint-header">
-                            <div>
-                                <h3 class="complaint-title">Cafeteria Food Quality</h3>
-                                <div class="complaint-meta">
-                                    <span>👤 Arjun Sharma</span>
-                                    <span>•</span>
-                                    <span>📅 Mar 10, 2026</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="complaint-description">
-                            The food quality in the cafeteria has degraded over the past week. Many students have complained about stale food items.
-                        </p>
-                        <div class="complaint-footer">
-                            <span class="status-badge status-pending">Pending</span>
-                            <div class="complaint-actions">
-                                <button class="action-btn action-btn-primary" onclick="handleStatus('progress')">In Progress</button>
-                                <button class="action-btn action-btn-secondary" onclick="handleStatus('resolved')">Resolve</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="complaint-card">
-                        <div class="complaint-header">
-                            <div>
-                                <h3 class="complaint-title">Library AC Not Working</h3>
-                                <div class="complaint-meta">
-                                    <span>👤 Sneha R.</span>
-                                    <span>•</span>
-                                    <span>📅 Mar 8, 2026</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="complaint-description">
-                            The air conditioning system in the library has not been working for the past 3 days, making it uncomfortable to study.
-                        </p>
-                        <div class="complaint-footer">
-                            <span class="status-badge status-progress">In Progress</span>
-                            <div class="complaint-actions">
-                                <button class="action-btn action-btn-secondary" onclick="handleStatus('resolved')">Resolve</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="complaint-card">
-                        <div class="complaint-header">
-                            <div>
-                                <h3 class="complaint-title">Hostel WiFi Issue</h3>
-                                <div class="complaint-meta">
-                                    <span>👤 Rohit K.</span>
-                                    <span>•</span>
-                                    <span>📅 Mar 5, 2026</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="complaint-description">
-                            Internet connectivity in the hostel has been very poor. Unable to attend online classes properly.
-                        </p>
-                        <div class="complaint-footer">
-                            <span class="status-badge status-resolved">Resolved</span>
-                            <div class="complaint-actions">
-                                <button class="action-btn action-btn-secondary" disabled>Completed</button>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        function filterComplaints(status) {
-            // Update active tab
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Filter logic (frontend only)
-            console.log('Filtering by:', status);
+        let allComplaints = [];
+
+        // 1. Fetch complaints from PHP database
+        function loadComplaints() {
+            fetch('api/complaints.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        allComplaints = data.complaints;
+                        
+                        // Check which filter tab is currently active so it doesn't reset when we click "Resolve"
+                        const activeTab = document.querySelector('.filter-tab.active');
+                        let currentFilter = 'all';
+                        if(activeTab) {
+                            if(activeTab.innerText.includes('Pending')) currentFilter = 'pending';
+                            if(activeTab.innerText.includes('In Progress')) currentFilter = 'progress';
+                            if(activeTab.innerText.includes('Resolved')) currentFilter = 'resolved';
+                        }
+                        
+                        renderComplaints(currentFilter);
+                    }
+                })
+                .catch(err => console.error("Error loading complaints:", err));
         }
 
-        function handleStatus(newStatus) {
-            alert(`Status updated to: ${newStatus} (Frontend only)`);
+        // 2. Render the complaints to the screen
+        function renderComplaints(filterType) {
+            const listContainer = document.querySelector('.complaints-list');
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = ''; // Clear container
+
+            // Filter the array based on the active tab
+            const filtered = allComplaints.filter(c => {
+                if (filterType === 'all') return true;
+                if (filterType === 'pending' && c.status === 'Pending') return true;
+                if (filterType === 'progress' && c.status === 'In Progress') return true;
+                if (filterType === 'resolved' && c.status === 'Resolved') return true;
+                return false;
+            });
+
+            // Build HTML for each complaint
+            filtered.forEach(complaint => {
+                // Determine badge color
+                let statusBadgeClass = 'status-pending';
+                if (complaint.status === 'In Progress') statusBadgeClass = 'status-progress';
+                if (complaint.status === 'Resolved') statusBadgeClass = 'status-resolved';
+
+                // Determine which buttons to show based on current status
+                let actionsHtml = '';
+                if (complaint.status === 'Pending') {
+                    actionsHtml = `
+                        <button class="action-btn action-btn-primary" onclick="handleStatus(${complaint.id}, 'In Progress')">In Progress</button>
+                        <button class="action-btn action-btn-secondary" onclick="handleStatus(${complaint.id}, 'Resolved')">Resolve</button>
+                    `;
+                } else if (complaint.status === 'In Progress') {
+                    actionsHtml = `
+                        <button class="action-btn action-btn-secondary" onclick="handleStatus(${complaint.id}, 'Resolved')">Resolve</button>
+                    `;
+                } else {
+                    actionsHtml = `<button class="action-btn action-btn-secondary" disabled>Completed</button>`;
+                }
+
+                const html = `
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                            <div>
+                                <h3 class="complaint-title">${complaint.subject}</h3>
+                                <div class="complaint-meta">
+                                    <span style="text-transform: uppercase;">Category: ${complaint.type}</span>
+                                    <span>•</span>
+                                    <span>📅 ${complaint.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="complaint-description">${complaint.description}</p>
+                        <div class="complaint-footer">
+                            <span class="status-badge ${statusBadgeClass}">${complaint.status}</span>
+                            <div class="complaint-actions">
+                                ${actionsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', html);
+            });
         }
+
+        // 3. Tab Filtering functionality
+        function filterComplaints(status) {
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            renderComplaints(status);
+        }
+
+        // 4. Update Status in PHP Backend
+        function handleStatus(complaintId, newStatus) {
+            fetch('api/complaints.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'update_status', 
+                    id: complaintId, 
+                    status: newStatus 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    loadComplaints(); // Re-fetch from database so the screen updates instantly!
+                }
+            })
+            .catch(err => console.error("Error updating status:", err));
+        }
+
+        // 5. Initialize on load
+        document.addEventListener('DOMContentLoaded', loadComplaints);
     </script>
     <script src="js/main.js"></script>
 </body>

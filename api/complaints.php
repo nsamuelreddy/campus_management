@@ -32,23 +32,46 @@ if ($method === 'GET') {
     exit;
 }
 
-// 3. POST Request: Save a new complaint
+// 3. POST Request: Handle both Creating and Updating complaints
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    $newComplaint = [
-        'id' => time(),
-        'type' => $data['type'] ?? 'other',
-        'subject' => $data['subject'] ?? 'No Subject',
-        'description' => $data['description'] ?? '',
-        'status' => 'Pending',
-        'date' => date('M j, Y') // e.g., Mar 10, 2026
-    ];
+    // FACULTY ACTION: Check if Faculty is clicking "In Progress" or "Resolve"
+    if (isset($data['action']) && $data['action'] === 'update_status') {
+        $found = false;
+        foreach ($_SESSION['complaints'] as &$complaint) {
+            // Find the exact complaint by ID and update its status
+            if ($complaint['id'] == $data['id']) {
+                $complaint['status'] = $data['status']; 
+                $found = true;
+                break;
+            }
+        }
+        
+        if ($found) {
+            echo json_encode(['success' => true, 'message' => 'Status successfully updated to ' . $data['status']]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Complaint not found']);
+        }
+        exit;
+    } 
+    
+    // STUDENT ACTION: Otherwise, a Student is submitting a brand new complaint
+    else {
+        $newComplaint = [
+            'id' => time(),
+            'type' => $data['type'] ?? 'other',
+            'subject' => $data['subject'] ?? 'No Subject',
+            'description' => $data['description'] ?? '',
+            'status' => 'Pending',
+            'date' => date('M j, Y')
+        ];
 
-    // Add the new complaint to the top of the list
-    array_unshift($_SESSION['complaints'], $newComplaint);
+        // Add the new complaint to the top of the list
+        array_unshift($_SESSION['complaints'], $newComplaint);
 
-    echo json_encode(['success' => true, 'message' => 'Complaint submitted successfully!']);
-    exit;
+        echo json_encode(['success' => true, 'message' => 'Complaint submitted successfully!']);
+        exit;
+    }
 }
 ?>
