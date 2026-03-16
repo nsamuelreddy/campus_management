@@ -132,6 +132,46 @@ body {
     margin-top: 20px;
 }
 
+.separator {
+    margin: 20px 0;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    line-height: 0.1em;
+}
+
+.separator span {
+    background: #fff;
+    padding: 0 10px;
+    color: #888;
+    font-size: 12px;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background-color: #ffffff;
+    color: #757575;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px; /* Matches your .login-btn border-radius */
+    font-weight: 600;
+    transition: background 0.3s;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.google-btn img {
+    width: 20px;
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #f7f7f7;
+    border-color: #bbb;
+}
+
 /* Dashboard Layout */
 .dashboard-container {
     display: flex;
