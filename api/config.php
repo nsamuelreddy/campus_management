@@ -1,34 +1,31 @@
 <?php
-// Set secure session parameters BEFORE calling session_start()
-session_set_cookie_params([
-    'lifetime' => 0,              // Session lasts until browser closes
-    'path' => '/',
-    'domain' => '',               // Set to your domain if needed
-    'secure' => true,             // Only send cookie over HTTPS
-    'httponly' => true,           // Prevent JavaScript access
-    'samesite' => 'Lax'           // Protect against CSRF
-]);
+// 1. Only call session_start() once.
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => false, // Change to false for localhost development
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    session_start();
+}
 
-session_start();
-
-// Regenerate ID after login to prevent session fixation
+// 2. Regenerate ID safely
 if (!isset($_SESSION['initialized'])) {
     session_regenerate_id(true);
     $_SESSION['initialized'] = true;
 }
-?>
 
-
-<?php
 require_once 'vendor/autoload.php';
 
-session_start();
+// 3. Insert your actual credentials
+$clientID = 'YOUR_ACTUAL_CLIENT_ID_FROM_GOOGLE_CONSOLE';
+$clientSecret = 'YOUR_ACTUAL_CLIENT_SECRET_FROM_GOOGLE_CONSOLE';
 
-$clientID = 'YOUR_GOOGLT_CLIENT_ID';
-$clientSecret = 'YOUR_GOOGLE_CLIENT_SECRET';
-$redirectUri = 'http://localhost/campus_management/callback.php';
+// IMPORTANT: This URL must match what you put in Google Cloud Console exactly
+$redirectUri = 'http://localhost:8000/api/callback.php';
 
-// Create Client Request to access Google API
 $client = new Google_Client();
 $client->setClientId($clientID);
 $client->setClientSecret($clientSecret);
