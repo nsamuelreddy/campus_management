@@ -1,27 +1,20 @@
 <?php
-// 1. MUST start the session immediately
 session_start();
-
-// 2. Load your working configuration
 require_once 'config.php';
 
-// 3. Generate CSRF token if needed
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// 4. Redirect if already logged in
+// Redirect if already logged in
 if (isset($_SESSION['user_token'])) {
-  header("Location: ../dashboard.php"); // Adjust path if needed
-  exit();
+    header("Location: ../dashboard.php");
+    exit();
 }
+
+// Generate Auth URL
+$authUrl = $client->createAuthUrl();
 ?>
 
-<form method="POST" action="process.php">
-    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-</form>
-
-<?php
-// 5. Echo the link
-echo "<a href='".$client->createAuthUrl()."'>Login with Google</a>";
-?>
+<div style="text-align: center; margin-top: 50px;">
+    <h2>Campus Management System</h2>
+    <a href="<?php echo $authUrl; ?>" style="padding: 15px 25px; background: #4285F4; color: white; text-decoration: none; border-radius: 5px;">
+        Sign in with Google
+    </a>
+</div>
