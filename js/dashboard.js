@@ -80,3 +80,48 @@ function loadDashboardStats() {
 
 // Run when the dashboard loads
 document.addEventListener('DOMContentLoaded', loadDashboardStats);
+
+
+// --- STUDENT DASHBOARD LOGIC ---
+
+function loadStudentDashboard() {
+    // First, check if we are actually on the Student Dashboard page!
+    // If this ID doesn't exist, it means we are on the Admin page, so we stop the code here.
+    let noticesBox = document.getElementById('student-notices');
+    if (!noticesBox) {
+        return; 
+    }
+
+    // Ask PHP for the dashboard data
+    fetch('api/dashboard.php')
+    .then(function(response) {
+        return response.json(); // Turn response into JSON
+    })
+    .then(function(data) {
+        if (data.success == true) {
+            let stats = data.stats;
+            
+            // 1. Get the numbers from our PHP file
+            let noticesCount = stats.activeNotices;
+            let totalComplaints = stats.myComplaints;
+            let resolvedCount = stats.myResolved;
+            
+            // 2. Do simple math for the pending count
+            let pendingCount = totalComplaints - resolvedCount;
+
+            // 3. Update the HTML on the screen
+            noticesBox.innerText = noticesCount;
+            document.getElementById('student-complaints').innerText = totalComplaints;
+            document.getElementById('student-resolved').innerText = resolvedCount;
+            document.getElementById('student-pending').innerText = pendingCount;
+        }
+    })
+    .catch(function(error) {
+        console.log("Error loading student stats: " + error);
+    });
+}
+
+window.addEventListener('load', function() {
+    loadStudentDashboard();
+    
+});

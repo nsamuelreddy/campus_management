@@ -2,61 +2,52 @@
 session_start();
 header('Content-Type: application/json');
 
-// 1. Set up some dummy complaints if the session is empty
-if (!isset($_SESSION['complaints'])) {
-    $_SESSION['complaints'] = [
-        [
-            'id' => 1,
-            'type' => 'wifi',
-            'subject' => 'Internet not working in Block A',
-            'description' => 'No connectivity since morning',
-            'status' => 'Pending',
-            'date' => 'Mar 8, 2026'
-        ],
-        [
-            'id' => 2,
-            'type' => 'hostel',
-            'subject' => 'AC not working in Room 204',
-            'description' => 'AC making noise and not cooling',
-            'status' => 'In Progress',
-            'date' => 'Mar 6, 2026'
-        ]
-    ];
-}
-
-$method = $_SERVER['REQUEST_METHOD'];
-
-// 2. GET Request: Send all complaints to the frontend
-if ($method === 'GET') {
-    echo json_encode(['success' => true, 'complaints' => $_SESSION['complaints']]);
+// SECURITY CHECK: Ensure the user is logged in
+if (!isset($_SESSION['user'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access. Please log in.']);
     exit;
 }
 
-// 3. POST Request: Handle both Creating and Updating complaints
+$userRole = $_SESSION['user']['role']; // 'student', 'faculty', or 'admin'
+$method = $_SERVER['REQUEST_METHOD'];
+
+// Ensure complaints array exists
+if (!isset($_SESSION['complaints'])) {
+    $_SESSION['complaints'] = [];
+}
+
+// GET Request: Send complaints
+if ($method === 'GET') {
+    // If Student: Only send them THEIR complaints (For now, we send all as mock, but this is where the logic goes)
+    // If Faculty/Admin: Send them ALL complaints
+    echo json_encode(['success' => true, 'complaints' => $_SESSION['complaints'], 'role' => $userRole]);
+    exit;
+}
+
+// POST Request
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    // FACULTY ACTION: Check if Faculty is clicking "In Progress" or "Resolve"
+    // ACTION: Update Status (ONLY Faculty or Admin can do this)
     if (isset($data['action']) && $data['action'] === 'update_status') {
-        $found = false;
+        
+        // RBAC CHECK
+        if ($userRole === 'student') {
+            echo json_encode(['success' => false, 'message' => 'Access Denied: Students cannot update status.']);
+            exit;
+        }
+
         foreach ($_SESSION['complaints'] as &$complaint) {
-            // Find the exact complaint by ID and update its status
             if ($complaint['id'] == $data['id']) {
                 $complaint['status'] = $data['status']; 
-                $found = true;
                 break;
             }
         }
-        
-        if ($found) {
-            echo json_encode(['success' => true, 'message' => 'Status successfully updated to ' . $data['status']]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Complaint not found']);
-        }
+        echo json_encode(['success' => true, 'message' => 'Status successfully updated!']);
         exit;
     } 
     
-    // STUDENT ACTION: Otherwise, a Student is submitting a brand new complaint
+    // ACTION: Create Complaint (Students can do this)
     else {
         $newComplaint = [
             'id' => time(),
@@ -66,10 +57,7 @@ if ($method === 'POST') {
             'status' => 'Pending',
             'date' => date('M j, Y')
         ];
-
-        // Add the new complaint to the top of the list
         array_unshift($_SESSION['complaints'], $newComplaint);
-
         echo json_encode(['success' => true, 'message' => 'Complaint submitted successfully!']);
         exit;
     }

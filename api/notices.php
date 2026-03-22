@@ -2,52 +2,50 @@
 session_start();
 header('Content-Type: application/json');
 
-// Create some default notices if the session is empty
-if (!isset($_SESSION['notices'])) {
-    $_SESSION['notices'] = [
-        [
-            'id' => 1,
-            'title' => 'Mid-semester exams scheduled',
-            'category' => 'academic',
-            'content' => 'Please check the portal for your seat allocations.',
-            'date' => 'Mar 8',
-            'urgent' => true
-        ]
-    ];
+// SECURITY CHECK: Ensure user is logged in
+if (!isset($_SESSION['user'])) {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    exit;
 }
 
+$userRole = $_SESSION['user']['role']; // 'student', 'faculty', or 'admin'
 $method = $_SERVER['REQUEST_METHOD'];
 
-// GET request: Send all notices back to the frontend
+if (!isset($_SESSION['notices'])) {
+    $_SESSION['notices'] = [];
+}
+
+// GET Request: Everyone (Students, Faculty, Admin) is allowed to READ notices
 if ($method === 'GET') {
     echo json_encode(['success' => true, 'notices' => $_SESSION['notices']]);
     exit;
 }
 
-// POST request: Handle both Creating and Deleting notices
+// POST Request: Create or Delete notices
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
-    // --- DELETE ACTION ---
+    // RBAC CHECK: Block Students from creating or deleting notices
+    if ($userRole === 'student') {
+        echo json_encode(['success' => false, 'message' => 'Access Denied: Students cannot manage notices.']);
+        exit;
+    }
+
+    // --- DELETE ACTION (Faculty/Admin Only) ---
     if (isset($data['action']) && $data['action'] === 'delete') {
-        $idToDelete = $data['id']; // Get the ID from JavaScript
-        
-        // Loop through the notices to find the one to delete
+        $idToDelete = $data['id'];
         foreach ($_SESSION['notices'] as $key => $notice) {
             if ($notice['id'] == $idToDelete) {
-                unset($_SESSION['notices'][$key]); // Remove it
-                
-                // Re-organize the array list so it stays neat
-                $_SESSION['notices'] = array_values($_SESSION['notices']);
+                unset($_SESSION['notices'][$key]);
+                $_SESSION['notices'] = array_values($_SESSION['notices']); // Re-index array
                 break;
             }
         }
-        
         echo json_encode(['success' => true, 'message' => 'Notice deleted successfully!']);
         exit;
     } 
     
-    // --- CREATE ACTION ---
+    // --- CREATE ACTION (Faculty/Admin Only) ---
     else {
         $newNotice = [
             'id' => time(),
@@ -57,10 +55,7 @@ if ($method === 'POST') {
             'date' => date('M j'),
             'urgent' => ($data['category'] === 'urgent')
         ];
-
-        // Add the new notice to the beginning of the array
         array_unshift($_SESSION['notices'], $newNotice);
-
         echo json_encode(['success' => true, 'message' => 'Notice created!']);
         exit;
     }
