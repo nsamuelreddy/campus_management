@@ -1,6 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
+include "../db.php";
 
 // 1. Set up some dummy users if the session is empty
 if (!isset($_SESSION['users'])) {

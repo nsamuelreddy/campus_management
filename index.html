@@ -13,17 +13,22 @@
             <h1 class="login-title">Smart Campus</h1>
             <p class="login-subtitle">Campus Management System</p>
             
+            <!-- FORM -->
             <form id="loginForm" class="login-form">
+
                 <div class="form-group">
-                    <label class="form-label" for="email">Email</label>
-                    <input type="text" id="email" class="form-input" placeholder="Enter your email or ID" required>
+                    <label class="form-label">Email</label>
+                    <input type="text" id="email" name="email" class="form-input" required>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
                 </div>
                 
+                <!-- ROLE -->
+                <input type="hidden" id="role" name="role" value="student">
+
                 <div class="form-group">
                     <label class="form-label">Role</label>
                     <div class="role-selection">
@@ -34,14 +39,15 @@
                 </div>
                 
                 <button type="submit" class="login-btn">Sign In</button>
+
                 <div class="separator"><span>OR</span></div>
-                <a href="api/login.php" class="google-btn">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo">
-    Sign in with Google
-</a>
+
+                <!-- ✅ FIXED GOOGLE LOGIN -->
+                <a href="login.php" class="google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+                    Sign in with Google
+                </a>
             </form>
-            
-            <p class="demo-text">Demo: Use any email & password to login</p>
         </div>
     </div>
 

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+include "../db.php";   // 
 
 if (isset($_GET['code'])) {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
@@ -16,24 +17,25 @@ if (isset($_GET['code'])) {
     
     $userEmail = $google_account_info->email;
 
-    
-
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-    $stmt->execute(['email' => $userEmail]);
-    $user = $stmt->fetch();
+    // (Keeping your DB logic same style, only compatible with mysqli)
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $userEmail);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
 
     if ($user) {
         $_SESSION['user_token'] = $token['access_token'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_role']  = $user['role'];
         
-        header("Location: ../dashboard.php");
+        // ✅ FIX: correct redirect path
+        header("Location: dashboard.php");
         exit();
     } else {
         die("Access Denied: Your email ($userEmail) is not registered in our database.");
     }
 } else {
-
     header("Location: login.php");
     exit();
 }

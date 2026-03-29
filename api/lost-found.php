@@ -1,57 +1,70 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
-// 1. Set up some dummy items if the session is empty
-if (!isset($_SESSION['lost_found'])) {
-    $_SESSION['lost_found'] = [
-        [
-            'id' => 1, 
-            'status' => 'Found', 
-            'title' => 'Student ID Card - Rahul S.', 
-            'description' => 'Found near canteen 3', 
-            'location' => '📍 Canteen', 
-            'date' => 'Mar 7'
-        ],
-        [
-            'id' => 2, 
-            'status' => 'Lost', 
-            'title' => 'Calculator (Casio FX-991)', 
-            'description' => 'Scientific calculator, has name written on back', 
-            'location' => '📍 Exam Hall 2', 
-            'date' => 'Mar 5'
-        ]
-    ];
-}
+include "../db.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// 2. GET Request: Send all items to the frontend
+
+// =========================
+// GET ITEMS FROM DATABASE
+// =========================
 if ($method === 'GET') {
-    echo json_encode(['success' => true, 'items' => $_SESSION['lost_found']]);
+
+    $result = $conn->query("SELECT * FROM LostFound ORDER BY created_at DESC");
+
+    $items = [];
+
+    while ($row = $result->fetch_assoc()) {
+
+        $items[] = [
+            "id" => $row['item_id'],
+            "status" => $row['item_type'],
+            "title" => $row['item_name'],
+            "description" => $row['description'],
+            "location" => "📍 " . $row['location'],
+            "date" => date("M j", strtotime($row['created_at']))
+        ];
+    }
+
+    echo json_encode([
+        "success" => true,
+        "items" => $items
+    ]);
+
     exit;
 }
 
-// 3. POST Request: Save a newly reported item
+
+// =========================
+// SAVE NEW ITEM
+// =========================
 if ($method === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    
-    // Capitalize the first letter of status just in case they type "lost" instead of "Lost"
-    $status = ucfirst(strtolower($data['status'] ?? 'Lost')); 
 
-    $newItem = [
-        'id' => time(),
-        'status' => $status,
-        'title' => $data['title'] ?? 'Unknown Item',
-        'description' => $data['description'] ?? '',
-        'location' => '📍 ' . ($data['location'] ?? 'Campus'),
-        'date' => date('Mar j')
-    ];
+    $data = json_decode(file_get_contents("php://input"), true);
 
-    // Add the new item to the top of the list
-    array_unshift($_SESSION['lost_found'], $newItem);
+    $status = ucfirst(strtolower($data['status'] ?? 'Lost'));
+    $title = $data['title'] ?? '';
+    $description = $data['description'] ?? '';
+    $location = $data['location'] ?? '';
 
-    echo json_encode(['success' => true, 'message' => 'Item reported successfully!']);
+    // Dummy reporter ID
+    $reporter_id = 2;
+
+    $stmt = $conn->prepare(
+        "INSERT INTO LostFound (item_type, item_name, description, location, reporter_id)
+         VALUES (?, ?, ?, ?, ?)"
+    );
+
+    $stmt->bind_param("ssssi", $status, $title, $description, $location, $reporter_id);
+
+    $stmt->execute();
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Item reported successfully!"
+    ]);
+
     exit;
 }
 ?>

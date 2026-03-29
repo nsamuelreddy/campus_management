@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// if user not logged in → go to login page
+if (!isset($_SESSION['user_email'])) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,11 +74,13 @@
                     <input type="text" class="search-input" placeholder="Search...">
                     <span class="search-icon">🔍</span>
                 </div>
+
                 <div class="top-nav-right">
                     <button class="notification-btn">
                         🔔
                         <span class="notification-badge"></span>
                     </button>
+
                     <div class="user-profile">
                         <div class="user-avatar">A</div>
                         <div class="user-info">
@@ -76,9 +88,25 @@
                             <p>Student</p>
                         </div>
                     </div>
-                    <button class="logout-btn" onclick="logout()" title="Logout" style="margin-left: 16px; background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+
+                    <!-- ✅ LOGOUT ADDED HERE -->
+                    <a href="logout.php"
+                       class="logout-btn"
+                       style="margin-left: 16px;
+                              background: transparent;
+                              color: #64748b;
+                              border: 1px solid #e2e8f0;
+                              padding: 8px 16px;
+                              border-radius: 8px;
+                              text-decoration:none;
+                              font-size: 14px;
+                              font-weight: 600;
+                              transition: all 0.2s ease;"
+                       onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';"
+                       onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
                         Logout
-                    </button>
+                    </a>
+                    
                 </div>
             </div>
 
@@ -93,23 +121,23 @@
                 <div class="stats-grid">
                     <div class="stat-card notices">
                         <div class="stat-icon">📢</div>
-                        <div class="stat-number">12</div>
+                        <div class="stat-number" id="stat-total">12</div>
                         <div class="stat-label">Total Notices</div>
                         <div class="stat-change">+3 this week</div>
                     </div>
                     <div class="stat-card complaints">
                         <div class="stat-icon">📝</div>
-                        <div class="stat-number">2</div>
+                        <div class="stat-number" id="stat-users">2</div>
                         <div class="stat-label">Active Complaints</div>
                     </div>
                     <div class="stat-card resolved">
                         <div class="stat-icon">✅</div>
-                        <div class="stat-number">5</div>
+                        <div class="stat-number" id="stat-resolved">5</div>
                         <div class="stat-label">Resolved</div>
                     </div>
                     <div class="stat-card pending">
                         <div class="stat-icon">⏰</div>
-                        <div class="stat-number">1</div>
+                        <div class="stat-number" id="stat-pending">1</div>
                         <div class="stat-label">Pending</div>
                     </div>
                 </div>
@@ -132,6 +160,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="notice-item">
                                 <div class="notice-indicator normal"></div>
                                 <div class="notice-content">
@@ -142,6 +171,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="notice-item">
                                 <div class="notice-indicator normal"></div>
                                 <div class="notice-content">
@@ -152,6 +182,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="notice-item">
                                 <div class="notice-indicator urgent"></div>
                                 <div class="notice-content">
@@ -181,6 +212,7 @@
                                 </div>
                                 <div class="complaint-status pending">Pending</div>
                             </div>
+
                             <div class="complaint-status-item">
                                 <div class="notice-content">
                                     <div class="notice-title">AC not working in Room 204</div>
@@ -191,6 +223,7 @@
                                 </div>
                                 <div class="complaint-status in-progress">In Progress</div>
                             </div>
+
                             <div class="complaint-status-item">
                                 <div class="notice-content">
                                     <div class="notice-title">Food quality complaint</div>

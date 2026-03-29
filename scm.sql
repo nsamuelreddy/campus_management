@@ -14,7 +14,7 @@ CREATE TABLE Users (
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('Admin', 'User') DEFAULT 'User',
+    role ENUM('Admin', 'Faculty','Student') DEFAULT 'Student',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX (role)
 );
@@ -69,13 +69,36 @@ CREATE TABLE LostFound (
     INDEX (is_claimed)
 );
 
+
+--7.settings
+CREATE TABLE settings (
+    id INT PRIMARY KEY,
+    institutionName VARCHAR(100),
+    adminEmail VARCHAR(100),
+    emailNotifications BOOLEAN,
+    smsAlerts BOOLEAN,
+    weeklyReports BOOLEAN
+);
+
+
+--8.notifications
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255),
+    message TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ==========================================
--- 7. Seed Data (For Testing)
+-- 9. Seed Data (For Testing)
 -- ==========================================
 
+
 INSERT INTO Users (full_name, email, password_hash, role) VALUES 
-('System Admin', 'admin1@project.com', '$2y$10$abcdefghijklmnopqrstuv', 'Admin'),
-('Meghana', 'meghana@example.com', '$2y$10$xyz1234567890filledhash', 'User');
+('System Admin', 'admin1@project.com', 'hash', 'Admin'),
+('Dr. Faculty', 'faculty@project.com', 'hash', 'Faculty'),
+('Student One', 'student@project.com', 'hash', 'Student');
 
 INSERT INTO notices (title, content, author_id, expiry_date) VALUES 
 ('Maintenance Alert', 'cleaning of drinking water tanks.', 1, '2026-03-05');
@@ -86,6 +109,9 @@ INSERT INTO Complaints (user_id, subject, description, status) VALUES
 INSERT INTO LostFound (item_type, item_name, location, reporter_id) VALUES 
 ('Found', 'Blue bottle', 'director office near the window', 2);
 
+INSERT INTO settings VALUES 
+(1, 'SmartCampus University', 'admin@smartcampus.edu', 1, 0, 1);
+
 -- Verify results
 SELECT 'Users Created' AS Status, COUNT(*) FROM Users;
 SELECT * FROM Users;
@@ -93,3 +119,4 @@ select *from notices;
 select *from Complaints;
 select *from Feedback;
 select *from LostFound;
+select *from notifications;

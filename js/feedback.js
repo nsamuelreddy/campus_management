@@ -61,6 +61,7 @@ document.querySelector('.feedback-form')?.addEventListener('submit', (e) => {
     })
     .catch(err => console.error("Error submitting feedback:", err));
 });
+
 // Reset button
 document.querySelector('.feedback-reset')?.addEventListener('click', () => {
     ratingItems.forEach(item => {

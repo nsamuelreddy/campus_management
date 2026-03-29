@@ -1,67 +1,82 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
-// Create some default notices if the session is empty
-if (!isset($_SESSION['notices'])) {
-    $_SESSION['notices'] = [
-        [
-            'id' => 1,
-            'title' => 'Mid-semester exams scheduled',
-            'category' => 'academic',
-            'content' => 'Please check the portal for your seat allocations.',
-            'date' => 'Mar 8',
-            'urgent' => true
-        ]
-    ];
-}
+include "../db.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// GET request: Send all notices back to the frontend
+
+// =========================
+// GET NOTICES FROM DATABASE
+// =========================
 if ($method === 'GET') {
-    echo json_encode(['success' => true, 'notices' => $_SESSION['notices']]);
+
+    $result = $conn->query("SELECT * FROM notices ORDER BY created_at DESC");
+
+    $notices = [];
+
+    while ($row = $result->fetch_assoc()) {
+
+        $notices[] = [
+            "id" => $row['notice_id'],
+            "title" => $row['title'],
+            "category" => "academic", // keeping same structure as your JS
+            "content" => $row['content'],
+            "date" => date("M j", strtotime($row['created_at'])),
+            "urgent" => false
+        ];
+    }
+
+    echo json_encode([
+        "success" => true,
+        "notices" => $notices
+    ]);
+
     exit;
 }
 
-// POST request: Handle both Creating and Deleting notices
+
+// =========================
+// POST (CREATE / DELETE)
+// =========================
 if ($method === 'POST') {
+
     $data = json_decode(file_get_contents('php://input'), true);
-    
-    // --- DELETE ACTION ---
+
+    // -------- DELETE --------
     if (isset($data['action']) && $data['action'] === 'delete') {
-        $idToDelete = $data['id']; // Get the ID from JavaScript
-        
-        // Loop through the notices to find the one to delete
-        foreach ($_SESSION['notices'] as $key => $notice) {
-            if ($notice['id'] == $idToDelete) {
-                unset($_SESSION['notices'][$key]); // Remove it
-                
-                // Re-organize the array list so it stays neat
-                $_SESSION['notices'] = array_values($_SESSION['notices']);
-                break;
-            }
-        }
-        
-        echo json_encode(['success' => true, 'message' => 'Notice deleted successfully!']);
+
+        $id = $data['id'];
+
+        $stmt = $conn->prepare("DELETE FROM notices WHERE notice_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        echo json_encode([
+            "success" => true,
+            "message" => "Notice deleted successfully!"
+        ]);
         exit;
-    } 
-    
-    // --- CREATE ACTION ---
+    }
+
+    // -------- CREATE --------
     else {
-        $newNotice = [
-            'id' => time(),
-            'title' => $data['title'] ?? '',
-            'category' => $data['category'] ?? 'general',
-            'content' => $data['content'] ?? '',
-            'date' => date('M j'),
-            'urgent' => ($data['category'] === 'urgent')
-        ];
 
-        // Add the new notice to the beginning of the array
-        array_unshift($_SESSION['notices'], $newNotice);
+        $title = $data['title'] ?? '';
+        $content = $data['content'] ?? '';
+        $author_id = 1; // admin
 
-        echo json_encode(['success' => true, 'message' => 'Notice created!']);
+        $stmt = $conn->prepare(
+            "INSERT INTO notices (title, content, author_id) VALUES (?, ?, ?)"
+        );
+
+        $stmt->bind_param("ssi", $title, $content, $author_id);
+        $stmt->execute();
+
+        echo json_encode([
+            "success" => true,
+            "message" => "Notice created successfully!"
+        ]);
         exit;
     }
 }

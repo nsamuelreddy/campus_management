@@ -1,40 +1,71 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
-// 1. Initialize default settings if they don't exist in the session yet
-if (!isset($_SESSION['settings'])) {
-    $_SESSION['settings'] = [
-        'institutionName' => 'SmartCampus University',
-        'adminEmail' => 'admin@smartcampus.edu',
-        'emailNotifications' => true,
-        'smsAlerts' => false,
-        'weeklyReports' => true
-    ];
-}
+include "../db.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-// 2. GET Request: Send settings to the frontend when the page loads
+
+// ==========================
+// GET SETTINGS FROM DATABASE
+// ==========================
 if ($method === 'GET') {
-    echo json_encode(['success' => true, 'settings' => $_SESSION['settings']]);
+
+    $result = $conn->query("SELECT * FROM settings WHERE id = 1");
+    $row = $result->fetch_assoc();
+
+    $settings = [
+        "institutionName" => $row['institutionName'],
+        "adminEmail" => $row['adminEmail'],
+        "emailNotifications" => (bool)$row['emailNotifications'],
+        "smsAlerts" => (bool)$row['smsAlerts'],
+        "weeklyReports" => (bool)$row['weeklyReports']
+    ];
+
+    echo json_encode([
+        "success" => true,
+        "settings" => $settings
+    ]);
+
     exit;
 }
 
-// 3. POST Request: Save new settings from the form
-if ($method === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    
-    // Update the session array with the new data
-    $_SESSION['settings'] = [
-        'institutionName' => $data['institutionName'] ?? '',
-        'adminEmail' => $data['adminEmail'] ?? '',
-        'emailNotifications' => $data['emailNotifications'] ?? false,
-        'smsAlerts' => $data['smsAlerts'] ?? false,
-        'weeklyReports' => $data['weeklyReports'] ?? false
-    ];
 
-    echo json_encode(['success' => true, 'message' => 'Settings saved successfully!']);
+// ==========================
+// SAVE SETTINGS TO DATABASE
+// ==========================
+if ($method === 'POST') {
+
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $institutionName = $data['institutionName'] ?? '';
+    $adminEmail = $data['adminEmail'] ?? '';
+    $emailNotifications = $data['emailNotifications'] ? 1 : 0;
+    $smsAlerts = $data['smsAlerts'] ? 1 : 0;
+    $weeklyReports = $data['weeklyReports'] ? 1 : 0;
+
+    $stmt = $conn->prepare("
+        UPDATE settings 
+        SET institutionName=?, adminEmail=?, emailNotifications=?, smsAlerts=?, weeklyReports=? 
+        WHERE id=1
+    ");
+
+    $stmt->bind_param(
+        "ssiii",
+        $institutionName,
+        $adminEmail,
+        $emailNotifications,
+        $smsAlerts,
+        $weeklyReports
+    );
+
+    $stmt->execute();
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Settings saved successfully!"
+    ]);
+
     exit;
 }
 ?>

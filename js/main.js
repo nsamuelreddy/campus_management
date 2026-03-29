@@ -5,7 +5,7 @@ document.getElementById('loginForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
     
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value; // We are ignoring password on backend for now
+    const password = document.getElementById('password').value;
     const selectedRole = document.querySelector('.role-btn.active')?.getAttribute('data-role');
     
     if (email && password && selectedRole) {
@@ -20,12 +20,19 @@ document.getElementById('loginForm')?.addEventListener('submit', function(e) {
             if (data.success) {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
-                if(selectedRole === 'student') window.location.href = 'dashboard.html';
-                else if(selectedRole === 'faculty') window.location.href = 'faculty-dashboard.html';
-                else if(selectedRole === 'admin') window.location.href = 'admin-dashboard.html';
+                // ✅ FIX: .html → .php
+                if(selectedRole === 'student') window.location.href = 'dashboard.php';
+                else if(selectedRole === 'faculty') window.location.href = 'faculty-dashboard.php';
+                else if(selectedRole === 'admin') window.location.href = 'admin-dashboard.php';
+            } else {
+                // ✅ FIX: error handling added
+                alert('Login failed');
             }
         })
-        .catch(err => console.error("Login failed", err));
+        .catch(err => {
+            console.error("Login failed", err);
+            alert('Server error');
+        });
     } else {
         alert('Please fill in all fields and select a role');
     }
@@ -44,9 +51,9 @@ function checkAuth() {
     const user = localStorage.getItem('user');
     const currentPage = window.location.pathname;
     
-    // If not on login page and not logged in, redirect to login
-    if (!currentPage.includes('index.html') && !user && currentPage !== '/') {
-        window.location.href = 'index.html';
+    // ✅ FIX: index.php instead of index.html
+    if (!currentPage.includes('index.php') && !user && currentPage !== '/') {
+        window.location.href = 'index.php';
     }
 }
 
@@ -58,12 +65,13 @@ function logout() {
         body: JSON.stringify({ action: 'logout' })
     }).then(() => {
         localStorage.removeItem('user');
-        window.location.href = 'index.html';
+        // ✅ FIX: index.php
+        window.location.href = 'index.php';
     });
 }
 
 // Run auth check on page load (except for login page)
-if (!window.location.pathname.includes('index.html')) {
+if (!window.location.pathname.includes('index.php')) {
     checkAuth();
 }
 
@@ -74,11 +82,9 @@ if (user.email) {
     const userRole = document.querySelector('.user-info p, .user-role');
     
     if (userInfo) {
-        // Get name from email or set default names based on role
         let displayName = user.email.split('@')[0];
         displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
         
-        // Set role-specific default names if needed
         if (user.role === 'faculty') {
             displayName = 'Dr. ' + displayName;
         } else if (user.role === 'admin') {
@@ -98,15 +104,14 @@ function checkRolePermissions() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const currentPage = window.location.pathname;
     
-    // If user tries to access admin dashboard without admin role
-    if (currentPage.includes('admin-dashboard.html') && user.role !== 'admin') {
+    // ✅ FIX: .html → .php
+    if (currentPage.includes('admin-dashboard.php') && user.role !== 'admin') {
         alert('Access denied. Admin privileges required.');
         logout();
         return;
     }
     
-    // If user tries to access faculty dashboard without faculty role
-    if (currentPage.includes('faculty-dashboard.html') && user.role !== 'faculty') {
+    if (currentPage.includes('faculty-dashboard.php') && user.role !== 'faculty') {
         alert('Access denied. Faculty privileges required.');
         logout();
         return;
@@ -114,7 +119,7 @@ function checkRolePermissions() {
 }
 
 // Run permission check on protected pages
-if (window.location.pathname.includes('admin-dashboard.html') || 
-    window.location.pathname.includes('faculty-dashboard.html')) {
+if (window.location.pathname.includes('admin-dashboard.php') || 
+    window.location.pathname.includes('faculty-dashboard.php')) {
     checkRolePermissions();
 }

@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+<?php
+session_start();
+
+// if user not logged in → go to login page
+if (!isset($_SESSION['user_email'])) {
+    header("Location: index.html");
+    exit();
+}
+?>
+
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -494,16 +504,23 @@
                         <div class="notification-badge"></div>
                     </div>
                     <div class="user-avatar-header">R</div>
-                    <button class="logout-header-btn" onclick="logout()" title="Logout" style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
-                        Logout
-                    </button>
+                    
+                    <a href="logout.php" class="logout-header-btn"
+                       title="Logout"
+                       style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center;"
+                       onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';"
+                       onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                       Logout
+                     </a>
                 </div>
             </div>
 
             <!-- Content Area -->
             <div class="content-area">
                 <!-- Stats Grid -->
-                <div class="stats-grid"></div>
+                <div class="stats-grid">
+                    <!--All stat cards inside-->
+                </div>
                     <div class="stat-card">
                         <div class="stat-header">
                             <div>
