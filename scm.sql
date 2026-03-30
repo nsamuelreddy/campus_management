@@ -34,13 +34,15 @@ CREATE TABLE notices (
 -- 4. Complaints Table
 CREATE TABLE Complaints (
     complaint_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+    user_id INT NOT NULL,
+    type VARCHAR(50),
     subject VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
     status ENUM('Pending', 'In Progress', 'Resolved') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    INDEX (status)
+    INDEX (status),
+    INDEX (user_id)
 );
 
 -- 5. Feedback Table
@@ -111,6 +113,8 @@ INSERT INTO LostFound (item_type, item_name, location, reporter_id) VALUES
 
 INSERT INTO settings VALUES 
 (1, 'SmartCampus University', 'admin@smartcampus.edu', 1, 0, 1);
+
+ALTER TABLE notices ADD category VARCHAR(50) DEFAULT 'general';
 
 -- Verify results
 SELECT 'Users Created' AS Status, COUNT(*) FROM Users;

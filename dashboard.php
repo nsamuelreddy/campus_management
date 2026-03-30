@@ -2,7 +2,7 @@
 session_start();
 
 // if user not logged in → go to login page
-if (!isset($_SESSION['user_email'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: index.html");
     exit();
 }
@@ -121,23 +121,23 @@ if (!isset($_SESSION['user_email'])) {
                 <div class="stats-grid">
                     <div class="stat-card notices">
                         <div class="stat-icon">📢</div>
-                        <div class="stat-number" id="stat-total">12</div>
+                        <div class="stat-number" id="student-notices">0</div>
                         <div class="stat-label">Total Notices</div>
-                        <div class="stat-change">+3 this week</div>
+                        <div class="stat-change">Updated live</div>
                     </div>
                     <div class="stat-card complaints">
                         <div class="stat-icon">📝</div>
-                        <div class="stat-number" id="stat-users">2</div>
-                        <div class="stat-label">Active Complaints</div>
+                        <div class="stat-number" id="student-complaints">0</div>
+                        <div class="stat-label">Total Complaints</div>
                     </div>
                     <div class="stat-card resolved">
                         <div class="stat-icon">✅</div>
-                        <div class="stat-number" id="stat-resolved">5</div>
+                        <div class="stat-number" id="student-resolved">0</div>
                         <div class="stat-label">Resolved</div>
                     </div>
                     <div class="stat-card pending">
                         <div class="stat-icon">⏰</div>
-                        <div class="stat-number" id="stat-pending">1</div>
+                        <div class="stat-number" id="student-pending">0</div>
                         <div class="stat-label">Pending</div>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ if ($action === 'login') {
     $email = $data['email'] ?? '';
     $role = $data['role'] ?? 'student';
 
-
+    $_SESSION['user_id'];
     $_SESSION['user_email'] = $email;
     $_SESSION['user_role'] = $role;
 
