@@ -1,3 +1,4 @@
+
 // Main JavaScript - Common functionality across all pages
 
 // Login functionality
@@ -13,20 +14,25 @@ document.getElementById('loginForm')?.addEventListener('submit', function(e) {
         fetch('api/auth.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'login', email: email, role: selectedRole })
+            body: JSON.stringify({ 
+                action: 'login', 
+                email: email, 
+                password: password,   //  ADDED THIS LINE ONLY
+                role: selectedRole 
+            })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
-                // ✅ FIX: .html → .php
+                // FIX: .html → .php
                 if(selectedRole === 'student') window.location.href = 'dashboard.php';
                 else if(selectedRole === 'faculty') window.location.href = 'faculty-dashboard.php';
                 else if(selectedRole === 'admin') window.location.href = 'admin-dashboard.php';
             } else {
-                // ✅ FIX: error handling added
-                alert('Login failed');
+                // FIX: error handling added
+                alert(data.message || 'Login failed');
             }
         })
         .catch(err => {
@@ -51,7 +57,7 @@ function checkAuth() {
     const user = localStorage.getItem('user');
     const currentPage = window.location.pathname;
     
-    // ✅ FIX: index.php instead of index.html
+    //  FIX: index.php instead of index.html
     if (!currentPage.includes('index.php') && !user && currentPage !== '/') {
         window.location.href = 'index.php';
     }
@@ -65,7 +71,7 @@ function logout() {
         body: JSON.stringify({ action: 'logout' })
     }).then(() => {
         localStorage.removeItem('user');
-        // ✅ FIX: index.php
+        //  FIX: index.php
         window.location.href = 'index.php';
     });
 }
@@ -104,7 +110,7 @@ function checkRolePermissions() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const currentPage = window.location.pathname;
     
-    // ✅ FIX: .html → .php
+    //  FIX: .html → .php
     if (currentPage.includes('admin-dashboard.php') && user.role !== 'admin') {
         alert('Access denied. Admin privileges required.');
         logout();

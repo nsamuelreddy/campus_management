@@ -108,6 +108,12 @@ INSERT INTO notices (title, content, author_id, expiry_date) VALUES
 INSERT INTO Complaints (user_id, subject, description, status) VALUES 
 (2, 'Leaking Pipe', 'drainage leakage near mess V.', 'Pending');
 
+INSERT INTO Complaints (user_id, subject, description, status, created_at) VALUES
+(2, 'Water Issue', 'No water in hostel', 'Resolved', '2026-01-10'),
+(2, 'WiFi Issue', 'Slow internet', 'Pending', '2026-02-15'),
+(2, 'Electricity', 'Power cut frequently', 'Resolved', '2026-03-05'),
+(2, 'Mess Food', 'Food quality is poor', 'Pending', '2026-04-01');
+
 INSERT INTO LostFound (item_type, item_name, location, reporter_id) VALUES 
 ('Found', 'Blue bottle', 'director office near the window', 2);
 
