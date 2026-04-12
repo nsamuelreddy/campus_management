@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus - Lost & Found</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/student-portal.css">
     <style>
         /* Modal Styles */
         .modal-overlay {
@@ -32,7 +33,7 @@
         }
     </style>
 </head>
-<body>
+<body class="student-portal">
     <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -87,13 +88,13 @@
             <!-- Top Navigation -->
             <div class="top-nav">
                 <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Search...">
+                    <input type="text" class="search-input" placeholder="Search lost and found items...">
                     <span class="search-icon">🔍</span>
                 </div>
                 <div class="top-nav-right">
                     <button class="notification-btn">
                         🔔
-                        <span class="notification-badge"></span>
+                        <span class="notification-badge">3</span>
                     </button>
                     <div class="user-profile">
                         <div class="user-avatar">A</div>
@@ -102,7 +103,7 @@
                             <p>Student</p>
                         </div>
                     </div>
-                    <button class="logout-btn" onclick="logout()" title="Logout" style="margin-left: 16px; background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                    <button class="logout-btn logout-btn-modern" onclick="logout()" title="Logout">
                         Logout
                     </button>
                 </div>
@@ -110,9 +111,16 @@
 
             <!-- Page Content -->
             <div class="content-area">
-                <div class="page-header">
-                    <h1 class="page-title">Lost & Found</h1>
-                    <p class="page-subtitle">Report or find lost items on campus</p>
+                <div class="page-header page-header-modern">
+                    <div>
+                        <p class="eyebrow">Student Portal</p>
+                        <h1 class="page-title">Lost &amp; Found</h1>
+                        <p class="page-subtitle">Report items quickly and reconnect owners with confidence.</p>
+                    </div>
+                    <div class="header-pills">
+                        <span class="header-pill">Instant Reports</span>
+                        <span class="header-pill">Campus Wide</span>
+                    </div>
                 </div>
 
                 <div class="page-actions">
@@ -169,14 +177,14 @@
     </div>
     <div class="modal-overlay" id="reportModalOverlay"></div>
     <div class="modal" id="reportModal">
-        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div class="modal-header modal-header-modern">
             <h2>Report Lost/Found Item</h2>
-            <button onclick="closeReportModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            <button class="modal-close-btn" onclick="closeReportModal()">&times;</button>
         </div>
         <form id="reportItemForm" onsubmit="submitReportItem(event)">
             <div class="form-group">
                 <label class="form-label">Status</label>
-                <select id="reportStatus" class="form-input" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px;" required>
+                <select id="reportStatus" class="form-input modal-select" required>
                     <option value="Lost">I Lost Something</option>
                     <option value="Found">I Found Something</option>
                 </select>
@@ -187,15 +195,15 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Description</label>
-                <textarea id="reportDescription" class="form-input" placeholder="Provide a short description..." style="height: 80px;" required></textarea>
+                <textarea id="reportDescription" class="form-input modal-textarea" placeholder="Provide a short description..." required></textarea>
             </div>
             <div class="form-group">
                 <label class="form-label">Location</label>
                 <input type="text" id="reportLocation" class="form-input" placeholder="e.g., Library Entrance" required>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                <button type="button" class="secondary-btn" onclick="closeReportModal()" style="padding: 10px 20px; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
-                <button type="submit" class="primary-btn" style="padding: 10px 20px; border: none; background: #3b82f6; color: white; border-radius: 6px; cursor: pointer;">Submit Report</button>
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" onclick="closeReportModal()">Cancel</button>
+                <button type="submit" class="primary-btn">Submit Report</button>
             </div>
         </form>
     </div>

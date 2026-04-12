@@ -1,45 +1,85 @@
 # SmartCampus - Backend Architecture & API Overview
 
 ## Architecture Overview
-This project currently utilizes a **RESTful Mock API** built with PHP. To facilitate rapid frontend development and testing without a live database, all data is temporarily stored using PHP `$_SESSION` variables. 
+This project now uses a PHP + MySQL backend with PDO.
 
-This architecture ensures the frontend functions exactly as it will in production (sending asynchronous `fetch` requests and receiving JSON responses). To transition to production, the database team only needs to replace the `$_SESSION` array manipulations in the PHP files with standard SQL queries (e.g., `SELECT`, `INSERT`, `UPDATE`). No changes to the frontend JavaScript or HTML are required.
+- Core DB helper: `api/db.php`
+- Persistent storage: MySQL tables from `scm.sql` (database name: `project`)
+- Auth/session model: PHP session stores current logged-in user, while business data is persisted in MySQL
+
+The frontend still communicates through `fetch` calls to `api/*.php` and expects JSON responses.
+
+---
+
+## Environment Configuration
+
+Backend DB connection settings are read from environment variables with defaults:
+
+- `DB_HOST` (default `127.0.0.1`)
+- `DB_PORT` (default `3306`)
+- `DB_NAME` (default `project`)
+- `DB_USER` (default `root`)
+- `DB_PASS` (default empty)
+
+Google token audience validation:
+
+- `GOOGLE_CLIENT_ID` (recommended to set explicitly on server)
 
 ---
 
 ## API Endpoints
 
-All endpoints are located within the `api/` directory.
+All endpoints are located in the `api/` directory.
 
 ### 1. Authentication (`api/auth.php`)
-* **Purpose:** Manages user login states and role switching.
-* **Important Note:** The logout logic intentionally uses `unset($_SESSION['user'])` rather than `session_destroy()`. This prevents the mock database (notices, items, complaints) from being wiped when switching between Admin, Faculty, and Student roles during testing.
+- Handles `login`, `google_login`, and `logout`.
+- Uses Google `tokeninfo` verification for Google sign-in.
+- Persists users into `Users` table via shared DB helper.
+- Keeps role mapping for configured Google emails.
 
-### 2. Admin Settings (`api/settings.php`)
-* **`GET`:** Returns the current platform settings (Institution Name, Admin Email, and toggle switch states) to populate the admin form.
-* **`POST`:** Receives JSON payload from the admin form and updates the session data accordingly.
+### 2. Notifications (`api/notifications.php`)
+- `GET`: Returns notification list and unread count for current session user.
+- `POST`: Supports `mark_read` and `mark_all_read`.
+- Backed by `notifications` table.
 
-### 3. Notices Board (`api/notices.php`)
-* **`GET`:** Fetches the array of all published notices for the Student dashboard, allowing frontend filtering by category (Academic, Events, Urgent).
-* **`POST`:** Allows Faculty to submit a new notice, which is instantly unshifted to the top of the shared session array.
+### 3. Notices (`api/notices.php`)
+- `GET`: Returns all notices.
+- `POST`: Faculty/Admin can create or delete notices.
+- Writes notifications for impacted roles.
 
-### 4. Lost & Found (`api/lost-found.php`)
-* **`GET`:** Loads all reported lost and found items into the frontend grid.
-* **`POST`:** Receives form data from the "Report Item" modal (Status, Item Name, Description, Location) and stores it with an automatically generated timestamp.
+### 4. Complaints (`api/complaints.php`)
+- `GET`: Students see own complaints; Faculty/Admin see all.
+- `POST`: Students create complaints; Faculty/Admin can update complaint status.
+- Emits notifications for submit/update events.
 
-### 5. Faculty Feedback (`api/feedback.php`)
-* **`POST`:** Captures complex form data submitted by students. This includes dropdown selections (Semester, Department, Faculty, Subject) and an array of individual 1-5 star ratings, saving the complete object to the session.
+### 5. Dashboard (`api/dashboard.php`)
+- Returns role-specific stats.
+- For Faculty/Admin, includes complaint trend and feedback distribution data.
 
-### 6. Dashboard Analytics (`api/dashboard.php`)
-* **`GET`:** Acts as the processing engine for the admin dashboard visualizations. It performs the following calculations before returning data to the frontend:
-  * Counts total active users.
-  * Iterates through complaints to calculate "Resolved" vs. "Pending" issues.
-  * Generates an array of percentages used to dynamically animate the "Complaint Trends" CSS bar chart.
-  * Calculates exact 360-degree CSS conic-gradient values for the "Feedback Ratings" donut chart based on aggregated student star ratings.
+### 6. Analytics (`api/analytics.php`)
+- Returns monthly complaint totals and resolved counts for chart rendering.
+
+### 7. Feedback (`api/feedback.php`)
+- `POST`: Stores feedback ratings in `Feedback` table.
+- `GET`: Returns submitted feedback records.
+
+### 8. Lost & Found (`api/lost-found.php`)
+- `GET`: Returns reported items.
+- `POST`: Stores new reports in `LostFound` table.
+
+### 9. Settings (`api/settings.php`)
+- `GET`: Reads campus settings.
+- `POST`: Upserts settings row.
+
+### 10. Users (`api/users.php`)
+- `GET`: Lists users from `Users` table.
+- `POST` (`action=update`): Updates user profile fields.
 
 ---
 
-## Handoff Notes for Database Integration
-* **Data Format:** The frontend strictly expects responses in JSON format: `{"success": true, "data": [...]}`. 
-* **Routing:** All frontend `fetch` calls are currently hardcoded to point to the `api/` directory. 
-* **Next Steps:** Swap the `$SESSION` variables in each endpoint with your MySQL connection and queries. Ensure the JSON response structure remains identical to maintain frontend compatibility.
+## Deployment Notes
+
+- Import `scm.sql` before running APIs.
+- Ensure PHP has PDO MySQL extension enabled.
+- Keep API response structure stable to avoid frontend regressions.
+- Keep secrets (DB password, OAuth secrets) in environment variables, not in source code.

@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus - Student Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/student-portal.css">
 </head>
-<body>
+<body class="student-portal">
     <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -61,13 +62,13 @@
             <!-- Top Navigation -->
             <div class="top-nav">
                 <div class="search-bar">
-                    <input type="text" class="search-input" placeholder="Search...">
+                    <input type="text" class="search-input" placeholder="Search notices, complaints, updates...">
                     <span class="search-icon">🔍</span>
                 </div>
                 <div class="top-nav-right">
                     <button class="notification-btn">
                         🔔
-                        <span class="notification-badge"></span>
+                        <span class="notification-badge">3</span>
                     </button>
                     <div class="user-profile">
                         <div class="user-avatar">A</div>
@@ -76,7 +77,7 @@
                             <p>Student</p>
                         </div>
                     </div>
-                    <button class="logout-btn" onclick="logout()" title="Logout" style="margin-left: 16px; background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                    <button class="logout-btn logout-btn-modern" onclick="logout()" title="Logout">
                         Logout
                     </button>
                 </div>
@@ -84,9 +85,16 @@
 
             <!-- Page Content -->
             <div class="content-area">
-                <div class="page-header">
-                    <h1 class="page-title">Student Dashboard</h1>
-                    <p class="page-subtitle">Welcome back! Here's what's happening on campus.</p>
+                <div class="page-header page-header-modern">
+                    <div>
+                        <p class="eyebrow">Student Portal</p>
+                        <h1 class="page-title">Your Campus Command Center</h1>
+                        <p class="page-subtitle">Track updates, complaints, and priorities from one polished view.</p>
+                    </div>
+                    <div class="header-pills">
+                        <span class="header-pill">Live Notices</span>
+                        <span class="header-pill">Role: Student</span>
+                    </div>
                 </div>
 
                 <!-- Statistics Cards -->

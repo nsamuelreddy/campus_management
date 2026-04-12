@@ -1,0 +1,406 @@
+/* Shared modern theme for faculty and admin portals */
+
+.faculty-portal,
+.admin-portal {
+    --portal-bg: #edf2ff;
+    --portal-bg-deep: #dfe9ff;
+    --portal-surface: rgba(255, 255, 255, 0.9);
+    --portal-border: rgba(82, 112, 228, 0.2);
+    --portal-text: #0f172a;
+    --portal-muted: #4b5563;
+    --portal-primary: #2f58ff;
+    --portal-primary-dark: #264ad4;
+    --portal-shadow: 0 14px 32px rgba(22, 41, 110, 0.12);
+    background:
+        radial-gradient(circle at 10% 8%, rgba(47, 88, 255, 0.16), transparent 34%),
+        radial-gradient(circle at 90% 14%, rgba(0, 164, 202, 0.12), transparent 30%),
+        linear-gradient(180deg, var(--portal-bg) 0%, var(--portal-bg-deep) 100%);
+    position: relative;
+}
+
+.faculty-portal .sidebar,
+.admin-portal .sidebar {
+    background: linear-gradient(188deg, #0f1d4b 0%, #1f2860 60%, #2a3b87 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 12px 0 36px rgba(8, 13, 40, 0.24);
+}
+
+.faculty-portal .sidebar-header,
+.admin-portal .sidebar-header {
+    border-bottom-color: rgba(255, 255, 255, 0.16);
+}
+
+.faculty-portal .logo,
+.admin-portal .logo {
+    background: linear-gradient(135deg, #66a0ff, #2f58ff);
+    box-shadow: 0 8px 20px rgba(57, 102, 255, 0.36);
+}
+
+.faculty-portal .nav-link,
+.admin-portal .nav-link {
+    border-radius: 12px;
+    margin: 4px 12px;
+}
+
+.faculty-portal .nav-link.active,
+.admin-portal .nav-link.active {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.22), rgba(109, 146, 255, 0.34));
+    color: #ffffff;
+    border-left: none;
+}
+
+.faculty-portal .nav-link:hover:not(.active),
+.admin-portal .nav-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.faculty-portal .main-content,
+.admin-portal .main-content {
+    background: transparent;
+    position: relative;
+    z-index: 1;
+}
+
+.admin-portal .sidebar .user-profile {
+    display: none;
+}
+
+.faculty-portal .sidebar .user-profile {
+    display: none;
+}
+
+.faculty-portal .top-nav-left h1,
+.admin-portal .header-left h1 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #0b173b;
+}
+
+.faculty-portal .top-nav-left p,
+.admin-portal .header-left p {
+    color: #42506a;
+}
+
+.faculty-portal .top-nav,
+.admin-portal .top-header {
+    margin: 16px 16px 0;
+    border-radius: 16px;
+    border: 1px solid var(--portal-border);
+    background: var(--portal-surface);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+    position: relative;
+    z-index: 2;
+}
+
+.faculty-portal .content-area,
+.admin-portal .content-area {
+    padding: 24px;
+    position: relative;
+    isolation: isolate;
+    background: transparent;
+}
+
+.faculty-portal .content-area::before,
+.admin-portal .content-area::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    top: 12px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(47, 88, 255, 0.28), rgba(47, 88, 255, 0));
+    pointer-events: none;
+    z-index: 0;
+}
+
+.faculty-portal .content-area > *,
+.admin-portal .content-area > * {
+    position: relative;
+    z-index: 1;
+}
+
+.faculty-portal .search-input,
+.admin-portal .search-input,
+.faculty-portal .form-input,
+.faculty-portal .form-select,
+.faculty-portal .form-textarea,
+.admin-portal .form-input,
+.admin-portal .form-select {
+    border: 1px solid #d9e3ff;
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--portal-text);
+}
+
+.faculty-portal .search-input:focus,
+.admin-portal .search-input:focus,
+.faculty-portal .form-input:focus,
+.faculty-portal .form-select:focus,
+.faculty-portal .form-textarea:focus,
+.admin-portal .form-input:focus,
+.admin-portal .form-select:focus {
+    outline: none;
+    border-color: #7f9cff;
+    box-shadow: 0 0 0 4px rgba(47, 88, 255, 0.12);
+}
+
+.faculty-portal .notification-icon,
+.admin-portal .notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #d8e2ff;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faculty-portal .notification-icon:hover,
+.admin-portal .notification-icon:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(47, 88, 255, 0.2);
+}
+
+.faculty-portal .notification-badge,
+.admin-portal .notification-badge {
+    min-width: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(120deg, #ff4d67, #ff6b84);
+    box-shadow: 0 0 0 2px #ffffff;
+    font-size: 0;
+    color: transparent;
+}
+
+.faculty-portal .nav-icon,
+.admin-portal .nav-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.faculty-portal .nav-link.active .nav-icon,
+.admin-portal .nav-link.active .nav-icon {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.faculty-portal .user-avatar,
+.faculty-portal .user-avatar-header,
+.admin-portal .user-avatar,
+.admin-portal .user-avatar-header {
+    background: linear-gradient(135deg, #2f58ff, #15aabf);
+    box-shadow: 0 8px 16px rgba(47, 88, 255, 0.24);
+}
+
+.faculty-portal .header-user-info,
+.admin-portal .header-user-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.faculty-portal .user-details,
+.admin-portal .user-details {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.faculty-portal .user-name-header,
+.admin-portal .user-name-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+}
+
+.faculty-portal .user-role-header,
+.admin-portal .user-role-header {
+    font-size: 13px;
+    color: #334155;
+}
+
+.faculty-portal .logout-btn,
+.admin-portal .logout-btn,
+.admin-portal .logout-header-btn,
+.faculty-portal .logout-icon {
+    background: #ffffff;
+    color: #334155;
+    border: 1px solid #d9e3ff;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: none;
+}
+
+.faculty-portal .logout-btn:hover,
+.admin-portal .logout-btn:hover,
+.admin-portal .logout-header-btn:hover,
+.faculty-portal .logout-icon:hover {
+    background: #eaf0ff;
+    color: #1f3bbb;
+    transform: none;
+}
+
+.faculty-portal .stats-grid > .stat-card,
+.faculty-portal .quick-actions,
+.faculty-portal .notice-form-card,
+.faculty-portal .notice-list-card,
+.faculty-portal .complaints-list,
+.faculty-portal .filters,
+.faculty-portal .complaint-card,
+.admin-portal .stats-grid > .stat-card,
+.admin-portal .chart-card,
+.admin-portal .users-table,
+.admin-portal .settings-card,
+.admin-portal .system-health,
+.admin-portal .recent-activity,
+.admin-portal .card {
+    border: 1px solid var(--portal-border);
+    border-radius: 16px;
+    background: var(--portal-surface);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--portal-shadow);
+}
+
+.faculty-portal .stats-grid,
+.admin-portal .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.faculty-portal .stats-grid > .stat-card,
+.admin-portal .stats-grid > .stat-card {
+    min-height: 150px;
+}
+
+.faculty-portal .stats-grid > .stat-card,
+.faculty-portal .quick-actions,
+.faculty-portal .notice-form-card,
+.faculty-portal .notice-list-card,
+.faculty-portal .complaints-list,
+.faculty-portal .filters,
+.faculty-portal .complaint-card,
+.admin-portal .stats-grid > .stat-card,
+.admin-portal .chart-card,
+.admin-portal .users-table,
+.admin-portal .settings-card,
+.admin-portal .system-health,
+.admin-portal .recent-activity,
+.admin-portal .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faculty-portal .stats-grid > .stat-card:hover,
+.faculty-portal .quick-actions:hover,
+.faculty-portal .notice-form-card:hover,
+.faculty-portal .notice-list-card:hover,
+.faculty-portal .complaint-card:hover,
+.admin-portal .stats-grid > .stat-card:hover,
+.admin-portal .chart-card:hover,
+.admin-portal .users-table:hover,
+.admin-portal .settings-card:hover,
+.admin-portal .system-health:hover,
+.admin-portal .recent-activity:hover,
+.admin-portal .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 34px rgba(24, 45, 116, 0.16);
+}
+
+.faculty-portal .content-area > *,
+.admin-portal .content-area > * {
+    animation: portalFadeUp 0.45s ease both;
+}
+
+.faculty-portal .content-area > *:nth-child(2),
+.admin-portal .content-area > *:nth-child(2) {
+    animation-delay: 0.06s;
+}
+
+.faculty-portal .content-area > *:nth-child(3),
+.admin-portal .content-area > *:nth-child(3) {
+    animation-delay: 0.12s;
+}
+
+@keyframes portalFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.faculty-portal .primary-btn,
+.faculty-portal .submit-btn,
+.admin-portal .primary-btn,
+.admin-portal .btn-save,
+.admin-portal .save-button {
+    background: linear-gradient(120deg, #2f58ff, #2c7ff6);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 18px rgba(47, 88, 255, 0.24);
+}
+
+.faculty-portal .primary-btn:hover,
+.faculty-portal .submit-btn:hover,
+.admin-portal .primary-btn:hover,
+.admin-portal .btn-save:hover,
+.admin-portal .save-button:hover {
+    background: linear-gradient(120deg, #2648d8, #286fd8);
+}
+
+.faculty-portal .secondary-btn,
+.admin-portal .btn-cancel,
+.admin-portal .edit-btn {
+    background: #eef3ff;
+    border: 1px solid #d4e0ff;
+    color: #1f3bbb;
+    border-radius: 10px;
+}
+
+.faculty-portal .secondary-btn:hover,
+.admin-portal .btn-cancel:hover,
+.admin-portal .edit-btn:hover {
+    background: #e1eaff;
+}
+
+.admin-portal .users-table thead {
+    background: #eef3ff;
+}
+
+.admin-portal .users-table tbody tr:hover {
+    background: #f7f9ff;
+}
+
+@media (max-width: 900px) {
+    .faculty-portal .top-nav,
+    .admin-portal .top-header {
+        margin: 10px 10px 0;
+    }
+
+    .faculty-portal .content-area,
+    .admin-portal .content-area {
+        padding: 14px;
+    }
+
+    .faculty-portal .content-area::before,
+    .admin-portal .content-area::before {
+        left: 14px;
+        right: 14px;
+    }
+}

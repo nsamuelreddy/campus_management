@@ -1,24 +1,26 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
-// 1. Set up some dummy users if the session is empty
-if (!isset($_SESSION['users'])) {
-    $_SESSION['users'] = [
-        ['id' => 1, 'name' => 'Arjun Sharma', 'email' => 'arjun@campus.edu', 'role' => 'Student', 'status' => 'Active'],
-        ['id' => 2, 'name' => 'Dr. Priya Mehta', 'email' => 'priya@campus.edu', 'role' => 'Faculty', 'status' => 'Active'],
-        ['id' => 3, 'name' => 'Sneha R.', 'email' => 'sneha@campus.edu', 'role' => 'Student', 'status' => 'Active'],
-        ['id' => 4, 'name' => 'Rohit K.', 'email' => 'rohit@campus.edu', 'role' => 'Student', 'status' => 'Inactive'],
-        ['id' => 5, 'name' => 'Rajesh Kumar', 'email' => 'admin@campus.edu', 'role' => 'Admin', 'status' => 'Active']
-    ];
-}
+require_once __DIR__ . '/db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+$pdo = db();
 
 // 2. GET Request: Send all users to the frontend
 if ($method === 'GET') {
-    echo json_encode(['success' => true, 'users' => $_SESSION['users']]);
-    exit;
+    $stmt = $pdo->query('SELECT user_id AS id, full_name AS name, email, role FROM Users ORDER BY user_id ASC');
+    $rows = $stmt->fetchAll();
+    $users = array_map(function ($row) {
+        return [
+            'id' => (int)$row['id'],
+            'name' => (string)$row['name'],
+            'email' => (string)$row['email'],
+            'role' => (string)$row['role'],
+            'status' => 'Active',
+        ];
+    }, $rows);
+
+    jsonResponse(['success' => true, 'users' => $users]);
 }
 
 // 3. POST Request: Update an existing user
@@ -26,21 +28,31 @@ if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     
     if (isset($data['action']) && $data['action'] === 'update') {
-        $idToUpdate = (int)$data['id'];
-        
-        // Find the user and update their details
-        foreach ($_SESSION['users'] as $key => $user) {
-            if ($user['id'] === $idToUpdate) {
-                $_SESSION['users'][$key]['name'] = $data['name'];
-                $_SESSION['users'][$key]['email'] = $data['email'];
-                $_SESSION['users'][$key]['role'] = $data['role'];
-                $_SESSION['users'][$key]['status'] = $data['status'];
-                break;
-            }
+        $idToUpdate = (int)($data['id'] ?? 0);
+        if ($idToUpdate <= 0) {
+            jsonResponse(['success' => false, 'message' => 'Invalid user id']);
         }
-        
-        echo json_encode(['success' => true, 'message' => 'User updated successfully!']);
-        exit;
+
+        $name = trim((string)($data['name'] ?? ''));
+        $email = strtolower(trim((string)($data['email'] ?? '')));
+        $roleRaw = trim((string)($data['role'] ?? 'Student'));
+
+        if ($name === '' || $email === '') {
+            jsonResponse(['success' => false, 'message' => 'Name and email are required']);
+        }
+
+        $roleDb = in_array($roleRaw, ['Admin', 'Faculty', 'Student'], true) ? $roleRaw : 'Student';
+
+        try {
+            $stmt = $pdo->prepare('UPDATE Users SET full_name = ?, email = ?, role = ? WHERE user_id = ?');
+            $stmt->execute([$name, $email, $roleDb, $idToUpdate]);
+        } catch (Throwable $e) {
+            jsonResponse(['success' => false, 'message' => 'Unable to update user. Email may already exist.']);
+        }
+
+        jsonResponse(['success' => true, 'message' => 'User updated successfully!']);
     }
 }
+
+jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
 ?>

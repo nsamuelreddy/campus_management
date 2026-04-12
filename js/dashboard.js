@@ -7,11 +7,6 @@ document.querySelector('.top-nav .search-input')?.addEventListener('input', func
     // Frontend only - search functionality would filter content
 });
 
-// Notification button
-document.querySelector('.notification-btn')?.addEventListener('click', function() {
-    alert('Notifications would be displayed here (Frontend only - no backend connection)');
-});
-
 // User profile dropdown (optional)
 document.querySelector('.user-profile')?.addEventListener('click', function() {
     console.log('User profile clicked');
@@ -101,13 +96,17 @@ function loadStudentDashboard() {
         if (data.success == true) {
             let stats = data.stats;
             
-            // 1. Get the numbers from our PHP file
-            let noticesCount = stats.activeNotices;
-            let totalComplaints = stats.myComplaints;
-            let resolvedCount = stats.myResolved;
-            
-            // 2. Do simple math for the pending count
-            let pendingCount = totalComplaints - resolvedCount;
+            // 1. Get live totals from backend (with compatibility fallback)
+            let noticesCount = Number(stats.activeNotices || 0);
+            let totalComplaints = Number(
+                stats.totalComplaints !== undefined ? stats.totalComplaints : (stats.myComplaints || 0)
+            );
+            let resolvedCount = Number(
+                stats.resolvedIssues !== undefined ? stats.resolvedIssues : (stats.myResolved || 0)
+            );
+            let pendingCount = Number(
+                stats.pendingIssues !== undefined ? stats.pendingIssues : Math.max(0, totalComplaints - resolvedCount)
+            );
 
             // 3. Update the HTML on the screen
             noticesBox.innerText = noticesCount;

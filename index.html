@@ -6,8 +6,14 @@
     <title>SmartCampus - Login</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body data-google-client-id="624797960394-5jua4vjq39v027c129qp9l9ntrvivobi.apps.googleusercontent.com">
     <div class="login-container">
+        <div class="login-ambient" aria-hidden="true">
+            <span class="orb orb-1"></span>
+            <span class="orb orb-2"></span>
+            <span class="orb orb-3"></span>
+            <span class="grid-glow"></span>
+        </div>
         <div class="login-card">
             <div class="logo">🎓</div>
             <h1 class="login-title">Smart Campus</h1>
@@ -35,11 +41,16 @@
                 
                 <button type="submit" class="login-btn">Sign In</button>
             </form>
+
+            <div class="oauth-divider"><span>or</span></div>
+            <div id="googleSignInButton" class="google-signin-wrap"></div>
+            <p id="googleSignInStatus" class="google-signin-status" aria-live="polite"></p>
             
-            <p class="demo-text">Demo: Use any email & password to login</p>
+            <p class="demo-text">Demo login: student@project.com / student123, faculty@project.com / faculty123, admin@campus.edu / admin123</p>
         </div>
     </div>
 
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="js/main.js"></script>
 </body>
 </html>

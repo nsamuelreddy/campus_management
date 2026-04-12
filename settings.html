@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus · Settings</title>
     <link rel="stylesheet" href="css/admin-style.css">
+    <link rel="stylesheet" href="css/portal-modern.css">
     <style>
         .settings-grid {
             display: flex;
@@ -156,7 +157,7 @@
         }
     </style>
 </head>
-<body>
+<body class="admin-portal">
     <div class="app-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -210,8 +211,14 @@
                         🔔
                         <div class="notification-badge"></div>
                     </div>
-                    <div class="user-avatar-header">R</div>
-                    <button class="logout-header-btn" onclick="logout()" title="Logout" style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
+                    <div class="header-user-info">
+                        <div class="user-avatar-header">R</div>
+                        <div class="user-details">
+                            <div class="user-name-header">Rajesh Kumar</div>
+                            <div class="user-role-header">Admin</div>
+                        </div>
+                    </div>
+                    <button class="logout-header-btn" onclick="logout()" title="Logout">
                         Logout
                     </button>
                 </div>

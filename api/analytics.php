@@ -1,32 +1,44 @@
 <?php
 session_start();
 header('Content-Type: application/json');
+require_once __DIR__ . '/db.php';
 
-// Calculate Complaints Data for the Bar Chart
-$resolvedCount = 0;
-$pendingCount = 0;
+$pdo = db();
 
-if (isset($_SESSION['complaints'])) {
-    foreach ($_SESSION['complaints'] as $complaint) {
-        if ($complaint['status'] === 'Resolved') {
-            $resolvedCount++;
-        } else {
-            $pendingCount++;
-        }
-    }
+$sql = "
+    SELECT
+        DATE_FORMAT(created_at, '%b') AS month_name,
+        DATE_FORMAT(created_at, '%Y-%m') AS month_key,
+        COUNT(*) AS total,
+        SUM(CASE WHEN status = 'Resolved' THEN 1 ELSE 0 END) AS resolved
+    FROM Complaints
+    WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+    GROUP BY month_key, month_name
+    ORDER BY month_key ASC
+";
+
+$rows = $pdo->query($sql)->fetchAll();
+$monthlyData = [];
+
+foreach ($rows as $row) {
+    $monthlyData[] = [
+        'month' => (string)$row['month_name'],
+        'total' => (int)$row['total'],
+        'resolved' => (int)$row['resolved'],
+    ];
 }
 
-// Generate some mock historical data, but make the current month reflect real data
-$monthlyData = [
-    ['month' => 'Jan', 'total' => 15, 'resolved' => 12],
-    ['month' => 'Feb', 'total' => 22, 'resolved' => 18],
-    ['month' => 'Mar', 'total' => 18, 'resolved' => 15],
-    ['month' => 'Apr', 'total' => ($resolvedCount + $pendingCount + 5), 'resolved' => $resolvedCount] // Current real data
-];
+if (empty($monthlyData)) {
+    $monthlyData = [
+        ['month' => 'Jan', 'total' => 0, 'resolved' => 0],
+        ['month' => 'Feb', 'total' => 0, 'resolved' => 0],
+        ['month' => 'Mar', 'total' => 0, 'resolved' => 0],
+        ['month' => 'Apr', 'total' => 0, 'resolved' => 0],
+    ];
+}
 
-echo json_encode([
+jsonResponse([
     'success' => true,
     'chartData' => $monthlyData
 ]);
-exit;
 ?>

@@ -504,8 +504,9 @@
         .legend-dot.negative { background: #f97316; }
         .legend-dot.improvement { background: #ef4444; }
     </style>
+    <link rel="stylesheet" href="css/portal-modern.css">
 </head>
-<body>
+<body class="faculty-portal">
     <div class="app-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -585,7 +586,7 @@
                     </select>
                 </div>
 
-                <div class="stats-grid"></div>
+                <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-card-header">
                             <div class="stat-icon rating">⭐</div>
@@ -716,6 +717,41 @@
         </div>
     </div>
     <script>
+        function syncLoggedInFacultySelector() {
+            const selects = document.querySelectorAll('.filter-select');
+            const facultySelect = selects[0];
+            if (!facultySelect) return;
+
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const fallbackName = String(user.name || user.email || 'My Faculty Feedback').trim();
+
+            fetch('api/auth.php?action=me')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    const currentUser = data.success && data.user ? data.user : user;
+                    const displayName = String(currentUser.name || currentUser.email || fallbackName).trim();
+
+                    facultySelect.innerHTML = '';
+                    const option = document.createElement('option');
+                    option.value = displayName;
+                    option.textContent = '👤 ' + displayName;
+                    facultySelect.appendChild(option);
+                    facultySelect.disabled = true;
+                    facultySelect.title = 'Showing feedback for the logged-in faculty only';
+                })
+                .catch(function() {
+                    facultySelect.innerHTML = '';
+                    const option = document.createElement('option');
+                    option.value = fallbackName;
+                    option.textContent = '👤 ' + fallbackName;
+                    facultySelect.appendChild(option);
+                    facultySelect.disabled = true;
+                    facultySelect.title = 'Showing feedback for the logged-in faculty only';
+                });
+        }
+
         function loadFacultyStats() {
             // Ask PHP for the feedback data
             fetch('api/feedback.php')
@@ -733,6 +769,9 @@
 
                     // If no one has left feedback yet, we can stop the code right here.
                     if (totalResponses === 0) {
+                        document.getElementById('overall-rating').innerText = '0.0';
+                        document.getElementById('rating-label').innerText = 'No Data';
+                        document.getElementById('rating-label').style.color = '#64748b';
                         return; 
                     }
 
@@ -759,6 +798,10 @@
 
                     // Do the math (Average = Total sum / Count)
                     let averageRating = sumOfAllStars / totalQuestionsAnswered;
+
+                    if (!isFinite(averageRating)) {
+                        averageRating = 0;
+                    }
                     
                     // Show it on the screen (rounded to 1 decimal place)
                     document.getElementById('overall-rating').innerText = averageRating.toFixed(1);
@@ -772,8 +815,8 @@
                         label.innerText = "Good";
                         label.style.color = "#3b82f6"; // Blue
                     } else {
-                        label.innerText = "Needs Improvement";
-                        label.style.color = "#ef4444"; // Red
+                        label.innerText = averageRating === 0 ? "No Data" : "Needs Improvement";
+                        label.style.color = averageRating === 0 ? "#64748b" : "#ef4444"; // Gray/Red
                     }
                 }
             })
@@ -784,6 +827,7 @@
 
         // Run our function exactly when the page loads
         window.addEventListener('load', function() {
+            syncLoggedInFacultySelector();
             loadFacultyStats();
         });
     </script>

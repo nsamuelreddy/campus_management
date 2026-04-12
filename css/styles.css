@@ -13,47 +13,112 @@ body {
 
 /* Login Page Styles */
 .login-container {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    background:
+        radial-gradient(circle at 8% 12%, rgba(59, 130, 246, 0.34), transparent 30%),
+        radial-gradient(circle at 84% 16%, rgba(16, 185, 129, 0.22), transparent 32%),
+        linear-gradient(160deg, #0b1022 0%, #1d2f66 46%, #2147a9 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    position: relative;
+    overflow: hidden;
 }
 
 .login-card {
-    background: white;
-    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(244, 249, 255, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    border-radius: 22px;
     padding: 40px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 22px 52px rgba(13, 24, 66, 0.45);
     width: 100%;
-    max-width: 400px;
+    max-width: 440px;
     text-align: center;
+    position: relative;
+    z-index: 1;
+    animation: loginCardEnter 0.7s ease both;
 }
 
 .logo {
-    width: 60px;
-    height: 60px;
-    background: #3b82f6;
+    width: 68px;
+    height: 68px;
+    background: linear-gradient(130deg, #2f58ff, #00b4d8);
     border-radius: 50%;
     margin: 0 auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 24px;
+    font-size: 28px;
+    box-shadow: 0 10px 24px rgba(47, 88, 255, 0.34);
+    animation: logoPulse 4.2s ease-in-out infinite;
 }
 
 .login-title {
-    color: #1f2937;
-    font-size: 28px;
-    font-weight: 600;
+    color: #0f172a;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin-bottom: 8px;
 }
 
 .login-subtitle {
-    color: #6b7280;
+    color: #4b5563;
+    font-size: 15px;
     margin-bottom: 32px;
+}
+
+.login-ambient {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(2px);
+    opacity: 0.8;
+    animation: floatOrb 12s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(57, 102, 255, 0.72), rgba(57, 102, 255, 0));
+    top: -70px;
+    left: -90px;
+}
+
+.orb-2 {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(0, 211, 255, 0.56), rgba(0, 211, 255, 0));
+    right: -80px;
+    bottom: 4%;
+    animation-delay: 2s;
+}
+
+.orb-3 {
+    width: 170px;
+    height: 170px;
+    background: radial-gradient(circle, rgba(125, 211, 252, 0.46), rgba(125, 211, 252, 0));
+    top: 36%;
+    left: 54%;
+    animation-delay: 1s;
+}
+
+.grid-glow {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.16;
+    mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
 }
 
 .form-group {
@@ -74,13 +139,14 @@ body {
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 16px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #2f58ff;
+    box-shadow: 0 0 0 4px rgba(47, 88, 255, 0.16);
+    transform: translateY(-1px);
 }
 
 .role-selection {
@@ -94,15 +160,18 @@ body {
     padding: 10px 16px;
     border: 1px solid #d1d5db;
     background: white;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.25s;
+    font-weight: 600;
 }
 
 .role-btn.active {
-    background: #3b82f6;
+    background: linear-gradient(120deg, #2f58ff, #2c7ff6);
     color: white;
-    border-color: #3b82f6;
+    border-color: #2f58ff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(47, 88, 255, 0.22);
 }
 
 .role-btn:hover {
@@ -111,25 +180,116 @@ body {
 
 .login-btn {
     width: 100%;
-    background: #3b82f6;
+    background: linear-gradient(120deg, #2f58ff, #1d7cf2);
     color: white;
     border: none;
     padding: 14px;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
 }
 
 .login-btn:hover {
-    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 16px 26px rgba(37, 99, 235, 0.3);
+    filter: brightness(1.04);
+}
+
+.oauth-divider {
+    margin: 18px 0 14px;
+    position: relative;
+    text-align: center;
+}
+
+.oauth-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.oauth-divider span {
+    position: relative;
+    background: #ffffff;
+    color: #6b7280;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 10px;
+}
+
+.google-signin-wrap {
+    display: flex;
+    justify-content: center;
+    min-height: 44px;
+    animation: fadeInUp 0.8s ease both;
+    animation-delay: 0.15s;
+}
+
+.google-signin-status {
+    min-height: 20px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.google-signin-status.error {
+    color: #b91c1c;
 }
 
 .demo-text {
-    color: #6b7280;
+    color: #4b5563;
     font-size: 14px;
     margin-top: 20px;
+}
+
+@keyframes floatOrb {
+    0% { transform: translateY(0px) translateX(0px); }
+    50% { transform: translateY(-18px) translateX(8px); }
+    100% { transform: translateY(0px) translateX(0px); }
+}
+
+@keyframes loginCardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 520px) {
+    .login-card {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    .login-title {
+        font-size: 30px;
+    }
 }
 
 /* Dashboard Layout */
