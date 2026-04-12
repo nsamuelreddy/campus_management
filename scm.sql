@@ -122,6 +122,29 @@ INSERT INTO settings VALUES
 
 ALTER TABLE notices ADD category VARCHAR(50) DEFAULT 'general';
 
+
+ALTER TABLE Feedback DROP COLUMN comments;
+
+
+ALTER TABLE Feedback MODIFY rating DECIMAL(3,1);
+
+
+ALTER TABLE Feedback 
+ADD COLUMN teaching_clarity INT,
+ADD COLUMN subject_knowledge INT,
+ADD COLUMN interaction INT,
+ADD COLUMN punctuality INT,
+ADD COLUMN material_quality INT;
+
+
+INSERT INTO Users (full_name, email, password_hash, role) VALUES
+('Arjun Sharma', 'arjun@campus.edu', '123', 'Student'),
+('Dr. Priya Mehta', 'priya@campus.edu', '123', 'Faculty'),
+('Sneha R.', 'sneha@campus.edu', '123', 'Student'),
+('Rohit K.', 'rohit@campus.edu', '123', 'Student'),
+('Rajesh Kumar', 'admin@campus.edu', '123', 'Admin');
+
+
 -- Verify results
 SELECT 'Users Created' AS Status, COUNT(*) FROM Users;
 SELECT * FROM Users;
@@ -130,3 +153,4 @@ select *from Complaints;
 select *from Feedback;
 select *from LostFound;
 select *from notifications;
+
