@@ -2,8 +2,8 @@
 session_start();
 
 // if user not logged in → go to login page
-if (!isset($_SESSION['user_email'])) {
-    header("Location: index.html");
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
     exit();
 }
 ?>
@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_email'])) {
  <!DOCTYPE html>
 <html lang="en">
 <head>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus · Admin Dashboard</title>
@@ -449,6 +451,11 @@ if (!isset($_SESSION['user_email'])) {
         .dot-poor { background: #ef4444; }
     </style>
 </head>
+<!-- ONLY UI -->
+<script>
+window.USER_ROLE = "<?php echo $_SESSION['user']['role']; ?>";
+</script>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -459,18 +466,26 @@ if (!isset($_SESSION['user_email'])) {
             </div>
             
             <nav class="sidebar-nav">
-                <a href="admin-dashboard.html" class="nav-link active">
+                <a href="admin-dashboard.php" class="nav-link active">
                     <div class="nav-icon">📊</div>
                     <span>Dashboard</span>
                 </a>
-                <a href="users.html" class="nav-link">
+
+                <a href="users.php" class="nav-link">
                     <div class="nav-icon">👥</div>
                     <span>Users</span>
                 </a>
+
+                <a href="admin-complaints.php" class="nav-link">
+                     <div class="nav-icon">📝</div>
+                     <span>Complaints</span>
+                </a>
+
                 <a href="analytics.html" class="nav-link">
-                    <div class="nav-icon">📈</div>
+                     <div class="nav-icon">📈</div>
                     <span>Analytics</span>
                 </a>
+
                 <a href="settings.html" class="nav-link">
                     <div class="nav-icon">⚙️</div>
                     <span>Settings</span>
@@ -505,13 +520,8 @@ if (!isset($_SESSION['user_email'])) {
                     </div>
                     <div class="user-avatar-header">R</div>
                     
-                    <a href="logout.php" class="logout-header-btn"
-                       title="Logout"
-                       style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center;"
-                       onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';"
-                       onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
-                       Logout
-                     </a>
+                    
+                    <a href="logout.php">Logout</a>
                 </div>
             </div>
 
@@ -520,7 +530,7 @@ if (!isset($_SESSION['user_email'])) {
                 <!-- Stats Grid -->
                 <div class="stats-grid">
                     <!--All stat cards inside-->
-                </div>
+                
                     <div class="stat-card">
                         <div class="stat-header">
                             <div>
@@ -565,23 +575,18 @@ if (!isset($_SESSION['user_email'])) {
 
                 <!-- Charts Grid -->
                 <div class="charts-grid">
+    
                     <div class="chart-card">
                         <div class="chart-title">Complaint Trends</div>
-                        <div class="chart-placeholder">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
+                        
+                        <canvas id="complaintTrendsChart"></canvas>
+                            
+                        
                     </div>
 
                     <div class="chart-card">
                         <div class="chart-title">Feedback Ratings</div>
-                        <div class="donut-chart">
-                            <div class="donut"></div>
-                        </div>
+                        <canvas id="feedbackChart"></canvas>
                         <div class="feedback-legend">
                             <div class="legend-item">
                                 <div class="legend-dot dot-excellent"></div>
@@ -605,7 +610,12 @@ if (!isset($_SESSION['user_email'])) {
             </div>
         </div>
     </div>
-    <script src="js/dashboard.js"></script>
-    <script src="js/main.js"></script>
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+ <script src="js/main.js"></script>
+ <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -7,10 +7,20 @@ require_once 'vendor/autoload.php';
 $client = new Google_Client();
 echo "Client created successfully.<br>";
 
-$client->setClientId('189352772372-vpqgvof6b6r3oo14fb5vhnlchedjogb3.apps.googleusercontent.com'); 
-$client->setClientSecret('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');
-$client->setRedirectUri('http://localhost/campus_management/api/callback.php');
+$env = parse_ini_file(__DIR__.'/.env');
+putenv("GOOGLE_CLIENT_ID=".$env['GOOGLE_CLIENT_ID']);
+putenv("GOOGLE_CLIENT_SECRET=".$env['GOOGLE_CLIENT_SECRET']);
 
-echo "Configuration applied successfully.<br>";
-exit(); 
+$client->setClientId(getenv('GOOGLE_CLIENT_ID')); 
+$client->setClientSecret(getenv('GOOGLE_CLIENT_SECRET'));
+$client->setRedirectUri('http://localhost/campus_management/api/callback.php');
+ 
+/*  ADD THIS HERE */
+$client->setScopes([
+    "email",
+    "profile"
+]);
+
+
 ?>
+

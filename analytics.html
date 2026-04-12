@@ -28,7 +28,7 @@
         }
 
         .chart-placeholder {
-            height: 320px;
+            height: 340px;
             border-radius: 8px;
             padding: 30px;
         }
@@ -39,9 +39,7 @@
             align-items: flex-end;
             justify-content: space-around;
             gap: 20px;
-            background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
-            padding: 20px;
-            border-radius: 8px;
+            flex: 1;
         }
 
         .bar-group {
@@ -49,12 +47,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            height: 100%;
+            gap: 6px;
             justify-content: flex-end;
         }
 
         .bars {
+            height: 200px;
             display: flex;
             gap: 4px;
             align-items: flex-end;
@@ -76,21 +74,22 @@
             font-weight: 600;
         }
 
+        .bar-group small {
+            font-size: 10px;
+            color: #64748b;
+        }
+
         .line-chart {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
-            padding: 20px;
-            border-radius: 8px;
             position: relative;
+            height: 260px;
+            background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+            border-radius: 8px;
         }
 
         .line {
-            width: 100%;
-            height: 120px;
-            position: relative;
+            width: calc(100% - 20px);
+            margin-left: 20px;
+            height: 200px;
         }
 
         .line svg {
@@ -99,151 +98,155 @@
         }
     </style>
 </head>
+
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">🎓</div>
-                <div class="logo-text">SmartCampus</div>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <a href="admin-dashboard.html" class="nav-link">
-                    <div class="nav-icon">📊</div>
-                    <span>Dashboard</span>
-                </a>
-                <a href="users.html" class="nav-link">
-                    <div class="nav-icon">👥</div>
-                    <span>Users</span>
-                </a>
-                <a href="analytics.html" class="nav-link active">
-                    <div class="nav-icon">📈</div>
-                    <span>Analytics</span>
-                </a>
-                <a href="settings.html" class="nav-link">
-                    <div class="nav-icon">⚙️</div>
-                    <span>Settings</span>
-                </a>
-            </nav>
-            
-            <div class="user-profile">
-                <div class="user-avatar">R</div>
-                <div class="user-info">
-                    <div class="user-name">Rajesh Kumar</div>
-                    <div class="user-role">Admin</div>
-                </div>
-            </div>
+<div class="app-container">
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">🎓</div>
+            <div class="logo-text">SmartCampus</div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <div class="header-left">
-                    <h1>Analytics</h1>
-                    <p>Campus performance insights</p>
-                </div>
-                <div class="header-right">
-                    <div class="search-box">
-                        <div class="search-icon">🔍</div>
-                        <input type="text" class="search-input" placeholder="Search...">
-                    </div>
-                    <div class="notification-icon">
-                        🔔
-                        <div class="notification-badge"></div>
-                    </div>
-                    <div class="user-avatar-header">R</div>
-                    <button class="logout-header-btn" onclick="logout()" title="Logout" style="background: transparent; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s ease;" onmouseover="this.style.background='#f1f5f9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#64748b';">
-                        Logout
-                    </button>
-                </div>
-            </div>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.php" class="nav-link ">
+                <div class="nav-icon">📊</div>
+                <span>Dashboard</span>
+            </a>
 
-            <!-- Content Area -->
-            <div class="content-area">
-                <div class="charts-grid">
-                    <div class="chart-card">
-                        <div class="chart-title">Complaints vs Resolved</div>
-                        <div class="chart-placeholder">
-                            <div class="bar-chart">
-                                <div class="bar-group">
-                                    <div class="bars">
-                                        <div class="bar" style="height: 80px;"></div>
-                                        <div class="bar resolved" style="height: 65px;"></div>
-                                    </div>
-                                    <div class="bar-label">Jan</div>
-                                </div>
-                                <div class="bar-group">
-                                    <div class="bars">
-                                        <div class="bar" style="height: 95px;"></div>
-                                        <div class="bar resolved" style="height: 85px;"></div>
-                                    </div>
-                                    <div class="bar-label">Feb</div>
-                                </div>
-                                <div class="bar-group">
-                                    <div class="bars">
-                                        <div class="bar" style="height: 70px;"></div>
-                                        <div class="bar resolved" style="height: 60px;"></div>
-                                    </div>
-                                    <div class="bar-label">Mar</div>
-                                </div>
-                                <div class="bar-group">
-                                    <div class="bars">
-                                        <div class="bar" style="height: 110px;"></div>
-                                        <div class="bar resolved" style="height: 95px;"></div>
-                                    </div>
-                                    <div class="bar-label">Apr</div>
-                                </div>
-                                <div class="bar-group">
-                                    <div class="bars">
-                                        <div class="bar" style="height: 88px;"></div>
-                                        <div class="bar resolved" style="height: 78px;"></div>
-                                    </div>
-                                    <div class="bar-label">May</div>
-                                </div>
-                                <div class="bar-group">
-                                    <div class="bars">
-                                        <div class="bar" style="height: 92px;"></div>
-                                        <div class="bar resolved" style="height: 82px;"></div>
-                                    </div>
-                                    <div class="bar-label">Jun</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <a href="users.html" class="nav-link ">
+                <div class="nav-icon">👥</div>
+                <span>Users</span>
+            </a>
 
-                    <div class="chart-card">
-                        <div class="chart-title">Average Feedback Rating</div>
-                        <div class="chart-placeholder">
-                            <div class="line-chart">
-                                <div class="line">
-                                    <svg viewBox="0 0 200 100">
-                                        <polyline
-                                            points="0,70 33,55 66,45 100,35 133,40 166,30 200,25"
-                                            fill="none"
-                                            stroke="#3b82f6"
-                                            stroke-width="3"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                        <circle cx="0" cy="70" r="4" fill="#3b82f6"/>
-                                        <circle cx="33" cy="55" r="4" fill="#3b82f6"/>
-                                        <circle cx="66" cy="45" r="4" fill="#3b82f6"/>
-                                        <circle cx="100" cy="35" r="4" fill="#3b82f6"/>
-                                        <circle cx="133" cy="40" r="4" fill="#3b82f6"/>
-                                        <circle cx="166" cy="30" r="4" fill="#3b82f6"/>
-                                        <circle cx="200" cy="25" r="4" fill="#3b82f6"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <a href="admin-complaints.php" class="nav-link">
+                <div class="nav-icon">📝</div>
+                <span>Complaints</span>
+            </a>
+
+            <a href="analytics.html" class="nav-link active">
+                <div class="nav-icon">📈</div>
+                <span>Analytics</span>
+            </a>
+
+            <a href="settings.html" class="nav-link">
+                <div class="nav-icon">⚙️</div>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <div class="user-profile">
+            <div class="user-avatar">R</div>
+            <div class="user-info">
+                <div class="user-name">Rajesh Kumar</div>
+                <div class="user-role">Admin</div>
             </div>
         </div>
     </div>
-    <script src="js/analytics.js"></script>
-    <script src="js/main.js"></script>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-header">
+            <div class="header-left">
+                <h1>Analytics</h1>
+                <p>Campus performance insights</p>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="charts-grid">
+
+                <!-- BAR CHART -->
+                <div class="chart-card">
+                    <div class="chart-title">Complaints vs Resolved</div>
+
+                    <div class="chart-placeholder">
+
+                        <!-- LEGEND -->
+                        <div style="display:flex; gap:20px; margin-bottom:10px;">
+                            <div style="display:flex; gap:6px;">
+                                <div style="width:12px; height:12px; background:#3b82f6;"></div>
+                                <span style="font-size:12px;">Total</span>
+                            </div>
+
+                            <div style="display:flex; gap:6px;">
+                                <div style="width:12px; height:12px; background:#10b981;"></div>
+                                <span style="font-size:12px;">Resolved</span>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; align-items:flex-end; height:260px;">
+
+                            <!-- Y AXIS -->
+                            <div style="display:flex; flex-direction:column; justify-content:space-between; font-size:10px; color:#64748b; height:100%;">
+                                <span>40</span>
+                                <span>30</span>
+                                <span>20</span>
+                                <span>10</span>
+                                <span>0</span>
+                            </div>
+
+                            <!-- GRAPH -->
+                            <div class="bar-chart" id="barChart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LINE CHART -->
+                <div class="chart-card">
+                    <div class="chart-title">Average Feedback Rating</div>
+
+                    <div class="chart-placeholder">
+
+                        <p style="font-size:12px; color:#64748b; margin-bottom:10px;">
+                            Monthly average student feedback ratings
+                        </p>
+
+                        <div class="line-chart">
+
+                            <!-- Y AXIS -->
+                            <div style="position:absolute; left:0; top:0; bottom:20px; display:flex; flex-direction:column; justify-content:space-between; font-size:10px; color:#64748b;">
+                                <span>5</span>
+                                <span>4</span>
+                                <span>3</span>
+                                <span>2</span>
+                                <span>1</span>
+                            </div>
+
+                            <!-- X AXIS -->
+                            <div style="position:absolute; bottom:0; left:20px; right:0; display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
+                                <span>Jan</span>
+                                <span>Feb</span>
+                                <span>Mar</span>
+                                <span>Apr</span>
+                                <span>May</span>
+                                <span>Jun</span>
+                            </div>
+
+                            <!-- GRAPH -->
+                            <div class="line">
+                                <svg viewBox="0 0 200 100">
+                                    <polyline id="lineGraph"
+                                        fill="none"
+                                        stroke="#3b82f6"
+                                        stroke-width="3"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/analytics.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

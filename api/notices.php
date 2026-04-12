@@ -3,22 +3,23 @@ session_start();
 header('Content-Type: application/json');
 include "../db.php";
 
-// ==========================
+
 // AUTH CHECK
-// ==========================
-if (!isset($_SESSION['user_id'])) {
+
+
+if (!isset($_SESSION['user'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
 }
 
-$userRole = $_SESSION['user_role'];
-$userId = $_SESSION['user_id'];
+$userRole = $_SESSION['user']['role'];
+$userId = $_SESSION['user']['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 
-// ==========================
+
 // GET NOTICES (ALL USERS)
-// ==========================
+
 if ($method === 'GET') {
 
     $result = $conn->query("SELECT * FROM notices ORDER BY created_at DESC");
@@ -44,14 +45,25 @@ if ($method === 'GET') {
 }
 
 
-// ==========================
 // POST (CREATE / DELETE)
-// ==========================
+
+// POST (CREATE / DELETE)
 if ($method === 'POST') {
 
-    $data = json_decode(file_get_contents('php://input'), true);
+    $raw = file_get_contents('php://input');
+    $data = json_decode($raw, true);
 
-    // ❌ Students cannot manage notices
+    // 🔥 DEBUG (important)
+    if (!$data) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'No data received',
+            'raw' => $raw
+        ]);
+        exit;
+    }
+
+    // Students cannot manage notices
     if ($userRole === 'student') {
         echo json_encode([
             'success' => false,
@@ -60,57 +72,56 @@ if ($method === 'POST') {
         exit;
     }
 
-    // ======================
-    // DELETE NOTICE
-    // ======================
+    // DELETE
     if (isset($data['action']) && $data['action'] === 'delete') {
 
         $id = $data['id'];
 
-        $sql = "DELETE FROM notices WHERE notice_id='$id'";
+        $stmt = $conn->prepare("DELETE FROM notices WHERE notice_id=?");
+        $stmt->bind_param("i", $id);
 
-        if ($conn->query($sql)) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Deleted successfully'
-            ]);
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Deleted successfully']);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Delete failed'
-            ]);
+            echo json_encode(['success' => false, 'message' => $conn->error]);
         }
 
         exit;
     }
 
+    // CREATE
+    $title = trim($data['title'] ?? '');
+    $category = $data['category'] ?? 'general';
+    $content = trim($data['content'] ?? '');
 
-    // ======================
-    // CREATE NOTICE
-    // ======================
-    else {
-
-        $title = $data['title'] ?? '';
-        $category = $data['category'] ?? 'general';
-        $content = $data['content'] ?? '';
-
-        
-        $sql = "INSERT INTO notices (title, category, content, author_id)
-        VALUES ('$title', '$category', '$content', '$userId')";
-
-        if ($conn->query($sql)) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Notice created'
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Insert failed'
-            ]);
-        }
-
+    if ($title === '' || $content === '') {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Title and content required'
+        ]);
         exit;
     }
+
+    $stmt = $conn->prepare("
+        INSERT INTO notices (title, category, content, author_id)
+        VALUES (?, ?, ?, ?)
+    ");
+
+    $stmt->bind_param("sssi", $title, $category, $content, $userId);
+
+    if ($stmt->execute()) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Notice created'
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => $conn->error
+        ]);
+    }
+
+    exit;
 }
+
 ?>

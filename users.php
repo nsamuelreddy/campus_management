@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -264,25 +273,34 @@
                 <div class="logo">🎓</div>
                 <div class="logo-text">SmartCampus</div>
             </div>
-            
+
             <nav class="sidebar-nav">
-                <a href="admin-dashboard.html" class="nav-link">
+                <a href="admin-dashboard.php" class="nav-link ">
                     <div class="nav-icon">📊</div>
                     <span>Dashboard</span>
                 </a>
-                <a href="users.html" class="nav-link active">
+
+                <a href="users.php" class="nav-link active">
                     <div class="nav-icon">👥</div>
                     <span>Users</span>
                 </a>
+
+                <a href="admin-complaints.php" class="nav-link">
+                     <div class="nav-icon">📝</div>
+                     <span>Complaints</span>
+                </a>
+
                 <a href="analytics.html" class="nav-link">
-                    <div class="nav-icon">📈</div>
+                     <div class="nav-icon">📈</div>
                     <span>Analytics</span>
                 </a>
+
                 <a href="settings.html" class="nav-link">
                     <div class="nav-icon">⚙️</div>
                     <span>Settings</span>
                 </a>
             </nav>
+            
             
             <div class="user-profile">
                 <div class="user-avatar">R</div>
@@ -316,7 +334,7 @@
                     </button>
                 </div>
             </div>
-
+            
             <!-- Content Area -->
             <div class="content-area">
                 <div class="users-table">

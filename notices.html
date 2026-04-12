@@ -6,7 +6,11 @@
     <title>SmartCampus - Notices</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
+    <script>
+        window.USER_ROLE = "student"; 
+    </script>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -17,7 +21,7 @@
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="dashboard.html" class="nav-link">
+                        <a href="dashboard.php" class="nav-link">
                             <span class="nav-icon">📊</span>
                             Dashboard
                         </a>
@@ -91,8 +95,8 @@
 
                 <!-- Filter Tabs -->
                 <div class="filter-tabs">
-                    <button class="filter-tab" data-filter="all">All</button>
-                    <button class="filter-tab active" data-filter="academic">Academic</button>
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="academic">Academic</button>
                     <button class="filter-tab" data-filter="hostel">Hostel</button>
                     <button class="filter-tab" data-filter="emergency">Emergency</button>
                     <button class="filter-tab" data-filter="events">Events</button>
@@ -100,28 +104,7 @@
                 </div>
 
                 <!-- Notices Grid -->
-                <div class="notices-grid">
-                    <div class="notice-card" data-category="academic">
-                        <div class="notice-tags">
-                            <span class="notice-tag">academic</span>
-                            <span class="notice-tag urgent">Urgent</span>
-                        </div>
-                        <h3 class="notice-title">Mid-semester exams scheduled for March 15-22</h3>
-                        <p class="notice-description">All students must check their seat allocations on the portal.</p>
-                        <div class="notice-date">Mar 8, 2025</div>
-                        <button class="acknowledge-btn">Acknowledge</button>
-                    </div>
-
-                    <div class="notice-card" data-category="academic">
-                        <div class="notice-tags">
-                            <span class="notice-tag">academic</span>
-                        </div>
-                        <h3 class="notice-title">Library extended hours during exams</h3>
-                        <p class="notice-description">Library will remain open until midnight during exam week.</p>
-                        <div class="notice-date">Mar 3, 2025</div>
-                        <button class="acknowledge-btn">Acknowledge</button>
-                    </div>
-                </div>
+                <div class="notices-grid"></div>
             </div>
         </div>
     </div>

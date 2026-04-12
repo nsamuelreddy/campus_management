@@ -1,14 +1,13 @@
-
 let users = []; 
 
 // Load users data from PHP
 function loadUsers() {
-    fetch('api/users.php')
+    fetch('/campus_management/api/users.php')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                users = data.users; // Update global array
-                renderUsers(); // Draw the table
+                users = data.users || []; //  FIX: fallback safety
+                renderUsers();
             }
         })
         .catch(err => console.error("Error loading users:", err));
@@ -31,9 +30,10 @@ function renderUsers() {
         </tr>
     `).join('');
 }
-// Edit user (Opens the modal and fills in data)
+
+// Edit user
 function editUser(id) {
-    const user = users.find(u => parseInt(u.id) === parseInt(id));
+    const user = users.find(u => parseInt(u.id) === parseInt(id)); // ✅ FIX: ensure integer compare
     if (user) {
         document.getElementById('editUserId').value = user.id;
         document.getElementById('editName').value = user.name;
@@ -41,13 +41,12 @@ function editUser(id) {
         document.getElementById('editRole').value = user.role;
         document.getElementById('editStatus').value = user.status;
         
-        const modal = document.getElementById('editModal');
-        const overlay = document.getElementById('modalOverlay');
-        modal.classList.add('active');
-        overlay.classList.add('active');
+        document.getElementById('editModal').classList.add('active');
+        document.getElementById('modalOverlay').classList.add('active');
     }
 }
-// Save edited user to PHP
+
+// Save edited user
 function saveEditedUser(event) {
     event.preventDefault();
     
@@ -60,7 +59,7 @@ function saveEditedUser(event) {
         status: document.getElementById('editStatus').value
     };
     
-    fetch('api/users.php', {
+    fetch('/campus_management/api/users.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData)
@@ -70,39 +69,36 @@ function saveEditedUser(event) {
         if(data.success) {
             showNotification(data.message);
             closeModal();
-            loadUsers(); // Fetch fresh data from PHP
+            loadUsers(); // refresh
         }
     })
     .catch(err => console.error("Error updating user:", err));
 }
+
 // Close modal
 function closeModal() {
-    const modal = document.getElementById('editModal');
-    const overlay = document.getElementById('modalOverlay');
-    modal.classList.remove('active');
-    overlay.classList.remove('active');
+    document.getElementById('editModal').classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
 }
 
-// Show notification
+// Notification
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'notification success';
     notification.textContent = message;
     document.body.appendChild(notification);
     
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 10);
-    
+    setTimeout(() => notification.classList.add('show'), 10);
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
 
-// Search functionality
+// Search
 function searchUsers() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
     const filteredUsers = users.filter(user => 
         user.name.toLowerCase().includes(searchTerm) ||
         user.email.toLowerCase().includes(searchTerm) ||
@@ -110,6 +106,7 @@ function searchUsers() {
     );
     
     const tbody = document.getElementById('usersTableBody');
+
     tbody.innerHTML = filteredUsers.map(user => `
         <tr>
             <td>${user.name}</td>
@@ -123,5 +120,16 @@ function searchUsers() {
     `).join('');
 }
 
-// Initialize on page load
+function openAddUserModal() {
+    document.getElementById('editUserId').value = ''; // empty = new user
+    document.getElementById('editName').value = '';
+    document.getElementById('editEmail').value = '';
+    document.getElementById('editRole').value = 'Student';
+    document.getElementById('editStatus').value = 'Active';
+
+    document.getElementById('editModal').classList.add('active');
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+// Init
 document.addEventListener('DOMContentLoaded', loadUsers);

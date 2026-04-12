@@ -1,6 +1,13 @@
+
+
 <?php
-session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 header('Content-Type: application/json');
+
+session_start();
+
+
 include "../db.php";
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -10,51 +17,73 @@ if ($action === 'login') {
 
     $email = $data['email'] ?? '';
     $password = $data['password'] ?? '';
-    $role = ucfirst($data['role'] ?? 'Student'); // match DB (Admin, Faculty, Student)
+    $role = strtolower($data['role'] ?? 'student');
 
     if (!$email || !$password) {
         echo json_encode(["success" => false, "message" => "Email & Password required"]);
         exit;
     }
 
-    // Check user
+    // CHECK USER
     $stmt = $conn->prepare("SELECT * FROM Users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // ============================
+    //  IF USER NOT EXISTS → AUTO REGISTER
+    // ============================
     if ($result->num_rows === 0) {
-        echo json_encode(["success" => false, "message" => "User not found"]);
-        exit;
+
+        $full_name = explode('@', $email)[0]; // simple name
+        $roleFormatted = ucfirst($role);
+
+        $insert = $conn->prepare("INSERT INTO Users (full_name, email, password_hash, role) VALUES (?, ?, ?, ?)");
+        $insert->bind_param("ssss", $full_name, $email, $password, $roleFormatted);
+
+        if (!$insert->execute()) {
+            echo json_encode(["success" => false, "message" => "Registration failed"]);
+            exit;
+        }
+
+        $user_id = $insert->insert_id;
+
+        $user = [
+            "user_id" => $user_id,
+            "full_name" => $full_name,
+            "email" => $email,
+            "role" => $roleFormatted
+        ];
+
+    } else {
+
+        // ============================
+        //  USER EXISTS → LOGIN
+        // ============================
+        $user = $result->fetch_assoc();
+
+        if ($password !== $user['password_hash']) {
+            echo json_encode(["success" => false, "message" => "Wrong password"]);
+            exit;
+        }
     }
 
-    $user = $result->fetch_assoc();
-
-    // Check password
-    if ($password !== $user['password_hash']) {
-        echo json_encode(["success" => false, "message" => "Wrong password"]);
-        exit;
-    }
-
-    // Check role match
-    if ($user['role'] !== $role) {
-        echo json_encode(["success" => false, "message" => "Role mismatch"]);
-        exit;
-    }
-
-    // Set session
-    $_SESSION['user'] = $user;
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['user_email'] = $user['email'];
-    $_SESSION['user_role'] = $user['role'];
+    // ============================
+    //  SESSION
+    // ============================
+    $_SESSION['user'] = [
+        "user_id" => $user['user_id'],
+        "full_name" => $user['full_name'],
+        "email" => $user['email'],
+        "role" => $user['role']
+    ];
 
     echo json_encode([
         "success" => true,
-        "user" => $user
+        "user" => $_SESSION['user']
     ]);
     exit;
 }
-
 if ($action === 'logout') {
     session_destroy();
     echo json_encode(['success' => true]);

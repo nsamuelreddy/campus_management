@@ -23,16 +23,21 @@ document.getElementById('complaintForm')?.addEventListener('submit', function(e)
     
     fetch('api/complaints.php', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(complaintData)
     })
     .then(response => response.json())
     .then(data => {
+        console.log("SUBMIT RESPONSE:", data);
+
         if(data.success) {
-            alert(data.message);
+            alert(data.message || "Complaint submitted successfully");
             this.reset();
             showComplaintsList();
-            loadComplaints(); // Refresh the list
+            loadComplaints();
+        } else {
+            alert(data.message || "Something went wrong");
         }
     })
     .catch(err => console.error("Error saving complaint:", err));
@@ -47,7 +52,7 @@ document.getElementById('fileInput')?.addEventListener('change', function(e) {
     }
 });
 
-// Drag and drop for file upload
+// Drag and drop
 const fileUpload = document.querySelector('.file-upload');
 if (fileUpload) {
     fileUpload.addEventListener('dragover', (e) => {
@@ -75,41 +80,99 @@ if (fileUpload) {
         }
     });
 }
-// Fetch and Display Complaints on Page Load
+
+// Fetch and Display Complaints
 function loadComplaints() {
-    fetch('api/complaints.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const listContainer = document.querySelector('.complaints-list');
-                if (!listContainer) return;
-                
-                listContainer.innerHTML = ''; // Clear hardcoded HTML
+    fetch('api/complaints.php', {
+        method: 'GET',
+        credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("LOAD DATA:", data);
 
-                data.complaints.forEach(complaint => {
-                    let statusClass = 'pending';
-                    if (complaint.status === 'In Progress') statusClass = 'in-progress';
-                    if (complaint.status === 'Resolved') statusClass = 'resolved';
+        if (data.success) {
+            const listContainer = document.querySelector('.complaints-list');
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = '';
 
-                    const html = `
-                        <div class="complaint-card">
-                            <div class="complaint-header">
-                                <span class="complaint-type">${complaint.type}</span>
-                                <div class="complaint-status ${statusClass}">${complaint.status}</div>
+            data.complaints.forEach(complaint => {
+
+                //  FIX: ensure correct id mapping
+                const complaintId = complaint.id || complaint.complaint_id;
+
+                //  FIX: normalize status
+                const status = (complaint.status || '').toLowerCase();
+
+                let statusClass = 'pending';
+                if (status === 'in progress') statusClass = 'in-progress';
+                if (status === 'resolved') statusClass = 'resolved';
+
+                //  FIX: safe date
+                const date = complaint.date || complaint.created_at;
+
+                const isStaff = (data.role === 'admin' || data.role === 'faculty');
+
+                const html = `
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                             <span class="complaint-type">${complaint.type}</span>
+                             <div class="complaint-status ${statusClass}">${complaint.status}</div>
+                         </div>
+
+                         <h3 class="complaint-title">${complaint.subject}</h3>
+                         <p class="complaint-description">${complaint.description}</p>
+                         <div class="complaint-meta">${date}</div>
+
+                        ${
+                            isStaff ? `
+                            <div class="complaint-actions">
+                                 <button onclick="updateStatus(${complaintId}, 'In Progress')">In Progress</button>
+                                 <button onclick="updateStatus(${complaintId}, 'Resolved')">Resolved</button>
                             </div>
-                            <h3 class="complaint-title">${complaint.subject}</h3>
-                            <p class="complaint-description">${complaint.description}</p>
-                            <div class="complaint-meta">${complaint.date}</div>
-                        </div>
-                    `;
-                    listContainer.insertAdjacentHTML('beforeend', html);
-                });
-            }
-        })
-        .catch(err => console.error("Error loading complaints:", err));
+                           ` : ''
+                         }
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', html);
+            });
+        } else {
+            console.log("ERROR:", data.message);
+        }
+    })
+    .catch(err => console.error("Error loading complaints:", err));
 }
 
-// Run when the page loads
+// Update Status
+async function updateStatus(id, status) {
+    try {
+        const res = await fetch('api/complaints.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'update_status',
+                id: id,
+                status: status
+            })
+        });
+
+        const data = await res.json();
+        console.log("UPDATE:", data);
+
+        if (data.success) {
+            loadComplaints(); // refresh
+        } else {
+            alert(data.message);
+        }
+
+    } catch (err) {
+        console.error("Update error:", err);
+    }
+}
+
+// Run on load
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.complaints-list')) {
         loadComplaints();

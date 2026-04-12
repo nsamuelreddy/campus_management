@@ -11,6 +11,10 @@ body {
     line-height: 1.6;
 }
 
+.hidden {
+    display: none !important;
+}
+
 /* Login Page Styles */
 .login-container {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
@@ -317,6 +321,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    
 }
 
 .user-avatar {
@@ -1102,3 +1107,5 @@ body {
 .fade-in {
     animation: fadeIn 0.3s ease-out;
 }
+
+

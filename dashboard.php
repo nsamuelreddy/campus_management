@@ -2,8 +2,8 @@
 session_start();
 
 // if user not logged in → go to login page
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.html");
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
     exit();
 }
 ?>
@@ -16,6 +16,9 @@ if (!isset($_SESSION['user_id'])) {
     <title>SmartCampus - Student Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+<script>
+window.USER_ROLE = "<?php echo $_SESSION['user']['role']; ?>";
+</script>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
@@ -27,7 +30,7 @@ if (!isset($_SESSION['user_id'])) {
             <nav>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="dashboard.html" class="nav-link active">
+                        <a href="dashboard.php" class="nav-link active">
                             <span class="nav-icon">📊</span>
                             Dashboard
                         </a>
@@ -89,7 +92,7 @@ if (!isset($_SESSION['user_id'])) {
                         </div>
                     </div>
 
-                    <!-- ✅ LOGOUT ADDED HERE -->
+                    <!--  LOGOUT ADDED HERE -->
                     <a href="logout.php"
                        class="logout-btn"
                        style="margin-left: 16px;
@@ -150,49 +153,6 @@ if (!isset($_SESSION['user_id'])) {
                             <h3 class="section-title">Recent Notices</h3>
                         </div>
                         <div class="section-content">
-                            <div class="notice-item">
-                                <div class="notice-indicator urgent"></div>
-                                <div class="notice-content">
-                                    <div class="notice-title">Mid-semester exams scheduled for March 15-22</div>
-                                    <div class="notice-meta">
-                                        <span class="notice-tag urgent">Academic</span>
-                                        <span>2 hours ago</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="notice-item">
-                                <div class="notice-indicator normal"></div>
-                                <div class="notice-content">
-                                    <div class="notice-title">Wi-Fi maintenance on Block C - March 10</div>
-                                    <div class="notice-meta">
-                                        <span class="notice-tag">Admin</span>
-                                        <span>5 hours ago</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="notice-item">
-                                <div class="notice-indicator normal"></div>
-                                <div class="notice-content">
-                                    <div class="notice-title">Annual Sports Day registration open</div>
-                                    <div class="notice-meta">
-                                        <span class="notice-tag">Events</span>
-                                        <span>1 day ago</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="notice-item">
-                                <div class="notice-indicator urgent"></div>
-                                <div class="notice-content">
-                                    <div class="notice-title">Hostel water supply disruption notice</div>
-                                    <div class="notice-meta">
-                                        <span class="notice-tag">Hostel</span>
-                                        <span>1 day ago</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -204,35 +164,9 @@ if (!isset($_SESSION['user_id'])) {
                         <div class="section-content">
                             <div class="complaint-status-item">
                                 <div class="notice-content">
-                                    <div class="notice-title">Internet not working in Block A</div>
-                                    <div class="notice-meta">
-                                        <span>Wi-Fi</span>
-                                        <span>Mar 8</span>
-                                    </div>
+                                
                                 </div>
-                                <div class="complaint-status pending">Pending</div>
-                            </div>
-
-                            <div class="complaint-status-item">
-                                <div class="notice-content">
-                                    <div class="notice-title">AC not working in Room 204</div>
-                                    <div class="notice-meta">
-                                        <span>Hostel</span>
-                                        <span>Mar 6</span>
-                                    </div>
-                                </div>
-                                <div class="complaint-status in-progress">In Progress</div>
-                            </div>
-
-                            <div class="complaint-status-item">
-                                <div class="notice-content">
-                                    <div class="notice-title">Food quality complaint</div>
-                                    <div class="notice-meta">
-                                        <span>Mess</span>
-                                        <span>Mar 3</span>
-                                    </div>
-                                </div>
-                                <div class="complaint-status resolved">Resolved</div>
+                                
                             </div>
                         </div>
                     </div>
@@ -240,7 +174,7 @@ if (!isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
-
+    
     <script src="js/main.js"></script>
     <script src="js/dashboard.js"></script>
 </body>

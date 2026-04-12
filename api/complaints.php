@@ -1,12 +1,25 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
-header('Content-Type: application/json');
+
+
+// HEADERS
+
+header("Content-Type: application/json");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+
+
+// DB
+
 include "../db.php";
 
-// ==========================
+
 // AUTH CHECK
-// ==========================
-if (!isset($_SESSION['user_id'])) {
+
+
+if (!isset($_SESSION['user'])) {
     echo json_encode([
         'success' => false,
         'message' => 'Unauthorized'
@@ -14,31 +27,35 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$userId = $_SESSION['user_id'];
-$userRole = $_SESSION['user_role'];
+$userId = $_SESSION['user']['user_id'];
+$userRole = strtolower(trim($_SESSION['user']['role']));
 $method = $_SERVER['REQUEST_METHOD'];
 
 
-// ==========================
+
 // GET COMPLAINTS
-// ==========================
+
 if ($method === 'GET') {
 
-    // STUDENT → only their complaints
     if ($userRole === 'student') {
-        $sql = "SELECT * FROM Complaints WHERE user_id='$userId' ORDER BY created_at DESC";
-    } 
-    // FACULTY / ADMIN → all complaints
-    else {
-        $sql = "SELECT * FROM Complaints ORDER BY created_at DESC";
+        $stmt = $conn->prepare("SELECT * FROM Complaints WHERE user_id=? ORDER BY created_at DESC");
+        $stmt->bind_param("i", $userId);
+    } else {
+        $stmt = $conn->prepare("SELECT * FROM Complaints ORDER BY created_at DESC");
     }
 
-    $result = mysqli_query($conn, $sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     $complaints = [];
 
-    while ($row = mysqli_fetch_assoc($result)) {
-        $complaints[] = $row;
+    while ($row = $result->fetch_assoc()) {
+
+        //  FIX mapping INSIDE loop
+         $row['id'] = $row['complaint_id'];
+         $row['date'] = $row['created_at'];
+
+         $complaints[] = $row;
     }
 
     echo json_encode([
@@ -50,16 +67,24 @@ if ($method === 'GET') {
 }
 
 
-// ==========================
+
 // POST REQUEST
-// ==========================
+
 if ($method === 'POST') {
 
     $data = json_decode(file_get_contents("php://input"), true);
 
-    // ======================
-    // UPDATE STATUS (ONLY FACULTY/ADMIN)
-    // ======================
+    if (!$data) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Invalid data'
+        ]);
+        exit;
+    }
+
+    
+    // UPDATE STATUS
+    
     if (isset($data['action']) && $data['action'] === 'update_status') {
 
         if ($userRole === 'student') {
@@ -70,12 +95,21 @@ if ($method === 'POST') {
             exit;
         }
 
-        $id = $data['id'];
-        $status = $data['status'];
+        $id = $data['id'] ?? '';
+        $status = $data['status'] ?? '';
 
-        $sql = "UPDATE Complaints SET status='$status' WHERE complaint_id='$id'";
+        if (!$id || !$status) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid input'
+            ]);
+            exit;
+        }
 
-        if (mysqli_query($conn, $sql)) {
+        $stmt = $conn->prepare("UPDATE Complaints SET status=? WHERE complaint_id=?");
+        $stmt->bind_param("si", $status, $id);
+
+        if ($stmt->execute()) {
             echo json_encode([
                 'success' => true,
                 'message' => 'Status updated successfully'
@@ -90,39 +124,48 @@ if ($method === 'POST') {
         exit;
     }
 
-    // ======================
-    // CREATE COMPLAINT (ONLY STUDENT)
-    // ======================
-    else {
+    
+    // CREATE COMPLAINT
 
-        if ($userRole !== 'student') {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Only students can create complaints'
-            ]);
-            exit;
-        }
-
-        $type = $data['type'] ?? 'other';
-        $subject = $data['subject'] ?? '';
-        $description = $data['description'] ?? '';
-
-        $sql = "INSERT INTO Complaints (user_id, type, subject, description, status)
-                VALUES ('$userId', '$type', '$subject', '$description', 'Pending')";
-
-        if (mysqli_query($conn, $sql)) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Complaint submitted successfully'
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Insert failed'
-            ]);
-        }
-
+    if ($userRole !== 'student') {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Only students can create complaints'
+        ]);
         exit;
     }
+
+    $type = $data['type'] ?? 'general';
+    $subject = trim($data['subject'] ?? '');
+    $description = trim($data['description'] ?? '');
+
+    if ($subject === '' || $description === '') {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Subject and description are required'
+        ]);
+        exit;
+    }
+
+    $stmt = $conn->prepare("
+        INSERT INTO Complaints (user_id, type, subject, description, status) 
+        VALUES (?, ?, ?, ?, 'Pending')
+    ");
+
+    $stmt->bind_param("isss", $userId, $type, $subject, $description);
+
+    if ($stmt->execute()) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Complaint submitted successfully'
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => $conn->error
+        ]);
+    }
+
+    exit;
 }
 ?>

@@ -1,11 +1,10 @@
-
 <?php
 session_start();
 header('Content-Type: application/json');
 include "../db.php";
 
-//  Optional: Admin Access Control
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
+// Fixed role check
+if (!isset($_SESSION['user']) || strtolower($_SESSION['user']['role']) !== 'admin') {
     echo json_encode([
         "success" => false,
         "message" => "Unauthorized"
@@ -13,12 +12,12 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
     exit;
 }
 
-// =====================================
-// 1. Complaints Monthly Data (Bar Chart)
-// =====================================
+
+// 1. Complaints Chart
+
 $chartData = [];
 
-$complaintsQuery = "
+$query = "
 SELECT 
     DATE_FORMAT(created_at, '%b') AS month,
     MONTH(created_at) as month_num,
@@ -29,24 +28,22 @@ GROUP BY month, month_num
 ORDER BY month_num
 ";
 
-$result = $conn->query($complaintsQuery);
+$result = $conn->query($query);
 
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $chartData[] = [
-            "month" => $row['month'],
-            "total" => (int)$row['total'],
-            "resolved" => (int)$row['resolved']
-        ];
-    }
+while ($row = $result->fetch_assoc()) {
+    $chartData[] = [
+        "month" => $row['month'],
+        "total" => (int)$row['total'],
+        "resolved" => (int)$row['resolved']
+    ];
 }
 
-// =====================================
-// 2. Feedback Monthly Avg (Line Chart)
-// =====================================
+
+// 2. Feedback Chart
+
 $feedbackData = [];
 
-$feedbackQuery = "
+$query2 = "
 SELECT 
     DATE_FORMAT(submitted_at, '%b') AS month,
     MONTH(submitted_at) as month_num,
@@ -56,41 +53,25 @@ GROUP BY month, month_num
 ORDER BY month_num
 ";
 
-$result2 = $conn->query($feedbackQuery);
+$result2 = $conn->query($query2);
 
-if ($result2) {
-    while ($row = $result2->fetch_assoc()) {
-        $feedbackData[] = [
-            "month" => $row['month'],
-            "rating" => (float)$row['avg_rating']
-        ];
-    }
+while ($row = $result2->fetch_assoc()) {
+    $feedbackData[] = [
+        "month" => $row['month'],
+        "rating" => (float)$row['avg_rating']
+    ];
 }
 
-// =====================================
-// 3. Dashboard Stats
-// =====================================
+
+// 3. Stats
+
 $stats = [];
 
-// Total Users
-$res = $conn->query("SELECT COUNT(*) as total FROM Users");
-$stats['users'] = (int)$res->fetch_assoc()['total'];
+$stats['users'] = $conn->query("SELECT COUNT(*) as total FROM Users")->fetch_assoc()['total'];
+$stats['complaints'] = $conn->query("SELECT COUNT(*) as total FROM Complaints")->fetch_assoc()['total'];
+$stats['resolved'] = $conn->query("SELECT COUNT(*) as total FROM Complaints WHERE status='Resolved'")->fetch_assoc()['total'];
+$stats['pending'] = $conn->query("SELECT COUNT(*) as total FROM Complaints WHERE status='Pending'")->fetch_assoc()['total'];
 
-// Total Complaints
-$res = $conn->query("SELECT COUNT(*) as total FROM Complaints");
-$stats['complaints'] = (int)$res->fetch_assoc()['total'];
-
-// Resolved Complaints
-$res = $conn->query("SELECT COUNT(*) as total FROM Complaints WHERE status='Resolved'");
-$stats['resolved'] = (int)$res->fetch_assoc()['total'];
-
-// Pending Complaints
-$res = $conn->query("SELECT COUNT(*) as total FROM Complaints WHERE status='Pending'");
-$stats['pending'] = (int)$res->fetch_assoc()['total'];
-
-// =====================================
-// Final JSON Response
-// =====================================
 echo json_encode([
     "success" => true,
     "chartData" => $chartData,

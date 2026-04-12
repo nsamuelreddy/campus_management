@@ -1,9 +1,18 @@
+<?php
+session_start();
+
+// Protect admin page
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCampus · Manage Notices</title>
+    <title>SmartCampus · View Complaints</title>
     <style>
         * {
             margin: 0;
@@ -282,12 +291,6 @@
             margin-bottom: 32px;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
         .content-title {
             font-size: 24px;
             font-weight: 700;
@@ -300,127 +303,43 @@
             margin-top: 4px;
         }
 
-        .create-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
+        .filter-tabs {
             display: flex;
-            align-items: center;
             gap: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .create-btn:hover {
-            background: #2563eb;
-        }
-
-        .notice-form {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: none;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 2px;
         }
 
-        .notice-form.active {
-            display: block;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #374151;
-            font-size: 14px;
-        }
-
-        .form-input,
-        .form-select,
-        .form-textarea {
-            padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #374151;
-            background: white;
-        }
-
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
+        .filter-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #6b7280;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
             transition: all 0.2s ease;
         }
 
-        .btn-primary {
-            background: #3b82f6;
-            color: white;
+        .filter-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
         }
 
-        .btn-primary:hover {
-            background: #2563eb;
+        .filter-tab:hover:not(.active) {
+            color: #374151;
         }
 
-        .btn-secondary {
-            background: white;
-            color: #6b7280;
-            border: 1px solid #e5e7eb;
-        }
-
-        .btn-secondary:hover {
-            background: #f9fafb;
-        }
-
-        .notices-list {
+        .complaints-list {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        .notice-card {
+        .complaint-card {
             background: white;
             border-radius: 12px;
             padding: 20px;
@@ -428,76 +347,98 @@
             transition: all 0.2s ease;
         }
 
-        .notice-card:hover {
+        .complaint-card:hover {
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .notice-header {
+        .complaint-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
             margin-bottom: 12px;
         }
 
-        .notice-title {
-            font-size: 18px;
+        .complaint-title {
+            font-size: 16px;
             font-weight: 600;
             color: #1a2332;
             margin-bottom: 8px;
         }
 
-        .notice-meta {
+        .complaint-meta {
             display: flex;
             gap: 12px;
             align-items: center;
+            color: #6b7280;
+            font-size: 13px;
         }
 
-        .notice-badge {
-            padding: 4px 12px;
+        .complaint-description {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .complaint-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
         }
 
-        .badge-academic {
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-progress {
             background: #dbeafe;
             color: #1e40af;
         }
 
-        .badge-events {
-            background: #ddd6fe;
-            color: #5b21b6;
+        .status-resolved {
+            background: #d1fae5;
+            color: #065f46;
         }
 
-        .badge-urgent {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .notice-date {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .notice-actions {
+        .complaint-actions {
             display: flex;
             gap: 8px;
         }
 
-        .icon-btn {
-            background: none;
+        .action-btn {
+            padding: 8px 16px;
             border: none;
-            color: #6b7280;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 4px 8px;
             border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .icon-btn:hover {
+        .action-btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .action-btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .action-btn-secondary {
             background: #f3f4f6;
-            color: #ef4444;
+            color: #6b7280;
+        }
+
+        .action-btn-secondary:hover {
+            background: #e5e7eb;
         }
     </style>
 </head>
@@ -513,17 +454,25 @@
             </div>
             
             <nav class="sidebar-nav">
-                <a href="faculty-dashboard.php" class="nav-link">
+                <a href="admin-dashboard.php" class="nav-link">
                     <div class="nav-icon">📊</div>
                     <span>Dashboard</span>
                 </a>
-                <a href="faculty-complaints.html" class="nav-link">
+                <a href="users.html" class="nav-link ">
+                    <div class="nav-icon">👥</div>
+                    <span>Users</span>
+                </a>
+                <a href="admin-complaints.php" class="nav-link active">
                     <div class="nav-icon">📝</div>
                     <span>Complaints</span>
                 </a>
-                <a href="faculty-notices.html" class="nav-link active">
+                <a href="analytics.html" class="nav-link">
                     <div class="nav-icon">📢</div>
                     <span>Notices</span>
+                </a>
+                <a href="settings.html" class="nav-link">
+                    <div class="nav-icon">⚙️</div>
+                    <span>Settings</span>
                 </a>
             </nav>
             
@@ -567,48 +516,22 @@
             <div class="content-area">
                 <div class="content-header">
                     <div>
-                        <h1 class="content-title">Manage Notices</h1>
-                        <p class="content-subtitle">Create and manage campus notices</p>
+                        <h1 class="content-title">View Complaints</h1>
+                        <p class="content-subtitle">Monitor and respond to student complaints</p>
                     </div>
-                    <button class="create-btn" onclick="toggleNoticeForm()">
-                        <span>+</span>
-                        Create Notice
-                    </button>
                 </div>
 
-                <!-- Notice Creation Form -->
-                <div class="notice-form" id="noticeForm">
-                    <h3 style="margin-bottom: 20px; color: #1a2332;">Create New Notice</h3>
-                    <form onsubmit="handleNoticeSubmit(event)">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Title</label>
-                                <input type="text" class="form-input" placeholder="Notice title" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Category</label>
-                                <select class="form-select" required>
-                                    <option value="">Select</option>
-                                    <option value="academic">Academic</option>
-                                    <option value="events">Events</option>
-                                    <option value="urgent">Urgent</option>
-                                    <option value="general">General</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group full-width">
-                            <label class="form-label">Content</label>
-                            <textarea class="form-textarea" placeholder="Notice content..." required></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="toggleNoticeForm()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Publish Notice</button>
-                        </div>
-                    </form>
+                <!-- Filter Tabs -->
+                
+                <div class="filter-tabs">
+                     <button class="filter-tab active" onclick="filterComplaints('all', this)">All</button>
+                    <button class="filter-tab" onclick="filterComplaints('pending', this)">Pending</button>
+                    <button class="filter-tab" onclick="filterComplaints('progress', this)">In Progress</button>
+                    <button class="filter-tab" onclick="filterComplaints('resolved', this)">Resolved</button>
                 </div>
 
-                <!-- Notices List -->
-                <div class="notices-list" id="myNoticesList">
+                <!-- Complaints List -->
+                <div class="complaints-list">
                     
                 </div>
             </div>
@@ -616,115 +539,135 @@
     </div>
 
     <script>
-        function toggleNoticeForm() {
-            const form = document.getElementById('noticeForm');
-            form.classList.toggle('active');
-        }
+        let allComplaints = [];
 
-        function handleNoticeSubmit(event) {
-            event.preventDefault();
-            
-            // Get the data from the form
-            const title = event.target.querySelector('input[type="text"]').value;
-            const category = event.target.querySelector('select').value;
-            const content = event.target.querySelector('textarea').value;
-
-            // Send new notice to PHP backend
-            fetch('api/notices.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: title, category: category, content: content })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    alert('Notice published successfully!');
-                    toggleNoticeForm();
-                    event.target.reset();
-                    // Reload the page to show the new notice in the faculty list
-                    location.reload(); 
-                }
-            })
-            .catch(err => console.error("Error saving notice:", err));
-        }
-        // 1. Function to load notices from PHP
-        function loadMyNotices() {
-            fetch('api/notices.php')
-            .then(function(response) {
-                return response.json(); // Convert response to JSON
-            })
-            .then(function(data) {
-                if(data.success == true) {
-                    let listBox = document.getElementById('myNoticesList');
-                    listBox.innerHTML = ""; // Clear out the box first
-                    
-                    let noticesArray = data.notices;
-
-                    // Simple FOR loop to go through each notice
-                    for(let i = 0; i < noticesArray.length; i++) {
-                        let notice = noticesArray[i];
+        // 1. Fetch complaints from PHP database
+        function loadComplaints() {
+            fetch('api/complaints.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        allComplaints = data.complaints;
                         
-                        // Create the HTML string for one card
-                        let cardHtml = `
-                        <div class="notice-card">
-                            <div class="notice-header">
-                                <div>
-                                    <div class="notice-meta">
-                                        <span class="notice-badge badge-academic">${notice.category}</span>
-                                    </div>
-                                    <h3 class="notice-title">${notice.title}</h3>
-                                    <p class="notice-date">${notice.date}</p>
-                                    <p style="margin-top: 10px; color: #6b7280;">${notice.content}</p>
-                                </div>
-                                <div class="notice-actions">
-                                    <button class="icon-btn" onclick="deleteNotice(${notice.id})" title="Delete">🗑️</button>
+                        // Check which filter tab is currently active so it doesn't reset when we click "Resolve"
+                        const activeTab = document.querySelector('.filter-tab.active');
+                        let currentFilter = 'all';
+                        if(activeTab) {
+                            if(activeTab.innerText.includes('Pending')) currentFilter = 'pending';
+                            if(activeTab.innerText.includes('In Progress')) currentFilter = 'progress';
+                            if(activeTab.innerText.includes('Resolved')) currentFilter = 'resolved';
+                        }
+                        
+                        renderComplaints(currentFilter);
+                    }
+                })
+                .catch(err => console.error("Error loading complaints:", err));
+        }
+
+        // 2. Render the complaints to the screen
+        function renderComplaints(filterType) {
+            const listContainer = document.querySelector('.complaints-list');
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = ''; // Clear container
+
+            // Filter the array based on the active tab
+            const filtered = allComplaints.filter(c => {
+                if (filterType === 'all') return true;
+                if (filterType === 'pending' && c.status === 'Pending') return true;
+                if (filterType === 'progress' && c.status === 'In Progress') return true;
+                if (filterType === 'resolved' && c.status === 'Resolved') return true;
+                return false;
+            });
+
+            // Build HTML for each complaint
+            filtered.forEach(complaint => {
+                // Determine badge color
+                let statusBadgeClass = 'status-pending';
+                if (complaint.status === 'In Progress') statusBadgeClass = 'status-progress';
+                if (complaint.status === 'Resolved') statusBadgeClass = 'status-resolved';
+
+                // Determine which buttons to show based on current status
+                let actionsHtml = '';
+               
+
+                // 🔥 FIX: safe id + safe status
+                const complaintId = complaint.id || complaint.complaint_id;
+                const status = (complaint.status || '').toLowerCase();
+
+                if (status === 'pending') {
+                     actionsHtml = `
+                        <button class="action-btn action-btn-primary" onclick="handleStatus(${complaintId}, 'In Progress')">In Progress</button>
+                        <button class="action-btn action-btn-secondary" onclick="handleStatus(${complaintId}, 'Resolved')">Resolve</button>
+                    `;
+                } else if (status === 'in progress') {
+                      actionsHtml = `
+                      <button class="action-btn action-btn-secondary" onclick="handleStatus(${complaintId}, 'Resolved')">Resolve</button>
+                     `;
+                } else {
+                      actionsHtml = `<button class="action-btn action-btn-secondary" disabled>Completed</button>`;
+                }
+               
+
+                const html = `
+                    <div class="complaint-card">
+                        <div class="complaint-header">
+                            <div>
+                                <h3 class="complaint-title">${complaint.subject}</h3>
+                                <div class="complaint-meta">
+                                    <span style="text-transform: uppercase;">Category: ${complaint.type}</span>
+                                    <span>•</span>
+                                    <span>📅 ${complaint.date}</span>
                                 </div>
                             </div>
                         </div>
-                        `;
-                        
-                        // Add this card to our box
-                        listBox.innerHTML += cardHtml; 
-                    }
-                }
-            })
-            .catch(function(error) {
-                console.log("Error loading notices: " + error);
+                        <p class="complaint-description">${complaint.description}</p>
+                        <div class="complaint-footer">
+                            <span class="status-badge ${statusBadgeClass}">${complaint.status}</span>
+                            <div class="complaint-actions">
+                                ${actionsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', html);
             });
         }
-        // 2.delete button click
-        function deleteNotice(noticeId) {
-            // Ask the user if they are sure first! (Good practice)
-            let confirmDelete = confirm("Are you sure you want to delete this notice?");
-            
-            if (confirmDelete == true) {
-                // Tell PHP to delete it
-                fetch('api/notices.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'delete', id: noticeId })
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(data) {
-                    if(data.success == true) {
-                        alert(data.message); // Show success message
-                        loadMyNotices(); // Reload the list instantly to make it disappear!
-                    }
-                })
-                .catch(function(error) {
-                    console.log("Error deleting notice: " + error);
-                });
-            }
+
+        // 3. Tab Filtering functionality
+        
+        function filterComplaints(status, el) {
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            el.classList.add('active');
+            renderComplaints(status);
         }
 
-        // 3. Tell the browser to run our function when the page loads
-        window.addEventListener('load', function() {
-            loadMyNotices();
-        });
+        // 4. Update Status in PHP Backend
+        function handleStatus(complaintId, newStatus) {
+            fetch('api/complaints.php', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    action: 'update_status', 
+                    id: complaintId, 
+                    status: newStatus 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    loadComplaints(); // Re-fetch from database so the screen updates instantly!
+                }
+            })
+            .catch(err => console.error("Error updating status:", err));
+        }
+
+        // 5. Initialize on load
+        document.addEventListener('DOMContentLoaded', loadComplaints);
     </script>
     <script src="js/main.js"></script>
-    <script src="js/notices.js"></script>
+    <script src="js/complaints.js"></script>
 </body>
 </html>

@@ -2,11 +2,12 @@
 session_start();
 
 // if user not logged in → go to login page
-if (!isset($_SESSION['user_email'])) {
-    header("Location: index.html");
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +16,6 @@ if (!isset($_SESSION['user_email'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartCampus</title>
     <style>
-        /* ✅ SAME CSS (UNCHANGED) */
         * {
             margin: 0;
             padding: 0;
@@ -97,6 +97,14 @@ if (!isset($_SESSION['user_email'])) {
             color: white;
         }
 
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .user-profile {
             padding: 24px;
             border-top: 1px solid #2d3a4a;
@@ -117,15 +125,198 @@ if (!isset($_SESSION['user_email'])) {
             color: white;
         }
 
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+
+        .user-role {
+            color: #8b9bb3;
+            font-size: 13px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #8b9bb3;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #2d3a4a;
+            color: #ff6b6b;
+        }
+
         .main-content {
             flex: 1;
+            background: #f4f6f9;
             display: flex;
             flex-direction: column;
+        }
+
+        .top-nav {
+            background: #f8fafc;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .top-nav-left {
+            flex: 1;
+        }
+
+        .top-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 16px 8px 40px;
+            color: #1a2332;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-avatar-header {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+        }
+
+        .header-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-name-header {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a2332;
+        }
+
+        .user-role-header {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .logout-icon {
+            color: #64748b;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .logout-icon:hover {
+            background: #f1f5f9;
+            color: #ef4444;
         }
 
         .content-area {
             flex: 1;
             padding: 32px;
+            background: #f4f6f9;
+        }
+
+        .content-header {
+            margin-bottom: 32px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+
+        .content-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+            min-width: 180px;
         }
 
         .stats-grid {
@@ -139,140 +330,419 @@ if (!isset($_SESSION['user_email'])) {
             background: white;
             border-radius: 12px;
             padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.rating {
+            background: #3b82f6;
+        }
+
+        .stat-icon.responses {
+            background: #3b82f6;
+        }
+
+        .stat-content h3 {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
         }
 
         .stat-value {
             font-size: 32px;
             font-weight: 700;
+            color: #1a2332;
         }
 
-        /* TOP NAV */
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .stat-rating {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        .stat-label {
+            color: #10b981;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .rating-breakdown {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .breakdown-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a2332;
             margin-bottom: 20px;
         }
 
-        .search-input {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            width: 250px;
+        .rating-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
         }
 
-        .notification-btn {
+        .rating-number {
+            width: 16px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .rating-bar {
+            flex: 1;
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .rating-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .rating-1 { background: #ef4444; }
+        .rating-2 { background: #f97316; }
+        .rating-3 { background: #06b6d4; }
+        .rating-4 { background: #3b82f6; }
+        .rating-5 { background: #3b82f6; }
+
+        .rating-percentage {
+            width: 40px;
+            text-align: right;
+            font-weight: 500;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .categories-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .category-bar {
+            flex: 1;
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 4px;
+            margin-left: 20px;
+            margin-right: 20px;
+            overflow: hidden;
+        }
+
+        .category-fill {
+            height: 100%;
             background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
+            border-radius: 4px;
         }
 
-        .notification-badge {
-            background: red;
-            color: white;
-            border-radius: 50%;
-            font-size: 12px;
-            padding: 2px 6px;
-            position: absolute;
-            top: -5px;
-            right: -5px;
+        .category-score {
+            font-weight: 600;
+            color: #1a2332;
+            min-width: 50px;
+            text-align: right;
         }
+
+        .feedback-legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.positive { background: #10b981; }
+        .legend-dot.neutral { background: #6b7280; }
+        .legend-dot.negative { background: #f97316; }
+        .legend-dot.improvement { background: #ef4444; }
     </style>
 </head>
-
 <body>
-
-<div class="app-container">
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <div class="logo">🎓</div>
-                <div class="logo-text">SmartCampus</div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <div class="logo">🎓</div>
+                    <div class="logo-text">SmartCampus</div>
+                </div>
             </div>
-        </div>
+            
+          
 
-        <nav class="sidebar-nav">
-            <a href="faculty-dashboard.html" class="nav-link active">Dashboard</a>
+
+            <nav class="sidebar-nav">
+            
+            <a href="faculty-dashboard.php" class="nav-link active">
+                    <div class="nav-icon">📊</div>
+                    <span>Dashboard</span>
+                </a>
+                <a href="faculty-complaints.html" class="nav-link ">
+                    <div class="nav-icon">📝</div>
+                    <span>Complaints</span>
+                </a>
+                <a href="faculty-notices.html" class="nav-link">
+                    <div class="nav-icon">📢</div>
+                    <span>Notices</span>
+                </a>
+
+
         </nav>
 
-        <div class="user-profile">
-            <div class="user-avatar">D</div>
-            <div>
-                <div>Dr. Priya Mehta</div>
-                <div>Faculty</div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">D</div>
+                <div class="user-info">
+                    <div class="user-name">Dr. Priya Mehta</div>
+                    <div class="user-role">Faculty</div>
+                </div>
+                <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
             </div>
         </div>
-    </div>
 
-    <!-- Main -->
-    <div class="main-content">
-
-        <div class="content-area">
-
-            <!-- TOP NAV + LOGOUT ADDED -->
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation Bar -->
             <div class="top-nav">
-                <input type="text" class="search-input" placeholder="Search...">
-
-                <div style="display:flex; align-items:center; gap:12px;">
-
-                    <button class="notification-btn">
-                        🔔
-                        <span class="notification-badge">0</span>
-                    </button>
-
-                    <!-- ✅ LOGOUT ADDED HERE -->
-                    <a href="logout.php"
-                       style="background: transparent;
-                              border: 1px solid #ccc;
-                              padding: 8px 14px;
-                              border-radius: 8px;
-                              text-decoration: none;
-                              color: #64748b;
-                              font-weight: 600;">
-                        Logout
-                    </a>
-
-                </div>
-            </div>
-
-            <h1>Faculty Feedback Analysis</h1>
-
-            <div class="stats-grid">
-
-                <!-- Rating -->
-                <div class="stat-card">
-                    <h3>Overall Rating</h3>
-                    <div class="stat-value">
-                        <span id="overall-rating">0.0</span> / 5
+                <div class="top-nav-left">
+                    <div class="search-box">
+                        <div class="search-icon">🔍</div>
+                        <input type="text" class="search-input" placeholder="Search...">
                     </div>
-                    <div id="rating-label">Waiting for data...</div>
                 </div>
-
-                <!-- Responses -->
-                <div class="stat-card">
-                    <h3>Total Responses</h3>
-                    <div class="stat-value" id="total-responses">0</div>
+                <div class="top-nav-right">
+                    <div class="notification-icon">
+                        🔔
+                        <div class="notification-badge">•</div>
+                    </div>
+                    <div class="header-user-info">
+                        <div class="user-avatar-header">D</div>
+                        <div class="user-details">
+                            <div class="user-name-header">Dr. Priya Mehta</div>
+                            <div class="user-role-header">Faculty</div>
+                        </div>
+                    </div>
+                    <div class="logout-icon" onclick="logout()" title="Logout">Logout</div>
                 </div>
-
             </div>
 
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="content-header">
+                    <h1 class="content-title">Faculty Feedback Analysis</h1>
+                </div>
+
+                <div class="filters-row">
+                    <select class="filter-select">
+                        <option>👤 Dr. Faculty</option>
+                        <option>Prof. Jane Doe</option>
+                        <option>Dr. Alex Johnson</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Semester 1</option>
+                        <option>Semester 2</option>
+                    </select>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon rating">⭐</div>
+                            <div class="stat-content">
+                                <h3>Overall Rating</h3>
+                                <div class="stat-value">
+                                     <span id="overall-rating">0</span><span class="stat-rating"> / 5</span>
+                                </div>
+                                <div class="stat-label">Very Good</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon responses">💬</div>
+                            <div class="stat-content">
+                                <h3>Total Responses</h3>
+                                <div class="stat-value" id="total-responses">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rating-breakdown">
+                    <div class="breakdown-title">Rating Breakdown</div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">1</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-1" style="width: 4%"></div>
+                        </div>
+                        <div class="rating-percentage">4%</div>
+                    </div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">2</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-2" style="width: 8%"></div>
+                        </div>
+                        <div class="rating-percentage">8%</div>
+                    </div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">3</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-3" style="width: 25%"></div>
+                        </div>
+                        <div class="rating-percentage">25%</div>
+                    </div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">4</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-4" style="width: 25%"></div>
+                        </div>
+                        <div class="rating-percentage">25%</div>
+                    </div>
+                    
+                    <div class="rating-item">
+                        <div class="rating-number">5</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill rating-5" style="width: 50%"></div>
+                        </div>
+                        <div class="rating-percentage">50%</div>
+                    </div>
+                </div>
+
+                <div class="categories-section">
+                    <div class="breakdown-title">Average per Category</div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">🎯 Teaching Clarity</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 88%"></div>
+                        </div>
+                        <div class="category-score">4.4 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">📚 Subject Knowledge</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 90%"></div>
+                        </div>
+                        <div class="category-score">4.5 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">💬 Interaction</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 86%"></div>
+                        </div>
+                        <div class="category-score">4.3 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">⏰ Punctuality</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 84%"></div>
+                        </div>
+                        <div class="category-score">4.2 /5</div>
+                    </div>
+                    
+                    <div class="category-item">
+                        <div class="category-name">📖 Course Material Quality</div>
+                        <div class="category-bar">
+                            <div class="category-fill" style="width: 82%"></div>
+                        </div>
+                        <div class="category-score">4.1 /5</div>
+                    </div>
+
+                    <div class="feedback-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot positive"></div>
+                            <span>Positive</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot neutral"></div>
+                            <span>Neutral</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot negative"></div>
+                            <span>No</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot improvement"></div>
+                            <span>Needs Improvement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
+    
+    <script>
+        window.USER_ROLE = "<?php echo $_SESSION['user']['role']; ?>";
+    </script>
 
-</div>
-
-<!-- JS -->
-<script src="js/main.js"></script>
-<script src="js/dashboard.js"></script>
-
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
-
 

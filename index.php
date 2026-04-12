@@ -14,7 +14,7 @@
             <p class="login-subtitle">Campus Management System</p>
             
             <!-- FORM -->
-            <form id="loginForm" class="login-form">
+            <form id="loginForm" class="login-form" onsubmit="return false;">
 
                 <div class="form-group">
                     <label class="form-label">Email</label>
@@ -42,8 +42,8 @@
 
                 <div class="separator"><span>OR</span></div>
 
-                <!-- ✅ FIXED GOOGLE LOGIN -->
-                <a href="login.php" class="google-btn">
+                <!--  FIXED GOOGLE LOGIN -->
+                <a href="api/login.php" class="google-btn">
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
                     Sign in with Google
                 </a>
