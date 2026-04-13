@@ -22,60 +22,22 @@ document.querySelectorAll('.nav-link').forEach(link => {
         this.classList.add('active');
     });
 });
-// Fetch dynamic stats from PHP
-function loadDashboardStats() {
-    fetch('api/dashboard.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // 1. Update the Number Cards
-                const totalEl = document.getElementById('stat-total');
-                const pendingEl = document.getElementById('stat-pending');
-                const resolvedEl = document.getElementById('stat-resolved');
-                const usersEl = document.getElementById('stat-users');
 
-                if (totalEl) totalEl.textContent = data.stats.totalComplaints;
-                if (pendingEl) pendingEl.textContent = data.stats.pendingIssues;
-                if (resolvedEl) resolvedEl.textContent = data.stats.resolvedIssues;
-                if (usersEl) usersEl.textContent = data.stats.users;
+// Format date to relative time (e.g., "2 hours ago")
+function getRelativeTime(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
 
-                // 2. Animate the Bar Chart (Complaint Trends)
-                const bars = document.querySelectorAll('.bar');
-                if (bars.length > 0 && data.charts.trends) {
-                    data.charts.trends.forEach((percentage, index) => {
-                        if (bars[index]) {
-                            // Override the CSS file's hardcoded height
-                            bars[index].style.height = `${percentage}%`; 
-                        }
-                    });
-                }
-
-                // 3. Animate the Donut Chart (Feedback Ratings)
-                const donut = document.querySelector('.donut');
-                if (donut && data.charts.feedback) {
-                    const f = data.charts.feedback;
-                    
-                    // Convert percentages to 360 degrees for the CSS conic-gradient
-                    const exDeg = (f.excellent / 100) * 360;
-                    const gdDeg = exDeg + ((f.good / 100) * 360);
-                    const avDeg = gdDeg + ((f.average / 100) * 360);
-                    
-                    // Inject the new dynamically calculated gradient
-                    donut.style.background = `conic-gradient(
-                        #10b981 0deg ${exDeg}deg,
-                        #3b82f6 ${exDeg}deg ${gdDeg}deg,
-                        #f59e0b ${gdDeg}deg ${avDeg}deg,
-                        #ef4444 ${avDeg}deg 360deg
-                    )`;
-                }
-            }
-        })
-        .catch(err => console.error("Error loading dashboard stats:", err));
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
-
-// Run when the dashboard loads
-document.addEventListener('DOMContentLoaded', loadDashboardStats);
-
 
 // --- STUDENT DASHBOARD LOGIC ---
 
@@ -96,23 +58,68 @@ function loadStudentDashboard() {
         if (data.success == true) {
             let stats = data.stats;
             
-            // 1. Get live totals from backend (with compatibility fallback)
+            // 1. Get live totals from backend
             let noticesCount = Number(stats.activeNotices || 0);
-            let totalComplaints = Number(
-                stats.totalComplaints !== undefined ? stats.totalComplaints : (stats.myComplaints || 0)
-            );
-            let resolvedCount = Number(
-                stats.resolvedIssues !== undefined ? stats.resolvedIssues : (stats.myResolved || 0)
-            );
-            let pendingCount = Number(
-                stats.pendingIssues !== undefined ? stats.pendingIssues : Math.max(0, totalComplaints - resolvedCount)
-            );
+            let totalComplaints = Number(stats.totalComplaints || 0);
+            let resolvedCount = Number(stats.resolvedIssues || 0);
+            let pendingCount = Number(stats.pendingIssues || 0);
 
-            // 3. Update the HTML on the screen
+            // 2. Update the HTML stat cards on the screen
             noticesBox.innerText = noticesCount;
             document.getElementById('student-complaints').innerText = totalComplaints;
             document.getElementById('student-resolved').innerText = resolvedCount;
             document.getElementById('student-pending').innerText = pendingCount;
+
+            // 3. Populate Recent Notices section
+            const noticesContainer = document.getElementById('recent-notices');
+            if (noticesContainer && data.notices && data.notices.length > 0) {
+                noticesContainer.innerHTML = '';
+                data.notices.forEach(notice => {
+                    const categoryTag = notice.category ? notice.category.charAt(0).toUpperCase() + notice.category.slice(1) : 'General';
+                    const noticeHTML = `
+                        <div class="notice-item">
+                            <div class="notice-indicator normal"></div>
+                            <div class="notice-content">
+                                <div class="notice-title">${notice.title}</div>
+                                <div class="notice-meta">
+                                    <span class="notice-tag">${categoryTag}</span>
+                                    <span>${getRelativeTime(notice.created_at)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    noticesContainer.insertAdjacentHTML('beforeend', noticeHTML);
+                });
+            } else if (noticesContainer) {
+                noticesContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No recent notices</div>';
+            }
+
+            // 4. Populate Complaint Status section
+            const complaintsContainer = document.getElementById('complaint-status');
+            if (complaintsContainer && data.complaints && data.complaints.length > 0) {
+                complaintsContainer.innerHTML = '';
+                data.complaints.forEach(complaint => {
+                    let statusClass = 'pending';
+                    if (complaint.status === 'In Progress') statusClass = 'in-progress';
+                    if (complaint.status === 'Resolved') statusClass = 'resolved';
+
+                    const complaintHTML = `
+                        <div class="complaint-status-item">
+                            <div class="notice-content">
+                                <div class="notice-title">${complaint.subject}</div>
+                                <div class="notice-meta">
+                                    <span>${complaint.type ? complaint.type.charAt(0).toUpperCase() + complaint.type.slice(1) : 'Other'}</span>
+                                    <span>${getRelativeTime(complaint.created_at)}</span>
+                                </div>
+                            </div>
+                            <div class="complaint-status ${statusClass}">${complaint.status}</div>
+                        </div>
+                    `;
+                    complaintsContainer.insertAdjacentHTML('beforeend', complaintHTML);
+                });
+            } else if (complaintsContainer) {
+                complaintsContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No complaints submitted yet</div>';
+            }
         }
     })
     .catch(function(error) {
@@ -122,5 +129,4 @@ function loadStudentDashboard() {
 
 window.addEventListener('load', function() {
     loadStudentDashboard();
-    
 });

@@ -84,7 +84,19 @@ function loadComplaints() {
                 const listContainer = document.querySelector('.complaints-list');
                 if (!listContainer) return;
                 
-                listContainer.innerHTML = ''; // Clear hardcoded HTML
+                // Update total complaints count
+                const totalCount = data.complaints ? data.complaints.length : 0;
+                const totalElement = document.getElementById('totalComplaints');
+                if (totalElement) {
+                    totalElement.textContent = totalCount;
+                }
+                
+                if (!data.complaints || data.complaints.length === 0) {
+                    listContainer.innerHTML = '<div class="no-complaints-message" style="padding: 40px 20px; text-align: center; color: #666;"><p>📭 No complaints submitted yet.</p><p style="font-size: 14px;">Click "New Complaint" to submit your first complaint.</p></div>';
+                    return;
+                }
+
+                listContainer.innerHTML = ''; // Clear any placeholder
 
                 data.complaints.forEach(complaint => {
                     let statusClass = 'pending';

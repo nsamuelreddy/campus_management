@@ -532,3 +532,81 @@ if (window.location.pathname.includes('admin-dashboard.html') ||
     window.location.pathname.includes('faculty-dashboard.html')) {
     checkRolePermissions();
 }
+
+function pageSearchSelectors(pathname) {
+    if (pathname.includes('dashboard.html') && !pathname.includes('faculty-dashboard') && !pathname.includes('admin-dashboard')) {
+        return ['.notice-item', '.complaint-status-item'];
+    }
+    if (pathname.includes('notices.html') && !pathname.includes('faculty-notices')) {
+        return ['.notice-card'];
+    }
+    if (pathname.includes('complaints.html') && !pathname.includes('faculty-complaints')) {
+        return ['.complaint-card'];
+    }
+    if (pathname.includes('feedback.html')) {
+        return ['.rating-item', '.form-group'];
+    }
+    if (pathname.includes('lost-found.html')) {
+        return ['.item-card'];
+    }
+    if (pathname.includes('emergency.html')) {
+        return ['.emergency-card', '.procedure-card'];
+    }
+    if (pathname.includes('faculty-notices.html')) {
+        return ['.notice-card'];
+    }
+    if (pathname.includes('faculty-complaints.html')) {
+        return ['.complaint-card'];
+    }
+    if (pathname.includes('faculty-dashboard.html') || pathname.includes('faculty-dashboard-new.html')) {
+        return ['.stat-card', '.rating-item', '.category-item'];
+    }
+    if (pathname.includes('admin-dashboard.html')) {
+        return ['.stat-card', '.chart-card'];
+    }
+    if (pathname.includes('analytics.html')) {
+        return ['.chart-card', '.bar-group'];
+    }
+    if (pathname.includes('settings.html')) {
+        return ['.settings-card', '.form-group'];
+    }
+    return [];
+}
+
+function applySearchFilter(query, selectors) {
+    const normalized = query.trim().toLowerCase();
+
+    selectors.forEach((selector) => {
+        const elements = document.querySelectorAll(selector);
+        if (!elements.length) return;
+
+        elements.forEach((el) => {
+            const haystack = (el.textContent || '').toLowerCase();
+            const show = normalized === '' || haystack.includes(normalized);
+            if (el.tagName === 'TR') {
+                el.style.display = show ? 'table-row' : 'none';
+            } else {
+                el.style.display = show ? '' : 'none';
+            }
+        });
+    });
+}
+
+function initGlobalPageSearch() {
+    const pathname = window.location.pathname.toLowerCase();
+    const selectors = pageSearchSelectors(pathname);
+    if (!selectors.length) return;
+
+    const inputs = document.querySelectorAll('.search-input');
+    if (!inputs.length) return;
+
+    inputs.forEach((input) => {
+        if (input.id === 'searchInput') return;
+
+        input.addEventListener('input', (evt) => {
+            applySearchFilter(evt.target.value || '', selectors);
+        });
+    });
+}
+
+initGlobalPageSearch();
